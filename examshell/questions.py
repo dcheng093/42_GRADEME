@@ -37,6 +37,14 @@ class Question:
         ext = ".py" if self.rank.language == "python" else ".c"
         return [self.name + ext]
 
+    @cached_property
+    def starter(self) -> str:
+        """Initial answer file content: the subject's function signature (Python only)."""
+        if self.rank.language != "python":
+            return ""
+        match = re.search(r"^def \w+\(.*\).*:\s*$", self.subject, re.MULTILINE)
+        return f"{match.group(0).strip()}\n    pass\n" if match else ""
+
     @property
     def rendu_dir(self) -> Path:
         return config.RENDU / self.name

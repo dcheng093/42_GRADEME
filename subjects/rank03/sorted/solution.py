@@ -1,18 +1,6 @@
+def sort_people(people: list[tuple[str, int]]) -> list[tuple[str, int]]:
+    return sorted(people, key=lambda p: (p[1], p[0]))
 
-# sort strings by length
-words = ["banana", "kiwi", "fig"]
-result = sorted(words, key=lambda x: len(x))
 
-print(result)
-
-# sort tuples by a specific field
-people = [("Ana", 8.5), ("Luis", 6.0)]
-result = sorted(people, key=lambda x: x[1], reverse=True)
-
-print(result)
-
-# sort by multiple criteria
-people = [("Ana", 20), ("Luis", 20), ("Marta", 18)]
-result = sorted(people, key=lambda x: (x[1], x[0]))
-
-print(result)
+print(sort_people([("Zoe", 30), ("Adam", 25)]))  # [('Adam', 25), ('Zoe', 30)]
+print(sort_people([("Bob", 40), ("Alice", 40), ("Eve", 19)]))  # [('Eve', 19), ('Alice', 40), ('Bob', 40)]

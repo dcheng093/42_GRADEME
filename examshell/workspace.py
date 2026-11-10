@@ -1,5 +1,6 @@
 """The rendu/ folder you write your answers in, and trace/ where old ones go."""
 
+import re
 import shutil
 import subprocess
 import sys
@@ -18,11 +19,25 @@ def prepare(question):
         target = question.rendu_dir / header.name
         if header.name not in question.expected_files and not target.exists():
             shutil.copy(header, target)
+    # Python subjects start with the function signature already written
+    if question.starter and question.candidate.stat().st_size == 0:
+        question.candidate.write_text(question.starter)
     return question.candidate
 
 
+_STUB = re.compile(r"\Adef [^\n]*:\n    pass\n\Z")
+
+
+def is_stub(text):
+    """True if `text` is an untouched starter written by prepare()."""
+    return bool(_STUB.match(text))
+
+
 def _has_work(path):
-    return any(f.is_file() and f.stat().st_size > 0 for f in path.rglob("*"))
+    return any(
+        f.is_file() and f.stat().st_size > 0 and not is_stub(f.read_text(errors="replace"))
+        for f in path.rglob("*")
+    )
 
 
 def archive():

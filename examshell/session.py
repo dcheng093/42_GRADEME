@@ -95,7 +95,9 @@ def _help(commands):
 
 
 def _is_empty(q):
-    return not q.candidate.is_file() or q.candidate.stat().st_size == 0
+    if not q.candidate.is_file() or q.candidate.stat().st_size == 0:
+        return True
+    return workspace.is_stub(q.candidate.read_text(errors="replace"))
 
 
 def _grade(q, stats, started):
