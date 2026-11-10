@@ -1,0 +1,17 @@
+Assignment name  : valid_anagram
+Expected files   : valid_anagram.py
+--------------------------------------------------------------------------------
+
+Write a function:
+
+def valid_anagram(s: str, t: str) -> bool:
+
+that returns True if s and t are anagrams of each other, and False otherwise.
+
+Examples:
+
+valid_anagram("racecar", "carrace") → True
+valid_anagram("jar", "jam")         → False
+valid_anagram("listen", "silent")   → True
+valid_anagram("aabbcc", "abcabc")   → True
+valid_anagram("abc", "ab")          → False
