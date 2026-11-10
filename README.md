@@ -155,4 +155,4 @@ scripts/
 
 ## Credits
 
-The Rank 02 exercises and testers come from [terminal-42s/42_examshell](https://github.com/terminal-42s/42_examshell). The Rank 03 subjects are adapted from [sergioromero2k/42_Exam_Ranks](https://github.com/sergioromero2k/42_Exam_Ranks). The engine, the Python testers and everything else were rebuilt from scratch.
+The Rank 02 exercises and testers come from [terminal-42s/42_examshell](https://github.com/terminal-42s/42_examshell). The Rank 03 subjects are adapted from [sergioromero2k/42_Exam_Ranks](https://github.com/sergioromero2k/42_Exam_Ranks), [this guy](https://note.com/it_morning/n/n070a3e238fe6?hl=en), [examshell-python](https://pypi.org/project/examshell-python/), [42exam.net](https://rank03.42exam.net/). The engine, the Python testers and everything else were rebuilt from scratch. 
