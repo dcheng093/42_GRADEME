@@ -1,11 +1,21 @@
-"""Terminal drawing: colours, banner font, boxes, bars, prompts."""
+"""Terminal drawing: theme, banner font, cards, bars, prompts."""
 
 import os
 import re
 import shutil
 import sys
+import textwrap
 
 COLOR = sys.stdout.isatty() and "NO_COLOR" not in os.environ and os.environ.get("TERM") != "dumb"
+
+# ── theme ───────────────────────────────────────────────────────────────────
+ACCENT = 37    # teal: titles, commands, prompt
+HILITE = 221   # warm yellow: files, current level, warnings
+OK = 78        # green: passed, solved
+ERR = 203      # red: failed
+MUTED = 245    # grey: labels, hints
+LINE = 240     # dark grey: card borders
+SHADOW = 238   # banner drop shadow
 
 _STYLES = {
     "bold": "1", "dim": "2", "italic": "3", "under": "4",
@@ -14,15 +24,27 @@ _STYLES = {
 }
 _ANSI = re.compile(r"\x1b\[[0-9;]*m|[\x01\x02]")
 
-GRADIENT = (51, 45, 39, 33, 63, 99, 135, 171, 207, 213, 207, 171, 135, 99, 63, 33, 39, 45)
-
 
 def paint(text, *styles):
-    """paint("hi", "bold", "cyan") or paint("hi", 207) for a 256-colour code."""
+    """paint("hi", "bold", ACCENT); ("bg", n) sets a 256-colour background."""
     if not COLOR or not styles:
         return str(text)
-    codes = [f"38;5;{s}" if isinstance(s, int) else _STYLES[s] for s in styles]
+    codes = []
+    for s in styles:
+        if isinstance(s, tuple):
+            codes.append(f"48;5;{s[1]}")
+        elif isinstance(s, int):
+            codes.append(f"38;5;{s}")
+        else:
+            codes.append(_STYLES[s])
     return f"\x1b[{';'.join(codes)}m{text}\x1b[0m"
+
+
+def chip(text, bg=ACCENT, fg=16):
+    """A solid label: ' PRACTICE ' on a coloured background ([PRACTICE] without colour)."""
+    if not COLOR:
+        return f"[{text}]"
+    return paint(f" {text} ", ("bg", bg), fg, "bold")
 
 
 def visible_len(text):
@@ -83,65 +105,112 @@ _FONT = {
 }
 
 
-def big(text, colors=GRADIENT, indent=2):
-    """Render text in the block font. A single int colour paints it flat."""
+def big(text, color=ACCENT, indent=2):
+    """Render text in the block font, solid colour with a grey drop shadow."""
     glyphs = [_FONT[ch] for ch in text.upper() if ch in _FONT]
     rows = [" ".join(g[r] for g in glyphs).replace("#", "█") for r in range(5)]
     rows = [r.replace("█", "██").replace(" ", "  ") for r in rows]
-    if len(rows[0]) + indent > width():
-        return " " * indent + paint(text, "bold")
-    if isinstance(colors, int):
-        colors = (colors,)
+    if len(rows[0]) + 1 + indent > width():
+        return " " * indent + paint(text, color, "bold")
+    if not COLOR:
+        return "\n".join(" " * indent + r for r in rows)
+    w = len(rows[0]) + 1
+    filled = [[c < len(r) and r[c] == "█" for c in range(w)] for r in rows]
+    filled.append([False] * w)
     out = []
-    for row in rows:
-        line = "".join(
-            paint(ch, colors[(i // 4) % len(colors)]) if ch != " " else " "
-            for i, ch in enumerate(row)
-        )
-        out.append(" " * indent + line)
+    for r in range(len(filled)):
+        cells = []
+        for c in range(w):
+            if filled[r][c]:
+                cells.append(("█", color))
+            elif r and c and filled[r - 1][c - 1]:
+                cells.append(("░", SHADOW))
+            else:
+                cells.append((" ", None))
+        line, run, run_color = "", "", None
+        for ch, col in cells + [("", "end")]:
+            if col != run_color:
+                line += paint(run, run_color) if run_color else run
+                run, run_color = "", col
+            run += ch
+        out.append(" " * indent + line.rstrip())
     return "\n".join(out)
 
 
 # ── layout pieces ───────────────────────────────────────────────────────────
-def rule(char="─", color="gray"):
+def card_width():
+    return width() - 4
+
+
+def rule(char="─", color=LINE):
     return paint(char * (width() - 2), color)
 
 
-def box(lines, title="", color="cyan", pad=1):
-    """Rounded box sized to its content (capped at terminal width)."""
-    inner = max([visible_len(l) for l in lines] + [visible_len(title) + 2]) + pad * 2
-    inner = min(inner, width() - 4)
-    if title:
-        out = [paint("╭─ ", color) + paint(title, "bold") + paint(" " + "─" * (inner - visible_len(title) - 3) + "╮", color)]
-    else:
-        out = [paint("╭" + "─" * inner + "╮", color)]
+def _fit(line, room):
+    """Wrap plain lines that are too long; truncate coloured ones."""
+    if visible_len(line) <= room:
+        return [line]
+    if _ANSI.search(line):
+        return [_ANSI.sub("", line)[:room - 1] + "…"]
+    lead = len(line) - len(line.lstrip(" "))
+    return textwrap.wrap(line, room, subsequent_indent=" " * (lead + 2),
+                         drop_whitespace=False, break_on_hyphens=False) or [""]
+
+
+def card(lines, title="", right="", color=LINE, title_color=ACCENT):
+    """Full-width rounded card. All cards share one width so they stack neatly."""
+    w = card_width()
+    room = w - 4
+    left = paint("╭─ ", color) + paint(title, title_color, "bold") + " " if title else paint("╭", color)
+    tail = (" " + right + " " + paint("─╮", color)) if right else paint("╮", color)
+    dashes = max(w - visible_len(left) - visible_len(tail), 0)
+    out = [left + paint("─" * dashes, color) + tail]
     for line in lines:
-        if visible_len(line) > inner - pad * 2:
-            line = _ANSI.sub("", line)[:inner - pad * 2 - 1] + "…"
-        gap = max(inner - pad * 2 - visible_len(line), 0)
-        out.append(paint("│", color) + " " * pad + line + " " * (gap + pad) + paint("│", color))
-    out.append(paint("╰" + "─" * inner + "╯", color))
+        for piece in _fit(line.replace("\t", "    "), room):
+            gap = max(room - visible_len(piece), 0)
+            out.append(paint("│", color) + " " + piece + " " * (gap + 1) + paint("│", color))
+    out.append(paint("╰" + "─" * (w - 2) + "╯", color))
     return "\n".join("  " + l for l in out)
 
 
-def bar(fraction, size=20, color="green"):
+def command_card(commands, title="commands", footer="", color=LINE):
+    """Commands one per line: ▸ name   what it does."""
+    pad = max(visible_len(n) for n, _ in commands)
+    lines = [paint("▸ ", ACCENT) + paint(n, ACCENT, "bold") + " " * (pad - visible_len(n) + 3) + d
+             for n, d in commands]
+    if footer:
+        lines += ["", paint(footer, MUTED)]
+    return card(lines, title=title, color=color)
+
+
+def status_strip(left, right=""):
+    gap = width() - visible_len(left) - visible_len(right) - 2
+    return " " + left + " " * max(gap, 2) + right
+
+
+def bar(fraction, size=20, color=OK):
     fraction = max(0.0, min(1.0, fraction))
     filled = round(fraction * size)
-    return paint("█" * filled, color) + paint("░" * (size - filled), "gray")
+    return paint("█" * filled, color) + paint("░" * (size - filled), LINE)
+
+
+def level_bar(solved, total, size=12):
+    return bar(solved / total if total else 0, size) + " " + paint(f"{solved}/{total} solved", MUTED)
 
 
 def roadmap(rank, current, passed):
-    """L1 ●━━ L2 ●━━ L3 ◉━━ L4 ○ ..."""
+    """● L1 ━━ ● L2 ━━ ◉ L3 ━━ ○ L4 ..."""
     parts = []
     for i in range(len(rank.levels)):
         if i < passed:
-            dot = paint("●", "green")
+            dot = paint("●", OK)
         elif i == current:
-            dot = paint("◉", "yellow", "bold")
+            dot = paint("◉", HILITE, "bold")
         else:
-            dot = paint("○", "gray")
-        parts.append(f"{dot} {paint(f'L{i + 1}', 'bold' if i == current else 'gray')}")
-    return paint(" ━━ ", "gray").join(parts)
+            dot = paint("○", MUTED)
+        label = paint(f"L{i + 1}", HILITE, "bold") if i == current else paint(f"L{i + 1}", MUTED)
+        parts.append(f"{dot} {label}")
+    return paint(" ━━ ", LINE).join(parts)
 
 
 def duration(seconds):
@@ -153,6 +222,10 @@ def duration(seconds):
 
 def indent_block(text, prefix="  "):
     return "\n".join(prefix + line for line in text.splitlines())
+
+
+def say(text, color=MUTED, *styles):
+    print("  " + paint(text, color, *styles))
 
 
 # ── input ───────────────────────────────────────────────────────────────────
@@ -167,17 +240,17 @@ def _rl_safe(text):
     return re.sub(r"(\x1b\[[0-9;]*m)", "\x01\\1\x02", text)
 
 
-def ask(label="", symbol="❯", color=207):
-    prompt = (paint(label, "gray") + " " if label else "") + paint(symbol, color, "bold") + " "
+def ask(label="", symbol="❯", color=ACCENT):
+    prompt = (paint(label, MUTED) + " " if label else "") + paint(symbol, color, "bold") + " "
     return input(_rl_safe("  " + prompt)).strip()
 
 
 def pause(text="press enter to continue"):
-    input(_rl_safe("  " + paint(text, "gray", "italic") + " "))
+    input(_rl_safe("  " + paint(text, MUTED, "italic") + " "))
 
 
 def confirm(question):
-    answer = input(_rl_safe("  " + paint(question, "yellow") + paint(" [y/N] ", "gray"))).strip().lower()
+    answer = input(_rl_safe("  " + paint(question, HILITE) + paint(" [y/N] ", MUTED))).strip().lower()
     return answer in ("y", "yes")
 
 
@@ -185,12 +258,15 @@ def menu(title, options, footer=""):
     """options: list of (key, label, hint). Returns the chosen key, or None for back."""
     lines = []
     pad = max(len(label) for _, label, _ in options)
-    for key, label, hint in options:
-        k = paint(f"{key:>2}", 207, "bold")
-        lines.append(f"{k}  {paint(f'{label:<{pad}}', 'bold')}" + (f"   {paint(hint, 'gray')}" if hint else ""))
-    print(box(lines, title=title))
+    keyw = max(len(str(k)) for k, _, _ in options)
+    for i, (key, label, hint) in enumerate(options):
+        if i:
+            lines.append("")
+        k = chip(f"{key:^{keyw}}")
+        lines.append(f"{k}  {paint(f'{label:<{pad}}', 'bold')}" + (f"   {paint(hint, MUTED)}" if hint else ""))
     if footer:
-        print("  " + paint(footer, "gray"))
+        lines += ["", paint(footer, MUTED)]
+    print(card(lines, title=title))
     print()
     keys = {str(k).lower(): k for k, _, _ in options}
     while True:
@@ -201,4 +277,4 @@ def menu(title, options, footer=""):
             return None
         if choice in ("q", "quit", "exit"):
             raise SystemExit(0)
-        print("  " + paint(f"'{choice}' is not an option", "red"))
+        print("  " + paint(f"'{choice}' is not an option", ERR))

@@ -20,7 +20,7 @@ def splash():
     print()
     print(ui.big(config.APP_NAME))
     print()
-    print("  " + ui.paint(config.TAGLINE, "gray"))
+    print("  " + ui.paint(config.TAGLINE, ui.MUTED))
     print()
     while NOTICE:
         print("  " + NOTICE.pop(0))
@@ -30,8 +30,8 @@ def splash():
 def _archive():
     trace = workspace.archive()
     if trace:
-        NOTICE.append(ui.paint("✔ ", "green") + ui.paint("your code was saved to ", "gray")
-                      + ui.paint(f"{trace.relative_to(config.ROOT)}/", "yellow"))
+        NOTICE.append(ui.paint("✔ ", ui.OK) + ui.paint("your code was saved to ", ui.MUTED)
+                      + ui.paint(f"{trace.relative_to(config.ROOT)}/", ui.HILITE))
 
 
 def choose_rank(purpose):
@@ -47,34 +47,42 @@ def choose_rank(purpose):
 def _mark(stats, q):
     s = stats.question(q.id)
     if s.get("passes"):
-        return ui.paint("✔", "green")
+        return ui.paint("✔", ui.OK)
     if s.get("fails"):
-        return ui.paint("✘", "red")
-    return ui.paint("·", "gray")
+        return ui.paint("✘", ui.ERR)
+    return ui.paint("·", ui.MUTED)
+
+
+PICK_COMMANDS = (
+    ("L2", "every question of level 2, shuffled — then on to level 3"),
+    ("7", "start at question 7 (or type its name) and go in order"),
+    ("r", "start at a random question"),
+    ("enter", "back"),
+)
 
 
 def pick_question(rank, stats):
-    """Level map. Returns the index (into all_questions) to start from, or None."""
+    """Level map. Returns the playlist of questions to practise, or None."""
     questions = all_questions(rank)
-    col = max(len(q.name) for q in questions) + 7
-    per_row = max(1, (ui.width() - 8) // col)
-    lines = []
+    col = max(len(q.name) for q in questions) + 10
+    per_row = max(1, min(3, (ui.card_width() - 4) // col))
+    print()
+    print(ui.status_strip(ui.chip(config.APP_NAME) + "  " + ui.paint(rank.title, "bold") + "  " + ui.chip("PRACTICE"),
+                          ui.paint("pick where to start", ui.MUTED)))
+    print()
     for li, level in enumerate(rank.levels):
-        if li:
-            lines.append("")
-        lines.append(ui.paint(f"L{li + 1}", 207, "bold") + "  " + ui.paint(level.theme, "bold"))
         entries = [(i, q) for i, q in enumerate(questions) if q.level == li]
+        solved = sum(1 for _, q in entries if stats.question(q.id).get("passes"))
+        lines = []
         for row in range(0, len(entries), per_row):
             cells = []
             for i, q in entries[row:row + per_row]:
-                cell = f"{ui.paint(f'{i + 1:>2}', 'gray')} {_mark(stats, q)} {q.name}"
+                cell = f"{ui.paint(f'{i + 1:>3}', ui.MUTED)}  {_mark(stats, q)} {q.name}"
                 cells.append(cell + " " * (col - ui.visible_len(cell)))
-            lines.append("    " + "".join(cells).rstrip())
-    print(ui.box(lines, title=f"{rank.title} · practice"))
-    print("  " + ui.paint("number", 207) + ui.paint(" start there   ", "gray")
-          + ui.paint("r", 207) + ui.paint(" random   ", "gray")
-          + ui.paint("L2", 207) + ui.paint(" random from level 2   ", "gray")
-          + ui.paint("enter", 207) + ui.paint(" back", "gray"))
+            lines.append("".join(cells).rstrip())
+        print(ui.card(lines, title=f"L{li + 1}  {level.theme}", right=ui.level_bar(solved, len(entries), 10)))
+    print()
+    print(ui.command_card(PICK_COMMANDS, title="how to start"))
     print()
     while True:
         choice = ui.ask().lower()
@@ -83,51 +91,56 @@ def pick_question(rank, stats):
         if choice in ("q", "quit", "exit"):
             raise SystemExit(0)
         if choice == "r":
-            return random.randrange(len(questions))
+            return session.from_question(rank, random.randrange(len(questions)))
         if choice.startswith("l") and choice[1:].isdigit() and 1 <= int(choice[1:]) <= len(rank.levels):
-            return random.choice([i for i, q in enumerate(questions) if q.level == int(choice[1:]) - 1])
+            return session.level_run(rank, int(choice[1:]) - 1)
         if choice.isdigit() and 1 <= int(choice) <= len(questions):
-            return int(choice) - 1
+            return session.from_question(rank, int(choice) - 1)
         names = [q.name.lower() for q in questions]
         if choice in names:
-            return names.index(choice)
-        print("  " + ui.paint(f"'{choice}' is not a question number or name", "red"))
+            return session.from_question(rank, names.index(choice))
+        print("  " + ui.paint(f"'{choice}' is not a level, question number or name", ui.ERR))
 
 
 def stats_screen(stats):
     while True:
         ui.clear()
         print()
-        print(ui.big("STATS", (39, 45, 51)))
+        print(ui.big("STATS"))
         print()
         for rank in config.RANKS.values():
             lines = []
             for li, level in enumerate(rank.levels):
                 qs = [q for q in all_questions(rank) if q.level == li]
                 tried = [q for q in qs if stats.question(q.id).get("attempts")]
-                lines.append(ui.paint(f"L{li + 1} {level.theme:<20}", 207, "bold")
-                             + ui.paint(f"{len(tried):>2}/{len(qs)} tried", "gray"))
+                solved = sum(1 for q in qs if stats.question(q.id).get("passes"))
+                if li:
+                    lines.append("")
+                lines.append(ui.paint(f"L{li + 1} ", ui.HILITE, "bold") + ui.paint(f"{level.theme:<20}", "bold")
+                             + ui.level_bar(solved, len(qs), 12)
+                             + ui.paint(f"  · {len(tried)} tried", ui.MUTED))
                 for q in tried:
                     s = stats.question(q.id)
                     rate = s["passes"] / s["attempts"]
                     best = ui.duration(s["best_time"]) if s.get("best_time") is not None else "  -  "
-                    weak = ui.paint("  weak", "red", "bold") if s["fails"] > s["passes"] else ""
-                    lines.append(f"   {q.name:<24} {ui.bar(rate, 12, 'green' if rate >= .5 else 'yellow')} "
-                                 f"{s['passes']:>2}/{s['attempts']:<3} {ui.paint('best', 'gray')} {best}{weak}")
-            print(ui.box(lines, title=rank.title))
+                    weak = ui.paint("  weak", ui.ERR, "bold") if s["fails"] > s["passes"] else ""
+                    lines.append(f"   {q.name:<24} {ui.bar(rate, 12, ui.OK if rate >= .5 else ui.HILITE)} "
+                                 f"{s['passes']:>2}/{s['attempts']:<3} {ui.paint('best', ui.MUTED)} {best}{weak}")
+            print(ui.card(lines, title=rank.title))
             print()
         exams = stats.data["exams"][-8:]
         if exams:
             lines = []
             for e in reversed(exams):
                 g = e["grade"]
-                lines.append(f"{e['date'].replace('T', ' ')}  {config.RANKS[e['rank']].title if e['rank'] in config.RANKS else e['rank']:<8}"
-                             f" {ui.bar(g / 100, 10, 'green' if g == 100 else 'yellow' if g >= 50 else 'red')}"
-                             f" {g:>3}/100  {ui.paint(ui.duration(e['duration']), 'gray')}")
-            print(ui.box(lines, title="recent exams", color="magenta"))
+                title = config.RANKS[e["rank"]].title if e["rank"] in config.RANKS else e["rank"]
+                lines.append(f"{ui.paint(e['date'].replace('T', ' '), ui.MUTED)}  {title:<8}"
+                             f" {ui.bar(g / 100, 10, ui.OK if g == 100 else ui.HILITE if g >= 50 else ui.ERR)}"
+                             f" {g:>3}/100  {ui.paint(ui.duration(e['duration']), ui.MUTED)}")
+            print(ui.card(lines, title="recent exams"))
             print()
-        print("  " + ui.paint("reset", 207) + ui.paint(" wipe all stats   ", "gray")
-              + ui.paint("enter", 207) + ui.paint(" back", "gray"))
+        print(ui.command_card([("reset", "wipe all stats"), ("enter", "back")], title="options"))
+        print()
         choice = ui.ask().lower()
         if choice == "reset":
             if ui.confirm("really delete all your stats?"):
@@ -139,20 +152,25 @@ def stats_screen(stats):
 def help_screen():
     ui.clear()
     print()
-    print(ui.big("HELP", (213, 207, 171)))
+    print(ui.big("HELP"))
     print()
-    print(ui.box([
-        f"{ui.paint('practice', 'bold')}   pick any question, test as often as you like,",
-        "           peek at solutions, retry the ones you failed.",
-        f"{ui.paint('real exam', 'bold')}  one random question per level, a countdown clock,",
-        "           a cooldown after each failed test, grade out of 100.",
+    print(ui.card([
+        ui.paint("practice", ui.ACCENT, "bold"),
+        "  pick a level and do every question in it (shuffled), or start",
+        "  anywhere and go in order. test as often as you like, peek at",
+        "  solutions, retry the ones you failed. a summary screen tells you",
+        "  when you finish a level.",
         "",
-        f"write your answer in {ui.paint('rendu/<question>/', 'yellow')} — the file is created for you.",
-        f"when you leave a session, rendu/ is moved to {ui.paint('trace/<date>/', 'yellow')}.",
+        ui.paint("real exam", ui.ACCENT, "bold"),
+        "  one random question per level, a countdown clock,",
+        "  a cooldown after each failed test, grade out of 100.",
+        "",
+        f"write your answer in {ui.paint('rendu/<question>/', ui.HILITE)} — the file is created for you.",
+        f"when you leave a session, rendu/ is moved to {ui.paint('trace/<date>/', ui.HILITE)}.",
     ], title="modes"))
     print()
-    session._help(session.PRACTICE_COMMANDS)
-    print("  " + ui.paint("in the exam, `solution` and `retry` are disabled and `next` swaps the question.", "gray"))
+    session._help(session.PRACTICE_HELP)
+    ui.say("in the exam, `solution` and `retry` are disabled and `next` swaps the question.")
     print()
     ui.pause()
 
@@ -161,24 +179,24 @@ def update_screen():
     ui.clear()
     print()
     if not (config.ROOT / ".git").exists() or not shutil.which("git"):
-        print("  " + ui.paint("not a git checkout — download the latest version manually", "yellow"))
+        print("  " + ui.paint("not a git checkout — download the latest version manually", ui.HILITE))
     else:
-        print("  " + ui.paint("pulling the latest version…", "cyan"))
+        print("  " + ui.paint("pulling the latest version…", ui.ACCENT))
         proc = subprocess.run(["git", "-C", str(config.ROOT), "pull", "--ff-only"],
                               capture_output=True, text=True)
         print(ui.indent_block((proc.stdout + proc.stderr).strip(), "  │ "))
         print()
         if proc.returncode == 0:
-            print("  " + ui.paint("✔ up to date — restart to load any new code", "green"))
+            print("  " + ui.paint("✔ up to date — restart to load any new code", ui.OK))
         else:
-            print("  " + ui.paint("✘ update failed (local changes? no network?)", "red"))
+            print("  " + ui.paint("✘ update failed (local changes? no network?)", ui.ERR))
     print()
     ui.pause()
 
 
 # ── main loop ───────────────────────────────────────────────────────────────
 MAIN_MENU = [
-    (1, "Practice", "any question, any order, peek allowed"),
+    (1, "Practice", "whole levels or any question, peek allowed"),
     (2, "Real exam", "levels, clock, cooldowns, a grade"),
     (3, "Stats", "your history and weak spots"),
     (4, "Open rendu", "open your answer folder"),
@@ -198,9 +216,9 @@ def main_menu(stats):
             rank = choose_rank("practice · choose a rank")
             if rank:
                 ui.clear()
-                start = pick_question(rank, stats)
-                if start is not None:
-                    session.practice(rank, start, stats)
+                playlist = pick_question(rank, stats)
+                if playlist:
+                    session.practice(rank, playlist, stats)
                     _archive()
         elif choice == 2:
             rank = choose_rank("real exam · choose a rank")
@@ -210,7 +228,7 @@ def main_menu(stats):
             stats_screen(stats)
         elif choice == 4:
             if not workspace.open_folder(config.RENDU):
-                print("  " + ui.paint(f"couldn't open a file manager — it's at {config.RENDU}", "yellow"))
+                print("  " + ui.paint(f"couldn't open a file manager — it's at {config.RENDU}", ui.HILITE))
                 ui.pause()
         elif choice == 5:
             update_screen()
@@ -223,7 +241,7 @@ def main_menu(stats):
 def run_interactive():
     missing = missing_questions()
     if missing:
-        print(ui.paint("config.py lists questions with no folder:", "red"))
+        print(ui.paint("config.py lists questions with no folder:", ui.ERR))
         for q in missing:
             print("  " + str(q.path.relative_to(config.ROOT)))
         return 1
@@ -238,8 +256,8 @@ def run_interactive():
         trace = workspace.archive()
         print()
         if trace:
-            print("  " + ui.paint(f"your code was saved to {trace.relative_to(config.ROOT)}/", "gray"))
-        print("  " + ui.paint("good luck on the exam ✌", 207))
+            print("  " + ui.paint(f"your code was saved to {trace.relative_to(config.ROOT)}/", ui.MUTED))
+        print("  " + ui.paint("good luck on the exam :3", ui.ACCENT))
         print()
     return 0
 
@@ -267,7 +285,7 @@ def check(ranks, answers=None):
                     if (source / name).is_file():
                         shutil.copy(source / name, q.rendu_dir / name)
             result = runner.run_tests(q, quiet=True)
-            mark = ui.paint("✔", "green") if result.passed else ui.paint("✘", "red")
+            mark = ui.paint("✔", ui.OK) if result.passed else ui.paint("✘", ui.ERR)
             note = "timeout" if result.timed_out else f"{result.seconds:.1f}s"
             print(f"  {mark} {q.name:<26} {ui.paint(note, 'gray')}")
             if not result.passed:
@@ -279,7 +297,7 @@ def check(ranks, answers=None):
     print()
     print(f"{total - len(failures)}/{total} passed" + (f", {len(skipped)} without an answer" if skipped else ""))
     for f in failures:
-        print("  " + ui.paint("✘ " + f, "red"))
+        print("  " + ui.paint("✘ " + f, ui.ERR))
     return 1 if failures else 0
 
 

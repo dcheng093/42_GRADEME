@@ -12,7 +12,7 @@ RENDU = ROOT / "rendu"
 TRACE = ROOT / "trace"
 STATE_DIR = ROOT / ".examshell"
 
-TEST_TIMEOUT = 10  # seconds before a test run is killed (infinite loops)
+TEST_TIMEOUT = 20  # seconds before a test run is killed (infinite loops)
 
 # Real-exam cooldown: wait before you may `test` again after the Nth failed
 # attempt on the same level. Last value repeats. Set COOLDOWN_ENABLED = False

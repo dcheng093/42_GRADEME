@@ -26,15 +26,15 @@ Write your answer in `rendu/<question>/`, then type `test`.
 ## Two ways to play
 
 ### Practice
-Pick a rank, and you get a map of every level and question, with ✔ / ✘ next to the ones you've already tried. Start anywhere (a number, a name, `r` for random, `L3` for a random question from level 3) and move around freely.
+Pick a rank, and you get a map of every level and question, with ✔ / ✘ next to the ones you've already tried. Type `L3` to work through **every** question of level 3 in a shuffled order (none skipped), or a number / name / `r` to start at one question and go in order. When you reach the end of a level you get a summary screen (solved count, time, anything you skipped) before moving on to the next level — or back to the menu.
 
 ### Real exam
 One random question per level, a 3-hour clock, and a grade that goes up with each level you clear.
 
 ```
- GRADEME  ·  Rank 03 exam  ·  L2/6 parsing  ·  atoi          grade 17  ·  2:41:09
+ GRADEME   Rank 03   EXAM                                  grade 17   ◷ 2:41:09
+ ● L1 ━━ ◉ L2 ━━ ○ L3 ━━ ○ L4 ━━ ○ L5 ━━ ○ L6                          L2 parsing
  ──────────────────────────────────────────────────────────────────────────────────
-  ● L1 ━━ ◉ L2 ━━ ○ L3 ━━ ○ L4 ━━ ○ L5 ━━ ○ L6
 ```
 
 - **Fail a test** and you keep the same question. Each fail adds a cooldown before the next `test`: 0s → 30s → 60s → 120s.
@@ -51,7 +51,7 @@ One random question per level, a 3-hour clock, and a grade that goes up with eac
 | `prev`     | ✔        |      | previous question                              |
 | `sub`      | ✔        | ✔    | show the subject again                         |
 | `solution` | ✔        |      | peek at the reference solution                 |
-| `retry`    | ✔        |      | jump to a random question you failed before    |
+| `retry`    | ✔        |      | detour to a random question you failed before  |
 | `time`     | ✔        | ✔    | time on this question / time left              |
 | `help`     | ✔        | ✔    | list the commands                              |
 | `menu`     | ✔        | ✔    | back to the main menu (gives up in an exam)    |

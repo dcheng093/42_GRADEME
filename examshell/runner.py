@@ -70,13 +70,13 @@ def _run(cmd, cwd, env, capture, quiet=False):
         lines = output.rstrip("\n").splitlines()
         if len(lines) > MAX_LINES:
             more = len(lines) - MAX_LINES
-            lines = lines[:MAX_LINES] + [ui.paint(f"… {more} more lines", "gray")]
+            lines = lines[:MAX_LINES] + [ui.paint(f"… {more} more lines", ui.MUTED)]
         print(ui.indent_block("\n".join(lines), "  │ "))
     if timed_out:
         if not quiet:
             print()
-            print("  " + ui.paint(f"✘ timed out after {config.TEST_TIMEOUT}s", "red", "bold"))
-            print("  " + ui.paint("│", "red") + " probably an infinite loop (or waiting for input)")
+            print("  " + ui.paint(f"✘ timed out after {config.TEST_TIMEOUT}s", ui.ERR, "bold"))
+            print("  " + ui.paint("│", ui.ERR) + " probably an infinite loop (or waiting for input)")
         return Result(False, seconds, True)
 
     passed = proc.returncode == 0
@@ -88,7 +88,7 @@ def _run(cmd, cwd, env, capture, quiet=False):
 def _spin(stop):
     i = 0
     while not stop.wait(0.08):
-        sys.stdout.write(f"\r  {ui.paint(SPINNER[i % len(SPINNER)], 207)} compiling & testing…")
+        sys.stdout.write(f"\r  {ui.paint(SPINNER[i % len(SPINNER)], ui.ACCENT)} compiling & testing…")
         sys.stdout.flush()
         i += 1
     sys.stdout.write("\r\x1b[K" if ui.COLOR else "\r")

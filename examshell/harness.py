@@ -43,7 +43,7 @@ class Checker:
         if self.live and now - self._last_draw > 0.03:
             self._last_draw = now
             frame = SPINNER[self.count % len(SPINNER)]
-            self.out.write(f"\r  {ui.paint(frame, 207)} {self.count} checks passed")
+            self.out.write(f"\r  {ui.paint(frame, ui.ACCENT)} {self.count} checks passed")
             self.out.flush()
 
 
@@ -61,12 +61,12 @@ def load_module(name, path):
     return module
 
 
-def _card(title, rows, color="red"):
+def _card(title, rows, color=ui.ERR):
     out = ["  " + ui.paint("✘ " + title, color, "bold")]
     for label, value in rows:
         lines = str(value).splitlines() or [""]
         for i, line in enumerate(lines):
-            tag = ui.paint(f"{label:<9}", "gray") if i == 0 and label else " " * 9
+            tag = ui.paint(f"{label:<9}", ui.MUTED) if i == 0 and label else " " * 9
             out.append(f"  {ui.paint('│', color)} {tag} {line}")
     return "\n".join(out)
 
@@ -121,7 +121,7 @@ def main(argv):
         return 1
 
     _clear_line(out)
-    print(f"  {ui.paint('✔', 'green', 'bold')} {checker.count}/{checker.count} checks passed")
+    print(f"  {ui.paint('✔', ui.OK, 'bold')} {checker.count}/{checker.count} checks passed")
     return 0
 
 
@@ -154,9 +154,9 @@ def _show_prints(captured, limit=8):
     lines = captured.getvalue().splitlines()
     if not lines:
         return
-    print("  " + ui.paint(f"your code printed ({len(lines)} lines):", "gray"))
+    print("  " + ui.paint(f"your code printed ({len(lines)} lines):", ui.MUTED))
     for line in lines[-limit:]:
-        print("    " + ui.paint(line[:200], "gray"))
+        print("    " + ui.paint(line[:200], ui.MUTED))
 
 
 if __name__ == "__main__":
