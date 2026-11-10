@@ -1,0 +1,21 @@
+Assignment name  : py_number_base_converter
+Expected files   : py_number_base_converter.py
+--------------------------------------------------------------------------------
+
+编写一个函数，将数字从一种进制转换为另一种进制。
+支持从 2 到 36（含）的进制基数。
+对值 10-35 使用数字 0-9 和字母 A-Z。
+对于无效输入返回 "ERROR"。
+
+def number_base_converter(number: str, from_base: int, to_base: int) -> str:
+
+示例:
+
+number_base_converter("1010", 2, 10)  → "10"
+number_base_converter("FF", 16, 10)   → "255"
+number_base_converter("255", 10, 16)  → "FF"
+number_base_converter("123", 10, 2)   → "1111011"
+number_base_converter("Z", 36, 10)    → "35"
+number_base_converter("35", 10, 36)   → "Z"
+number_base_converter("123", 1, 10)   → "ERROR"
+number_base_converter("G", 16, 10)    → "ERROR"

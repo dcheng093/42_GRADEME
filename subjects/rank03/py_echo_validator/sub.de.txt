@@ -1,0 +1,17 @@
+Assignment name  : py_echo_validator
+Expected files   : py_echo_validator.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die prüft, ob ein String ein Palindrom ist - Leerzeichen und Groß-/Kleinschreibung ignorieren; nur alphabetische Zeichen für den Vergleich berücksichtigen.
+
+def echo_validator(text: str) -> bool:
+
+Beispiele:
+
+echo_validator("racecar")                      → True
+echo_validator("A man a plan a canal Panama")  → True
+echo_validator("race a car")                   → False
+echo_validator("Was it a car or a cat I saw")  → True
+echo_validator("hello")                        → False
+echo_validator("Madam Im Adam")                → True
+echo_validator("")                             → False

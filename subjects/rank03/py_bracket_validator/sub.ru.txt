@@ -1,0 +1,22 @@
+Assignment name  : py_bracket_validator
+Expected files   : py_bracket_validator.py
+--------------------------------------------------------------------------------
+
+Напишите функцию, которая проверяет, корректно ли расставлены скобки в строке.
+
+Строка считается правильной, если для каждой открывающей скобки есть соответствующая закрывающая скобка в правильном порядке.
+
+Разрешенные типы скобок: (), [], {}
+
+def bracket_validator(s: str) -> bool:
+
+Примеры:
+
+bracket_validator("()")            → True
+bracket_validator("()[]{}")        → True
+bracket_validator("(]")            → False
+bracket_validator("([)]")          → False
+bracket_validator("{[]}")          → True
+bracket_validator("hello(world)")  → True
+bracket_validator("((())")         → False
+bracket_validator("")              → True

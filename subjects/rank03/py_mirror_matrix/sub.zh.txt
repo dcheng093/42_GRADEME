@@ -1,0 +1,15 @@
+Assignment name  : py_mirror_matrix
+Expected files   : py_mirror_matrix.py
+--------------------------------------------------------------------------------
+
+给定一个二维矩阵（列表的列表），返回一个新矩阵，其中每一行都被水平反转。
+
+def mirror_matrix(matrix: list[list[int]]) -> list[list[int]]:
+
+示例:
+
+mirror_matrix([[1,2,3],[4,5,6]])    → [[3,2,1],[6,5,4]]
+mirror_matrix([[1,2],[3,4],[5,6]])  → [[2,1],[4,3],[6,5]]
+mirror_matrix([[7]])                → [[7]]
+mirror_matrix([[1,2,3,4]])          → [[4,3,2,1]]
+mirror_matrix([[-1,-2],[-3,-4]])    → [[-2,-1],[-4,-3]]

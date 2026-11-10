@@ -1,0 +1,17 @@
+Assignment name  : py_hidenp
+Expected files   : py_hidenp.py
+--------------------------------------------------------------------------------
+
+Напишите функцию, которая проверяет, является ли строка 'small' подпоследовательностью строки 'big'. Подпоследовательность означает, что все символы строки 'small' присутствуют в строке 'big' в том же порядке, но не обязательно подряд. Функция чувствительна к регистру.
+
+def hidenp(small: str, big: str) -> bool:
+
+Примеры:
+
+hidenp("abc", "a1b2c3")               → True
+hidenp("ace", "abcde")                → True
+hidenp("aec", "abcde")                → False
+hidenp("", "abc")                     → True
+hidenp("abc", "ab")                   → False
+hidenp("aaaa", "aaa")                 → False
+hidenp("sing","subsequence testing")  → True

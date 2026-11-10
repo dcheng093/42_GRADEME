@@ -1,0 +1,15 @@
+Assignment name  : py_inter
+Expected files   : py_inter.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die eine Zeichenkette mit den Zeichen zurückgibt, die in beiden Zeichenketten vorkommen, ohne Wiederholungen. Die Zeichen werden in der Reihenfolge hinzugefügt, in der sie in der ersten Zeichenkette erscheinen.
+
+def inter(s1: str, s2: str) -> str:
+
+Beispiele:
+
+inter("hello", "world")  → "lo"
+inter("banana", "band")  → "ban"
+inter("abcabc", "bc")    → "bc"
+inter("abc", "xyz")      → ""
+inter("", "abc")         → ""

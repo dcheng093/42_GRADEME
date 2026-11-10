@@ -1,0 +1,26 @@
+Assignment name  : py_string_permutation_checker
+Expected files   : py_string_permutation_checker.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die feststellt, ob zwei Strings Permutationen voneinander sind.
+Zwei Strings sind Permutationen, wenn sie dieselben Zeichen mit denselben Häufigkeiten enthalten.
+
+Die Funktion soll:
+- Prüfen, ob beide Strings genau dieselben Zeichen enthalten
+- Zeichenhäufigkeiten zählen (groß-/kleinschreibungssensitiv)
+- True zurückgeben, wenn es Permutationen sind, sonst False
+- Leere Strings behandeln (zwei leere Strings sind Permutationen)
+- Leerzeichen und Satzzeichen wie normale Zeichen behandeln
+
+def string_permutation_checker(s1: str, s2: str) -> bool:
+
+Beispiele:
+
+string_permutation_checker("abc", "bca")                 → True
+string_permutation_checker("abc", "def")                 → False
+string_permutation_checker("listen", "silent")           → True
+string_permutation_checker("hello", "bello")             → False
+string_permutation_checker("", "")                       → True
+string_permutation_checker("a", "")                      → False
+string_permutation_checker("Abc", "abc")                 → False
+string_permutation_checker("a gentleman","elegant man")  → True

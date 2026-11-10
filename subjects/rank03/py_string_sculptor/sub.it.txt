@@ -1,0 +1,15 @@
+Assignment name  : py_string_sculptor
+Expected files   : py_string_sculptor.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che trasformi una stringa alternando maiuscole e minuscole solo per i caratteri alfabetici. Gli altri restano invariati e non contano per l’alternanza. Il primo carattere alfabetico deve essere minuscolo, il secondo maiuscolo, il terzo minuscolo, e così via. Gli spazi ripristinano l'alternanza (la lettera successiva dopo uno spazio è di nuovo minuscola).
+
+def string_sculptor(text: str) -> str:
+
+Esempi:
+
+string_sculptor("hello")        → "hElLo"
+string_sculptor("Hello World")  → "hElLo wOrLd"
+string_sculptor("abc123def")    → "aBc123DeF"
+string_sculptor("Python3.9!")   → "pYtHoN3.9!"
+string_sculptor("")             → ""

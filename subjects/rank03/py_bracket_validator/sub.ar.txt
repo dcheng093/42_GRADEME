@@ -1,0 +1,22 @@
+Assignment name  : py_bracket_validator
+Expected files   : py_bracket_validator.py
+--------------------------------------------------------------------------------
+
+اكتب دالة تتحقق مما إذا كانت الأقواس في السلسلة النصية صحيحة ومتوازنة.
+
+تعتبر السلسلة صحيحة إذا كان لكل قوس فتح قوس إغلاق مطابق له بالترتيب السليم.
+
+الأقواس المسموح بها: ()، []، {}
+
+def bracket_validator(s: str) -> bool:
+
+أمثلة:
+
+bracket_validator("()")            → True
+bracket_validator("()[]{}")        → True
+bracket_validator("(]")            → False
+bracket_validator("([)]")          → False
+bracket_validator("{[]}")          → True
+bracket_validator("hello(world)")  → True
+bracket_validator("((())")         → False
+bracket_validator("")              → True

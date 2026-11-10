@@ -1,0 +1,22 @@
+Assignment name  : py_cryptic_sorter
+Expected files   : py_cryptic_sorter.py
+Forbidden functions : sorted(), .sort()
+--------------------------------------------------------------------------------
+
+Напишите функцию, которая сортирует список строк по нескольким критериям:
+1. Первичная сортировка: по длине строки (самые короткие сначала)
+2. Вторичная сортировка: в кодировке ASCII, но буквы сравниваются без учета регистра (для строк одинаковой длины)
+3. Третичная сортировка: по количеству гласных букв (по возрастанию, для строк одинаковой длины и лексически равных)
+4. Одинаковые строки должны сохранять свой исходный порядок, как во входном списке.
+
+Запрещенные функции: sorted(), list.sort()
+
+def cryptic_sorter(strings: list[str]) -> list[str]:
+
+Примеры:
+
+cryptic_sorter(["apple","cat","banana","dog","elephant"])  → ["cat","dog","apple","banana","elephant"]
+cryptic_sorter(["aaa","bbb","AAA","BBB"])                  → ["aaa", "AAA", "bbb", "BBB"]
+cryptic_sorter(["hello","world","hi","test"])              → ["hi","test","hello","world"]
+cryptic_sorter([])                                         → []
+cryptic_sorter([""])                                       → [""]

@@ -41,15 +41,19 @@ One random question per level, a 3-hour clock, and a grade that goes up with eac
 - **`next`** swaps your question for another one from the same level.
 - **Run out of time** and the exam ends with whatever grade you have.
 - No `solution`, no `retry`. Just like the real thing.
+- It starts with an examshell login screen and uses an `examshell>` prompt. `status` prints the real status layout (assignment list with Success / Failure / Current, grade, end date, time remaining), and `grademe` asks "Are you sure?" first.
+- Forbidden functions are checked from your source before any test runs.
 
 ## Commands
 
 | command    | practice | exam | what it does                                   |
 |------------|:--------:|:----:|------------------------------------------------|
-| `test`     | ✔        | ✔    | run the tests on your rendu file               |
+| `grademe`  | ✔        | ✔    | run the tests on your rendu file (alias `test`) |
+| `status`   |          | ✔    | examshell status: assignments, grade, end time |
+| `finish`   |          | ✔    | end the exam with the grade you have           |
 | `next`     | ✔        | ✔    | next question / swap for another in this level |
 | `prev`     | ✔        |      | previous question                              |
-| `sub`      | ✔        | ✔    | show the subject again                         |
+| `sub [lang]` | ✔      | ✔    | show the subject again, e.g. `sub fr`          |
 | `solution` | ✔        |      | peek at the reference solution                 |
 | `retry`    | ✔        |      | detour to a random question you failed before  |
 | `time`     | ✔        | ✔    | time on this question / time left              |
@@ -74,18 +78,20 @@ If your code crashes, the card shows the exception and the exact line in your fi
 
 ## Rank 03 levels
 
-The real exam has 6 levels, each with its own pool of questions, and you get one question per level. This is my best guess at the grouping, by difficulty:
+The current pool: 14 subjects, 6 levels, one assignment per level. It matches rank03.42exam.net and was imported by `scripts/import_rank03.py`.
 
-| level | theme              | questions                                             |
-|:-----:|--------------------|-------------------------------------------------------|
-| 1     | strings            | alternate_case, capitalize_words, valid_anagram       |
-| 2     | parsing            | atoi, py_echo_validator, whisper_lipher               |
-| 3     | sorting            | sorted, merge_and_sort_desc, customSortString         |
-| 4     | counting & hashing | twoSum, topKFrequent, py_pattern_tracker              |
-| 5     | matrices           | mirror_matrix, mirror_matrix_vertical, rotate_90      |
-| 6     | algorithms         | brackets, convert_base                                |
+| level | questions                                                                   |
+|:-----:|-----------------------------------------------------------------------------|
+| 1     | py_bracket_validator, py_cryptic_sorter *(no `sorted()` / `.sort()`)*       |
+| 2     | py_echo_validator, py_mirror_matrix                                         |
+| 3     | py_hidenp, py_inter, py_number_base_converter, py_pattern_tracker           |
+| 4     | py_anagram, py_shadow_merge, py_string_permutation_checker                  |
+| 5     | py_string_sculptor, py_twist_sequence                                       |
+| 6     | py_whisper_cipher                                                           |
 
-If you know the real pools, just edit `examshell/config.py`. That one file is the only place they're defined.
+Careful: the file is `py_<name>.py`, but the function has no `py_` prefix (`def bracket_validator(...)`). Every subject is available in EN, DE, FR, ES, IT, RU, TR, ZH and AR (`sub fr`).
+
+The **old pool** (alternate_case, atoi, rotate_90, …) is still there as **Rank 03 · old pool**, in practice mode only.
 
 Rank 02 has the classic 4 levels (55 C exercises).
 
@@ -102,7 +108,7 @@ When you leave a session, `rendu/` is moved to `trace/<date>/`, so you can alway
 | target       | does                                                          |
 |--------------|---------------------------------------------------------------|
 | `make`       | start the shell                                               |
-| `make check` | run every reference solution through its tester (should be 72/72) |
+| `make check` | run every reference solution through its tester (should be 86/86) |
 | `make clean` | delete `rendu/`, `trace/` and caches                          |
 
 You can also grade a whole folder of your own answers at once:
@@ -135,7 +141,10 @@ examshell/          the app (stdlib only)
   workspace.py      rendu/ and trace/
 subjects/
   rank02/levelN/<q>/   sub.txt, reference .c, tester.sh
-  rank03/<q>/          sub.txt, solution.py, tests.py
+  rank03/<q>/          sub.txt, sub.<lang>.txt, solution.py, tests.py
+  rank03_legacy/<q>/   the old rank03 pool
+scripts/
+  import_rank03.py     regenerate rank03 from an examshell_python checkout
 ```
 
 ## Requirements

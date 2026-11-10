@@ -1,0 +1,17 @@
+Assignment name  : py_anagram
+Expected files   : py_anagram.py
+--------------------------------------------------------------------------------
+
+اكتب دالة تتحقق مما إذا كانت سلسلتان نصيتان عبارة عن جناس ناقص (Anagrams).
+يجب أن تحتوي السلسلتان على نفس الأحرف تماماً وبنفس الكميات، مع تجاهل حالة الأحرف والمسافات.
+
+def anagram(s1: str, s2: str) -> bool:
+
+أمثلة:
+
+anagram("listen", "silent")         → True
+anagram("Triangle", "Integral")     → True
+anagram("Dormitory", "Dirty Room")  → True
+anagram("hello", "world")           → False
+anagram("", "")                     → True
+anagram("abc", "abcc")              → False

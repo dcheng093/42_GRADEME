@@ -1,0 +1,18 @@
+Assignment name  : py_pattern_tracker
+Expected files   : py_pattern_tracker.py
+--------------------------------------------------------------------------------
+
+Bir dizedeki geçerli ardışık basamak çiftlerinin sayısını sayan bir fonksiyon yazın. Geçerli bir çift, ikinci basamağın birinciden tam olarak bir büyük olduğu iki bitişik basamaktan oluşur.
+0'ın takip ettiği bir 9 geçerli bir çift DEĞİLDİR.
+
+def pattern_tracker(text: str) -> int:
+
+Örnekler:
+
+pattern_tracker("123")        → 2
+pattern_tracker("12a34")      → 2
+pattern_tracker("987654321")  → 0
+pattern_tracker("01234567")   → 7
+pattern_tracker("abc")        → 0
+pattern_tracker("1a2b3c4")    → 0
+pattern_tracker("112233")     → 2

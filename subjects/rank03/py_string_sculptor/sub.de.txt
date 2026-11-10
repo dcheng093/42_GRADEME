@@ -1,0 +1,15 @@
+Assignment name  : py_string_sculptor
+Expected files   : py_string_sculptor.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die einen String transformiert, indem nur alphabetische Zeichen abwechselnd groß/klein geschrieben werden. Nicht-alphabetische Zeichen bleiben unverändert und zählen nicht für die Abwechslung. Das erste alphabetische Zeichen soll klein, das zweite groß, das dritte klein usw. sein. Leerzeichen setzen die Abwechslung zurück (das nächste alphabetische Zeichen nach einem Leerzeichen wird wieder kleingeschrieben).
+
+def string_sculptor(text: str) -> str:
+
+Beispiele:
+
+string_sculptor("hello")        → "hElLo"
+string_sculptor("Hello World")  → "hElLo wOrLd"
+string_sculptor("abc123def")    → "aBc123DeF"
+string_sculptor("Python3.9!")   → "pYtHoN3.9!"
+string_sculptor("")             → ""

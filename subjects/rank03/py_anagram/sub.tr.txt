@@ -1,0 +1,16 @@
+Assignment name  : py_anagram
+Expected files   : py_anagram.py
+--------------------------------------------------------------------------------
+
+İki dizenin anagram olup olmadığını kontrol eden bir fonksiyon yazın. Büyük/küçük harf ve boşluklar yok sayılarak, tam olarak aynı harfleri aynı miktarda içermelidirler.
+
+def anagram(s1: str, s2: str) -> bool:
+
+Örnekler:
+
+anagram("listen", "silent")         → True
+anagram("Triangle", "Integral")     → True
+anagram("Dormitory", "Dirty Room")  → True
+anagram("hello", "world")           → False
+anagram("", "")                     → True
+anagram("abc", "abcc")              → False

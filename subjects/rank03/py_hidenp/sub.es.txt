@@ -1,0 +1,17 @@
+Assignment name  : py_hidenp
+Expected files   : py_hidenp.py
+--------------------------------------------------------------------------------
+
+Escribe una función que compruebe si la cadena 'small' es una subsecuencia de 'big'. Una subsecuencia significa que todos los caracteres de 'small' aparecen en 'big' en el mismo orden, pero no necesariamente de forma consecutiva. La función distingue entre mayúsculas y minúsculas.
+
+def hidenp(small: str, big: str) -> bool:
+
+Ejemplos:
+
+hidenp("abc", "a1b2c3")               → True
+hidenp("ace", "abcde")                → True
+hidenp("aec", "abcde")                → False
+hidenp("", "abc")                     → True
+hidenp("abc", "ab")                   → False
+hidenp("aaaa", "aaa")                 → False
+hidenp("sing","subsequence testing")  → True

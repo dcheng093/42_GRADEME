@@ -1,0 +1,17 @@
+Assignment name  : py_echo_validator
+Expected files   : py_echo_validator.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che verifichi se una stringa è palindroma, ignorando spazi e maiuscole/minuscole e considerando solo i caratteri alfabetici nel confronto.
+
+def echo_validator(text: str) -> bool:
+
+Esempi:
+
+echo_validator("racecar")                      → True
+echo_validator("A man a plan a canal Panama")  → True
+echo_validator("race a car")                   → False
+echo_validator("Was it a car or a cat I saw")  → True
+echo_validator("hello")                        → False
+echo_validator("Madam Im Adam")                → True
+echo_validator("")                             → False

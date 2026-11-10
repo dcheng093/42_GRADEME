@@ -1,0 +1,26 @@
+Assignment name  : py_string_permutation_checker
+Expected files   : py_string_permutation_checker.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che determini se due stringhe sono permutazioni l’una dell’altra.
+Due stringhe sono permutazioni se contengono gli stessi caratteri con le stesse frequenze.
+
+La funzione deve:
+- Verificare che entrambe le stringhe contengano esattamente gli stessi caratteri
+- Contare le frequenze (case-sensitive)
+- Restituire True se sono permutazioni, altrimenti False
+- Gestire stringhe vuote (due vuote sono permutazioni)
+- Considerare spazi e punteggiatura come caratteri normali
+
+def string_permutation_checker(s1: str, s2: str) -> bool:
+
+Esempi:
+
+string_permutation_checker("abc", "bca")                 → True
+string_permutation_checker("abc", "def")                 → False
+string_permutation_checker("listen", "silent")           → True
+string_permutation_checker("hello", "bello")             → False
+string_permutation_checker("", "")                       → True
+string_permutation_checker("a", "")                      → False
+string_permutation_checker("Abc", "abc")                 → False
+string_permutation_checker("a gentleman","elegant man")  → True

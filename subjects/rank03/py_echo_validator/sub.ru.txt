@@ -1,0 +1,17 @@
+Assignment name  : py_echo_validator
+Expected files   : py_echo_validator.py
+--------------------------------------------------------------------------------
+
+Напишите функцию, которая проверяет, является ли строка палиндромом, игнорируя пробелы и регистр. Для сравнения учитывайте только буквы.
+
+def echo_validator(text: str) -> bool:
+
+Примеры:
+
+echo_validator("racecar")                      → True
+echo_validator("A man a plan a canal Panama")  → True
+echo_validator("race a car")                   → False
+echo_validator("Was it a car or a cat I saw")  → True
+echo_validator("hello")                        → False
+echo_validator("Madam Im Adam")                → True
+echo_validator("")                             → False

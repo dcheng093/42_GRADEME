@@ -1,0 +1,16 @@
+Assignment name  : py_whisper_cipher
+Expected files   : py_whisper_cipher.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che crei una cifratura semplice spostando le lettere di una stringa di una quantità data. I caratteri non alfabetici restano invariati.
+
+def whisper_cipher(text: str, shift: int) -> str:
+
+Esempi:
+
+whisper_cipher("hello", 3)         → "khoor"
+whisper_cipher("Hello World!", 1)  → "Ifmmp Xpsme!"
+whisper_cipher("xyz", 3)           → "abc"
+whisper_cipher("ABC123def", 5)     → "FGH123ijk"
+whisper_cipher("", 10)             → ""
+whisper_cipher("abc", -3)          → "xyz"

@@ -1,0 +1,22 @@
+Assignment name  : py_mirror_matrix
+Expected files   : py_mirror_matrix.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die eine 2D-Matrix horizontal spiegelt, indem jede Zeile umgekehrt wird.
+
+Die Funktion soll:
+- Eine 2D-Liste (Matrix) aus ganzen Zahlen als Eingabe nehmen
+- Eine neue 2D-Liste zurückgeben, in der jede Zeile horizontal umgekehrt ist
+- Matrizen beliebiger Größe (quadratisch oder rechteckig) verarbeiten
+- Die ursprüngliche Zeilenreihenfolge beibehalten
+- Die ursprüngliche Matrix nicht verändern
+
+def mirror_matrix(matrix: list[list[int]]) -> list[list[int]]:
+
+Beispiele:
+
+mirror_matrix([[1,2,3],[4,5,6]])    → [[3,2,1],[6,5,4]]
+mirror_matrix([[1,2],[3,4],[5,6]])  → [[2,1],[4,3],[6,5]]
+mirror_matrix([[7]])                → [[7]]
+mirror_matrix([[1,2,3,4]])          → [[4,3,2,1]]
+mirror_matrix([[-1,-2],[-3,-4]])    → [[-2,-1],[-4,-3]]

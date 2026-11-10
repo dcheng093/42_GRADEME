@@ -1,0 +1,17 @@
+Assignment name  : py_hidenp
+Expected files   : py_hidenp.py
+--------------------------------------------------------------------------------
+
+اكتب دالة تتحقق مما إذا كانت السلسلة النصية 'small' تشكل سلسلة فرعية (Subsequence) من السلسلة 'big'. السلسلة الفرعية تعني أن جميع أحرف 'small' تظهر في 'big' بنفس الترتيب، ولكن ليس بالضرورة بشكل متتابع. الدالة حساسة لحالة الأحرف.
+
+def hidenp(small: str, big: str) -> bool:
+
+أمثلة:
+
+hidenp("abc", "a1b2c3")               → True
+hidenp("ace", "abcde")                → True
+hidenp("aec", "abcde")                → False
+hidenp("", "abc")                     → True
+hidenp("abc", "ab")                   → False
+hidenp("aaaa", "aaa")                 → False
+hidenp("sing","subsequence testing")  → True

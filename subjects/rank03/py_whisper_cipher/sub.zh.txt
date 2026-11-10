@@ -1,0 +1,18 @@
+Assignment name  : py_whisper_cipher
+Expected files   : py_whisper_cipher.py
+--------------------------------------------------------------------------------
+
+编写一个函数，通过将字符串中的字母移动指定偏移量来创建凯撒密码。
+非字母字符应保持不变。
+偏移量可以为负数（向左移动）。
+
+def whisper_cipher(text: str, shift: int) -> str:
+
+示例:
+
+whisper_cipher("hello", 3)         → "khoor"
+whisper_cipher("Hello World!", 1)  → "Ifmmp Xpsme!"
+whisper_cipher("xyz", 3)           → "abc"
+whisper_cipher("ABC123def", 5)     → "FGH123ijk"
+whisper_cipher("", 10)             → ""
+whisper_cipher("abc", -3)          → "xyz"

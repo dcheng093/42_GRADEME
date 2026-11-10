@@ -1,0 +1,15 @@
+Assignment name  : py_inter
+Expected files   : py_inter.py
+--------------------------------------------------------------------------------
+
+Her iki dizede de bulunan karakterleri tekrarsız olarak içeren bir dize döndüren bir fonksiyon yazın. Karakterler ilk dizede görünme sıralarına göre eklenir.
+
+def inter(s1: str, s2: str) -> str:
+
+Örnekler:
+
+inter("hello", "world")  → "lo"
+inter("banana", "band")  → "ban"
+inter("abcabc", "bc")    → "bc"
+inter("abc", "xyz")      → ""
+inter("", "abc")         → ""

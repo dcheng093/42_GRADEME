@@ -1,0 +1,15 @@
+Assignment name  : py_inter
+Expected files   : py_inter.py
+--------------------------------------------------------------------------------
+
+编写一个函数，返回一个包含同时出现在两个字符串中字符的字符串，且不包含重复字符。字符按它们在第一个字符串中出现的顺序添加。
+
+def inter(s1: str, s2: str) -> str:
+
+示例:
+
+inter("hello", "world")  → "lo"
+inter("banana", "band")  → "ban"
+inter("abcabc", "bc")    → "bc"
+inter("abc", "xyz")      → ""
+inter("", "abc")         → ""

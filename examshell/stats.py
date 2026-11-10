@@ -15,6 +15,20 @@ class Stats:
         self.data = data or {"questions": {}, "exams": []}
         self.data.setdefault("questions", {})
         self.data.setdefault("exams", [])
+        self._migrate_legacy()
+
+    def _migrate_legacy(self):
+        """The old rank03 pool moved to rank03_legacy: carry its history over."""
+        legacy = config.RANKS.get("rank03_legacy")
+        if not legacy or self.data.get("legacy_migrated"):
+            return
+        old_names = {n for lvl in legacy.levels for n in lvl.pool}
+        qs = self.data["questions"]
+        # names in both pools (py_echo_validator…) changed signature: history belongs to the old one
+        for name in old_names:
+            if f"rank03/{name}" in qs:
+                qs.setdefault(f"rank03_legacy/{name}", qs.pop(f"rank03/{name}"))
+        self.data["legacy_migrated"] = True
 
     @classmethod
     def load(cls):

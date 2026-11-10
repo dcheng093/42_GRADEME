@@ -2,20 +2,18 @@ Assignment name  : py_echo_validator
 Expected files   : py_echo_validator.py
 --------------------------------------------------------------------------------
 
-Write a function:
+Write a function that checks if a string is a palindrome,
+ignoring spaces and case, only consider alphabetic characters
+for the comparison.
 
-def py_echo_validator(s: str) -> bool:
-
-Returns True if s is a palindrome, ignoring:
-
-- Case (uppercase/lowercase)
-- Non-alphanumeric characters
-
-Returns False otherwise.
+def echo_validator(text: str) -> bool:
 
 Examples:
 
-py_echo_validator("Was it a car or a cat I saw?")    → True
-py_echo_validator("tab a cat")                        → False
-py_echo_validator("A man, a plan, a canal: Panama") → True
-py_echo_validator("No lemon, no melon")              → True
+echo_validator("racecar")                      → True
+echo_validator("A man a plan a canal Panama")  → True
+echo_validator("race a car")                   → False
+echo_validator("Was it a car or a cat I saw")  → True
+echo_validator("hello")                        → False
+echo_validator("Madam Im Adam")                → True
+echo_validator("")                             → False

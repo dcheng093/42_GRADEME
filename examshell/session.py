@@ -1,27 +1,30 @@
 """Practice mode and real exam mode."""
 
 import math
+import os
 import random
 import sys
 import time
+from datetime import datetime, timedelta
 
 from . import config, runner, ui, workspace
 from .questions import Question, all_questions
 
 PRACTICE_COMMANDS = (
-    ("test", "grade your file"),
+    ("test", "grade your file  (or grademe)"),
     ("next", "next question"),
     ("prev", "previous question"),
-    ("sub", "redraw the subject"),
+    ("sub", "redraw the subject  ·  sub fr / de / es / it / ru / tr / zh / ar"),
     ("solution", "peek at the reference solution"),
     ("retry", "detour to a question you failed before"),
     ("time", "time spent on this question"),
 )
 EXAM_COMMANDS = (
-    ("test", "grade your file"),
-    ("next", "swap for another question of this level (counts as a skip)"),
-    ("sub", "redraw the subject"),
-    ("time", "time left on the clock"),
+    ("grademe", "grade your file"),
+    ("status", "assignments, grade and time left"),
+    ("sub", "redraw the subject  ·  sub fr / de / es / it / ru / tr / zh / ar"),
+    ("next", "swap for another question of this level (not in the real exam)"),
+    ("finish", "end the exam with the grade you have"),
 )
 LEAVE_COMMANDS = (
     ("help", "list every command"),
@@ -30,11 +33,16 @@ LEAVE_COMMANDS = (
 )
 PRACTICE_HELP = PRACTICE_COMMANDS + LEAVE_COMMANDS
 EXAM_HELP = EXAM_COMMANDS + (
+    ("test", "same as grademe"),
+    ("time", "time left on the clock"),
     ("help", "list every command"),
-    ("menu", "give up and go back to the main menu"),
-    ("exit", "give up and quit"),
+    ("menu", "same as finish, then back to the main menu"),
+    ("exit", "same as finish, then quit"),
 )
 FOOTER = "help · menu · exit"
+EXAM_FOOTER = "help · finish"
+GRADE_WORDS = ("test", "grademe", "grade")
+SUB_WORDS = ("sub", "s", "clear", "subject")
 
 
 # ── shared screen pieces ────────────────────────────────────────────────────
@@ -59,9 +67,22 @@ def _solved_in_level(stats, rank, level):
 META = ("Assignment name", "Expected files", "Allowed functions", "Forbidden functions")
 
 
-def _subject(q):
+def _parse_sub(cmd, q):
+    """'sub fr' -> 'fr'. Returns None (and says why) for an unknown language."""
+    parts = cmd.split()
+    if len(parts) == 1:
+        return "en"
+    lang = parts[1]
+    if lang in q.languages:
+        return lang
+    have = " ".join(q.languages)
+    ui.say(f"no '{lang}' subject for this one" + (f" — try: {have}" if len(q.languages) > 1 else ""), ui.ERR)
+    return None
+
+
+def _subject(q, lang="en"):
     lines, body_started = [], False
-    for line in q.subject.splitlines():
+    for line in q.subject_in(lang).splitlines():
         if line.strip() and set(line.strip()) == {"-"}:
             lines.append(ui.paint("┄" * (ui.card_width() - 4), ui.LINE))
             continue
@@ -82,11 +103,12 @@ def _subject(q):
     rel = q.candidate.relative_to(config.ROOT)
     lines += ["", ui.paint(f"{'your file':<19}", ui.MUTED) + ui.paint(str(rel), ui.HILITE, "bold")]
     print()
-    print(ui.card(lines, title=q.name, right=ui.paint(q.rank.levels[q.level].theme, ui.MUTED)))
+    right = q.rank.levels[q.level].theme + (f" · {lang}" if lang != "en" else "")
+    print(ui.card(lines, title=q.name, right=ui.paint(right, ui.MUTED)))
 
 
-def _commands(commands):
-    print(ui.command_card(commands, footer=FOOTER))
+def _commands(commands, footer=FOOTER):
+    print(ui.command_card(commands, footer=footer))
     print()
 
 
@@ -125,10 +147,10 @@ def _show_solution(q):
                   title=f"solution · {q.solution.name}", title_color=ui.HILITE, color=ui.HILITE))
 
 
-def _ask(label):
+def _ask(label, symbol="❯"):
     """Read a command. Ctrl-C means 'menu', Ctrl-D means 'exit'."""
     try:
-        return ui.ask(label).lower()
+        return ui.ask(label, symbol=symbol).lower()
     except KeyboardInterrupt:
         print()
         return "menu"
@@ -206,16 +228,22 @@ def _practice_question(q, where, stats, solved, first):
     workspace.prepare(q)
     started = time.monotonic()
     redraw = True
+    lang = "en"
     while True:
         if redraw:
             ui.clear()
             done, total = _solved_in_level(stats, q.rank, q.level)
             _header(q.rank, ui.chip("PRACTICE"), where, _level_label(q.rank, q.level), ui.level_bar(done, total))
-            _subject(q)
+            _subject(q, lang)
             _commands(PRACTICE_COMMANDS)
             redraw = False
         cmd = _ask(q.name)
-        if cmd == "test":
+        if cmd.split()[:1] and cmd.split()[0] in SUB_WORDS:
+            picked = _parse_sub(cmd, q)
+            if picked:
+                lang, redraw = picked, True
+            continue
+        if cmd in GRADE_WORDS:
             result = _grade(q, stats, started)
             if result and result.passed:
                 solved.add(q.id)
@@ -233,8 +261,6 @@ def _practice_question(q, where, stats, solved, first):
                 ui.say("this is the first question of the run")
             else:
                 return "prev"
-        elif cmd in ("sub", "s", "clear"):
-            redraw = True
         elif cmd in ("solution", "sol"):
             if ui.confirm("spoil the reference solution?"):
                 _show_solution(q)
@@ -318,37 +344,83 @@ class _ExamOver(Exception):
         self.reason, self.quit_after = reason, quit_after
 
 
-def exam(rank, stats):
-    n = len(rank.levels)
+def _login():
+    try:
+        saved = config.EXAM_LOGIN_FILE.read_text().strip()
+    except OSError:
+        saved = ""
+    return (saved or os.environ.get("GRADEME_LOGIN")
+            or os.environ.get("USER") or os.environ.get("USERNAME") or "student")
+
+
+def _boot(rank):
+    """Fake examshell login + 'waiting for the exam to start'. False = backed out."""
     ui.clear()
     print()
-    print(ui.big(rank.title.replace(" ", "")))
+    print(ui.big("examshell", ui.ACCENT))
     print()
-    rules = [
-        f"{n} levels · one random question per level · {ui.duration(rank.time_limit)} on the clock",
-        f"each level cleared is worth {100 / n:.0f} points · grade {ui.paint('100', ui.OK, 'bold')} = all cleared",
-        "a failed test keeps the same question"
-        + (f", and adds a cooldown ({', '.join(f'{s}s' for s in config.COOLDOWN_STEPS)})"
-           if config.COOLDOWN_ENABLED else ""),
-        "`next` swaps the question for another from the same level",
-        "no solutions, no retry — just like the real thing",
+    steps = [
+        ("login: ", _login()),
+        ("password: ", "********"),
+        ("", "Connecting to exam server"),
     ]
-    print(ui.card([ui.paint("• ", ui.ACCENT) + r for r in rules], title=f"{rank.title} · real exam"))
-    print()
     try:
-        ui.pause("press enter to start the clock (ctrl-c to go back)")
+        for label, value in steps:
+            sys.stdout.write("  " + ui.paint(label, ui.MUTED))
+            sys.stdout.flush()
+            for ch in value:
+                sys.stdout.write(ch)
+                sys.stdout.flush()
+                time.sleep(0.03 if label else 0.0)
+            if not label:
+                for _ in range(6):
+                    time.sleep(0.15)
+                    sys.stdout.write(".")
+                    sys.stdout.flush()
+                sys.stdout.write(" " + ui.paint("OK", ui.OK, "bold"))
+            print()
+        time.sleep(0.2)
+        n = len(rank.levels)
+        print("  " + ui.paint(f"You are registered to the exam: {rank.title} ({rank.key}).", "bold"))
+        print("  " + ui.paint(f"{n} levels · one assignment per level · {ui.duration(rank.time_limit)} · "
+                              f"{_points(rank)} potential points each", ui.MUTED))
+        print()
+        rules = [
+            "a failed grademe keeps the same assignment"
+            + (f", with a cooldown ({', '.join(f'{s}s' for s in config.COOLDOWN_STEPS)})"
+               if config.COOLDOWN_ENABLED else ""),
+            "status shows your assignments, grade and time left",
+            "sub fr / sub de / ... shows the subject in another language",
+            "no solutions, no retry — just like the real thing",
+        ]
+        print(ui.card([ui.paint("• ", ui.ACCENT) + r for r in rules], title="before you start"))
+        print()
+        ui.pause("Waiting for the exam to start... press enter (ctrl-c to go back)")
     except (KeyboardInterrupt, EOFError):
+        print()
+        return False
+    return True
+
+
+def _points(rank):
+    return round(100 / len(rank.levels))
+
+
+def exam(rank, stats):
+    if not _boot(rank):
         return
 
+    n = len(rank.levels)
     workspace.archive()
-    clock = {"start": time.monotonic()}
+    clock = {"start": time.monotonic(), "end_at": datetime.now() + timedelta(seconds=rank.time_limit)}
     clock["deadline"] = clock["start"] + rank.time_limit
+    history = []  # [question name, "Success" | "Failure" | "Current" | "Skipped"], like examshell's list
     passed = 0
     quit_after = False
     reason = "finished"
     try:
         for level in range(n):
-            _exam_level(rank, level, passed, clock, stats)
+            _exam_level(rank, level, passed, clock, stats, history)
             passed += 1
     except _ExamOver as over:
         reason, quit_after = over.reason, over.quit_after
@@ -370,16 +442,56 @@ def _time_left(clock):
     return clock["deadline"] - time.monotonic()
 
 
-def _exam_level(rank, level, passed, clock, stats):
+def _remaining_words(seconds):
+    seconds = max(int(seconds), 0)
+    h, rem = divmod(seconds, 3600)
+    m, s = divmod(rem, 60)
+    return f"{h}hrs, {m}min and {s}sec"
+
+
+def _status(rank, level, passed, clock, history, q):
+    """The examshell `status` screen."""
+    pts = _points(rank)
+    grade = round(passed * 100 / len(rank.levels))
+    marks = {"Success": ui.OK, "Failure": ui.ERR, "Current": ui.HILITE, "Skipped": ui.MUTED}
+    lines = [
+        f"You're connected as {ui.paint(_login(), 'bold')}.",
+        ui.paint("You can log out at any time. If this program tells you you earned points,", ui.MUTED),
+        ui.paint("then they will be counted whatever happens.", ui.MUTED),
+        "",
+        f"You are currently at level {ui.paint(str(level), 'bold')}.",
+        "Assignments:",
+    ]
+    for i, (name, state) in enumerate(history):
+        lines.append(f"  {i}: {ui.paint(name, 'bold')} for {pts} potential points "
+                     f"({ui.paint(state, marks[state], 'bold')})")
+    grade_color = ui.OK if grade == 100 else ui.HILITE if grade else ui.MUTED
+    lines += [
+        f"Grade: {ui.paint(f'{grade}/100', grade_color, 'bold')}",
+        "",
+        f"The end date for this exam is: {clock['end_at'].strftime('%d/%m/%Y %H:%M:%S')}",
+        f"You have {ui.paint(_remaining_words(_time_left(clock)), 'bold')} remaining.",
+        "",
+        ui.paint(f"{'subject':<9}", ui.MUTED) + str(q.path.relative_to(config.ROOT)) + "/",
+        ui.paint(f"{'rendu':<9}", ui.MUTED) + ui.paint(str(q.rendu_dir.relative_to(config.ROOT)) + "/", ui.HILITE, "bold"),
+    ]
+    print()
+    print(ui.card(lines, title="status", right=ui.paint(rank.title, ui.MUTED)))
+    print()
+
+
+def _exam_level(rank, level, passed, clock, stats, history):
     pool = list(rank.levels[level].pool)
     random.shuffle(pool)
     seen = [pool.pop()]
     q = Question(rank, level, seen[0])
+    history.append([q.name, "Current"])
     workspace.prepare(q)
     started = time.monotonic()
     fails = 0
     cooldown_until = 0.0
-    redraw = True
+    redraw, show_status = True, True
+    lang = "en"
     while True:
         if _time_left(clock) <= 0:
             raise _ExamOver("time")
@@ -391,16 +503,22 @@ def _exam_level(rank, level, passed, clock, stats):
             right = (ui.paint("grade ", ui.MUTED) + ui.paint(str(grade), "bold") + "   "
                      + ui.paint("◷ " + ui.duration(left), clock_color, "bold"))
             _header(rank, ui.chip("EXAM", ui.ERR), right, ui.roadmap(rank, level, passed), _level_label(rank, level))
-            _subject(q)
-            _commands(EXAM_COMMANDS)
+            if show_status:  # examshell prints the status when you get a new assignment
+                _status(rank, level, passed, clock, history, q)
+                show_status = False
+            _subject(q, lang)
+            _commands(EXAM_COMMANDS, EXAM_FOOTER)
             redraw = False
 
-        cmd = _ask(ui.duration(_time_left(clock)))
+        cmd = _ask("examshell", symbol=">")
         if _time_left(clock) <= 0:
             ui.say("time's up!", ui.ERR, "bold")
             raise _ExamOver("time")
+        word = cmd.split()[0] if cmd.split() else ""
 
-        if cmd == "test":
+        if cmd in GRADE_WORDS:
+            if not _safe_confirm("Are you sure you're ready to be graded?", default_yes=True):
+                continue
             wait = cooldown_until - time.monotonic()
             if wait > 0 and not _countdown(cooldown_until):
                 continue
@@ -408,52 +526,62 @@ def _exam_level(rank, level, passed, clock, stats):
             if result is None:
                 continue
             if result.passed:
+                history[-1][1] = "Success"
                 ui.say(f"✔ level {level + 1} cleared in {ui.duration(time.monotonic() - started)}"
-                       f"  +{100 / len(rank.levels):.0f} points", ui.OK, "bold")
+                       f"  +{_points(rank)} points", ui.OK, "bold")
                 if level + 1 < len(rank.levels):
                     try:
-                        ui.pause("press enter for the next level")
+                        ui.pause("press enter for your next assignment")
                     except (KeyboardInterrupt, EOFError):
                         pass
                 return
+            history[-1][1] = "Failure"
+            history.append([q.name, "Current"])
             fails += 1
             if config.COOLDOWN_ENABLED:
                 steps = config.COOLDOWN_STEPS
                 delay = steps[min(fails - 1, len(steps) - 1)]
                 cooldown_until = time.monotonic() + delay
                 if delay:
-                    ui.say(f"next test available in {delay}s", ui.HILITE)
+                    ui.say(f"next grademe available in {delay}s", ui.HILITE)
+        elif word in SUB_WORDS:
+            picked = _parse_sub(cmd, q)
+            if picked:
+                lang, redraw = picked, True
+        elif cmd in ("status", "st"):
+            _status(rank, level, passed, clock, history, q)
         elif cmd in ("next", "n"):
             if not pool:
-                ui.say("no other question left in this level")
+                ui.say("no other assignment left in this level")
                 continue
+            history[-1][1] = "Skipped"
             seen.append(pool.pop())
             q = Question(rank, level, seen[-1])
+            history.append([q.name, "Current"])
             workspace.prepare(q)
             started = time.monotonic()
-            redraw = True
-        elif cmd in ("sub", "s", "clear"):
-            redraw = True
+            fails, cooldown_until = 0, 0.0
+            redraw, show_status, lang = True, True, "en"
         elif cmd in ("time", "t"):
-            ui.say(f"{ui.duration(_time_left(clock))} left · "
+            ui.say(f"You have {_remaining_words(_time_left(clock))} remaining · "
                    f"{ui.duration(time.monotonic() - clock['start'])} elapsed", ui.ACCENT)
         elif cmd in ("help", "h", "?"):
             _help(EXAM_HELP)
         elif cmd in ("solution", "sol", "retry"):
             ui.say("not in the real exam ;)")
-        elif cmd in ("menu", "m", "back"):
-            if _safe_confirm("give up the exam?"):
-                raise _ExamOver("abandoned")
-        elif cmd in ("exit", "quit", "q"):
-            if _safe_confirm("give up the exam and quit?"):
-                raise _ExamOver("abandoned", quit_after=True)
+        elif cmd in ("finish", "menu", "m", "back"):
+            if _safe_confirm("Do you really want to end the exam? Your grade will be final."):
+                raise _ExamOver("finished_early")
+        elif cmd in ("exit", "quit", "q", "logout"):
+            if _safe_confirm("End the exam and quit?"):
+                raise _ExamOver("finished_early", quit_after=True)
         elif cmd:
-            ui.say(f"unknown command '{cmd}' — type help", ui.ERR)
+            ui.say(f"{cmd}: command not found — type help", ui.ERR)
 
 
-def _safe_confirm(question):
+def _safe_confirm(question, default_yes=False):
     try:
-        return ui.confirm(question)
+        return ui.confirm(question, default_yes=default_yes)
     except (KeyboardInterrupt, EOFError):
         print()
         return False
@@ -486,6 +614,7 @@ def _exam_result(rank, grade, passed, elapsed, reason, trace):
         "finished": "all levels cleared — go get that rank!",
         "time": "the clock ran out",
         "abandoned": "you gave up this one",
+        "finished_early": "you ended the exam",
     }[reason]
     lines = [
         ui.paint(f"{'result':<10}", ui.MUTED) + verdict,

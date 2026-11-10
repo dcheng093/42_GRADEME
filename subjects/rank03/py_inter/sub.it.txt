@@ -1,0 +1,15 @@
+Assignment name  : py_inter
+Expected files   : py_inter.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che restituisca una stringa con i caratteri che appaiono in entrambe le stringhe, senza ripetizioni. I caratteri vengono aggiunti nell'ordine in cui appaiono nella prima stringa.
+
+def inter(s1: str, s2: str) -> str:
+
+Esempi:
+
+inter("hello", "world")  → "lo"
+inter("banana", "band")  → "ban"
+inter("abcabc", "bc")    → "bc"
+inter("abc", "xyz")      → ""
+inter("", "abc")         → ""

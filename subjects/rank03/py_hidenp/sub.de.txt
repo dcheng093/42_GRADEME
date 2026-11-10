@@ -1,0 +1,17 @@
+Assignment name  : py_hidenp
+Expected files   : py_hidenp.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die prüft, ob die Zeichenkette 'small' eine Teilfolge (Subsequence) von 'big' ist. Eine Teilfolge bedeutet, dass alle Zeichen von 'small' in 'big' in derselben Reihenfolge vorkommen, aber nicht unbedingt aufeinanderfolgend. Die Funktion berücksichtigt Groß- und Kleinschreibung.
+
+def hidenp(small: str, big: str) -> bool:
+
+Beispiele:
+
+hidenp("abc", "a1b2c3")               → True
+hidenp("ace", "abcde")                → True
+hidenp("aec", "abcde")                → False
+hidenp("", "abc")                     → True
+hidenp("abc", "ab")                   → False
+hidenp("aaaa", "aaa")                 → False
+hidenp("sing","subsequence testing")  → True

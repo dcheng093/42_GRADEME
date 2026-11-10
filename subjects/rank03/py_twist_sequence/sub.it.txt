@@ -1,0 +1,15 @@
+Assignment name  : py_twist_sequence
+Expected files   : py_twist_sequence.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che ruoti un array a destra di k posizioni. Ruotare a destra di k significa che gli ultimi k elementi vengono spostati all'inizio.
+
+def twist_sequence(arr: list[int], k: int) -> list[int]:
+
+Esempi:
+
+twist_sequence([1,2,3,4,5], 2)  → [4,5,1,2,3]
+twist_sequence([1,2,3], 1)      → [3,1,2]
+twist_sequence([1,2,3,4], 0)    → [1,2,3,4]
+twist_sequence([1,2,3], 5)      → [2,3,1]
+twist_sequence([], 3)           → []

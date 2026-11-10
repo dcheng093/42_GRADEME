@@ -1,0 +1,26 @@
+Assignment name  : py_cryptic_sorter
+Expected files   : py_cryptic_sorter.py
+Forbidden functions : sorted(), .sort()
+--------------------------------------------------------------------------------
+
+Écris une fonction qui trie une liste de chaînes avec une priorité à trois niveaux :
+1. Tri principal : par longueur (croissant)
+2. Tri secondaire : lexicographique (alphabétique, insensible à la casse, croissant)
+3. Tri tertiaire : par nombre de voyelles (croissant, si longueur et ordre lexicographique égaux)
+
+La fonction doit gérer :
+- Chaînes vides et listes vides
+- Casses mixtes (traiter comme des minuscules pour le tri)
+- Caractères spéciaux (les ignorer pour compter les voyelles)
+
+Fonctions interdites : sorted(), list.sort()
+
+def cryptic_sorter(strings: list[str]) -> list[str]:
+
+Exemples:
+
+cryptic_sorter(["apple","cat","banana","dog","elephant"])  → ["cat","dog","apple","banana","elephant"]
+cryptic_sorter(["aaa","bbb","AAA","BBB"])                  → ["aaa", "AAA", "bbb", "BBB"]
+cryptic_sorter(["hello","world","hi","test"])              → ["hi","test","hello","world"]
+cryptic_sorter([])                                         → []
+cryptic_sorter([""])                                       → [""]

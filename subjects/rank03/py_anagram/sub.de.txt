@@ -1,0 +1,16 @@
+Assignment name  : py_anagram
+Expected files   : py_anagram.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die prüft, ob zwei Zeichenketten Anagramme sind. Sie müssen genau dieselben Buchstaben in derselben Anzahl enthalten, wobei Groß-/Kleinschreibung und Leerzeichen ignoriert werden.
+
+def anagram(s1: str, s2: str) -> bool:
+
+Beispiele:
+
+anagram("listen", "silent")         → True
+anagram("Triangle", "Integral")     → True
+anagram("Dormitory", "Dirty Room")  → True
+anagram("hello", "world")           → False
+anagram("", "")                     → True
+anagram("abc", "abcc")              → False

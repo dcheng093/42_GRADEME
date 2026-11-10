@@ -1,0 +1,15 @@
+Assignment name  : py_inter
+Expected files   : py_inter.py
+--------------------------------------------------------------------------------
+
+Écris une fonction qui renvoie une chaîne contenant les caractères qui apparaissent dans les deux chaînes, sans répétition. Les caractères sont ajoutés dans l'ordre où ils apparaissent dans la première chaîne.
+
+def inter(s1: str, s2: str) -> str:
+
+Exemples:
+
+inter("hello", "world")  → "lo"
+inter("banana", "band")  → "ban"
+inter("abcabc", "bc")    → "bc"
+inter("abc", "xyz")      → ""
+inter("", "abc")         → ""

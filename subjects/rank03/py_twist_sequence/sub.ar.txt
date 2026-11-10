@@ -1,0 +1,16 @@
+Assignment name  : py_twist_sequence
+Expected files   : py_twist_sequence.py
+--------------------------------------------------------------------------------
+
+اكتب دالة تقوم بتدوير مصفوفة إلى اليمين بمقدار k موضعاً.
+التدوير إلى اليمين بمقدار k يعني انتقال آخر k عنصر إلى مقدمة المصفوفة.
+
+def twist_sequence(arr: list[int], k: int) -> list[int]:
+
+أمثلة:
+
+twist_sequence([1,2,3,4,5], 2)  → [4,5,1,2,3]
+twist_sequence([1,2,3], 1)      → [3,1,2]
+twist_sequence([1,2,3,4], 0)    → [1,2,3,4]
+twist_sequence([1,2,3], 5)      → [2,3,1]
+twist_sequence([], 3)           → []

@@ -1,0 +1,26 @@
+Assignment name  : py_cryptic_sorter
+Expected files   : py_cryptic_sorter.py
+Forbidden functions : sorted(), .sort()
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die eine Liste von Strings mit dreistufiger Priorität sortiert:
+1. Primär: nach Länge (aufsteigend)
+2. Sekundär: lexikographisch (alphabetisch, ohne Groß-/Kleinschreibung, aufsteigend)
+3. Tertiär: nach Anzahl der Vokale (aufsteigend bei gleicher Länge und lexikalischer Gleichheit)
+
+Die Funktion muss:
+- Leere Strings und leere Listen verarbeiten
+- Gemischte Groß-/Kleinschreibung (für Sortierung wie Kleinbuchstaben behandeln)
+- Sonderzeichen (für Vokalzählung ignorieren)
+
+Verbotene Funktionen: sorted(), list.sort()
+
+def cryptic_sorter(strings: list[str]) -> list[str]:
+
+Beispiele:
+
+cryptic_sorter(["apple","cat","banana","dog","elephant"])  → ["cat","dog","apple","banana","elephant"]
+cryptic_sorter(["aaa","bbb","AAA","BBB"])                  → ["aaa", "AAA", "bbb", "BBB"]
+cryptic_sorter(["hello","world","hi","test"])              → ["hi","test","hello","world"]
+cryptic_sorter([])                                         → []
+cryptic_sorter([""])                                       → [""]

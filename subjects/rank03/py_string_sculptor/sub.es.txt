@@ -1,0 +1,15 @@
+Assignment name  : py_string_sculptor
+Expected files   : py_string_sculptor.py
+--------------------------------------------------------------------------------
+
+Escribe una función que transforme una cadena alternando mayúsculas y minúsculas solo en caracteres alfabéticos. Los demás permanecen igual y no cuentan para la corporación/alternancia. El primer carácter alfabético debe ser minúscula, el segundo mayúscula, el tercero minúscula, y así sucesivamente. Los espacios reinician la alternancia (la siguiente letra después de un espacio vuelve a ser minúscula).
+
+def string_sculptor(text: str) -> str:
+
+Ejemplos:
+
+string_sculptor("hello")        → "hElLo"
+string_sculptor("Hello World")  → "hElLo wOrLd"
+string_sculptor("abc123def")    → "aBc123DeF"
+string_sculptor("Python3.9!")   → "pYtHoN3.9!"
+string_sculptor("")             → ""

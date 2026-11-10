@@ -1,0 +1,16 @@
+Assignment name  : py_anagram
+Expected files   : py_anagram.py
+--------------------------------------------------------------------------------
+
+Напишите функцию, которая проверяет, являются ли две строки анаграммами. Они должны содержать точно такие же буквы в одинаковом количестве, без учета регистра и пробелов.
+
+def anagram(s1: str, s2: str) -> bool:
+
+Примеры:
+
+anagram("listen", "silent")         → True
+anagram("Triangle", "Integral")     → True
+anagram("Dormitory", "Dirty Room")  → True
+anagram("hello", "world")           → False
+anagram("", "")                     → True
+anagram("abc", "abcc")              → False

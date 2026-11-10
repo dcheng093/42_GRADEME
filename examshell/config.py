@@ -35,6 +35,7 @@ class Rank:
     language: str  # "c" or "python"
     time_limit: int  # seconds, real exam mode
     levels: tuple
+    exam: bool = True  # offered in real-exam mode (False = practice only)
 
 
 RANKS = {
@@ -68,11 +69,28 @@ RANKS = {
             )),
         ),
     ),
+    # Current pool (14 subjects, 6 levels), imported by scripts/import_rank03.py
     "rank03": Rank(
         key="rank03",
         title="Rank 03",
         language="python",
         time_limit=3 * 60 * 60,
+        levels=(
+            Level("easy", pool=("py_bracket_validator", "py_cryptic_sorter")),
+            Level("easy", pool=("py_echo_validator", "py_mirror_matrix")),
+            Level("medium", pool=("py_hidenp", "py_inter", "py_number_base_converter", "py_pattern_tracker")),
+            Level("medium", pool=("py_anagram", "py_shadow_merge", "py_string_permutation_checker")),
+            Level("hard", pool=("py_string_sculptor", "py_twist_sequence")),
+            Level("hard", pool=("py_whisper_cipher",)),
+        ),
+    ),
+    # The pool before the change: practice only
+    "rank03_legacy": Rank(
+        key="rank03_legacy",
+        title="Rank 03 · old pool",
+        language="python",
+        time_limit=3 * 60 * 60,
+        exam=False,
         levels=(
             Level("strings", pool=("alternate_case", "capitalize_words", "valid_anagram")),
             Level("parsing", pool=("atoi", "py_echo_validator", "whisper_lipher")),
@@ -83,3 +101,9 @@ RANKS = {
         ),
     ),
 }
+
+LANGUAGES = ("en", "de", "fr", "es", "it", "ru", "tr", "zh", "ar")
+# Login shown on the examshell screens. By default it is your computer's account
+# name ($USER). To use a different one without committing it, put it in
+# .examshell/login (gitignored) or set GRADEME_LOGIN.
+EXAM_LOGIN_FILE = STATE_DIR / "login"

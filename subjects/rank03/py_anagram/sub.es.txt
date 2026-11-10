@@ -1,0 +1,16 @@
+Assignment name  : py_anagram
+Expected files   : py_anagram.py
+--------------------------------------------------------------------------------
+
+Escribe una función que verifique si dos cadenas son anagramas. Deben contener exactamente las mismas letras en las mismas cantidades, ignorando mayúsculas/minúsculas y espacios.
+
+def anagram(s1: str, s2: str) -> bool:
+
+Ejemplos:
+
+anagram("listen", "silent")         → True
+anagram("Triangle", "Integral")     → True
+anagram("Dormitory", "Dirty Room")  → True
+anagram("hello", "world")           → False
+anagram("", "")                     → True
+anagram("abc", "abcc")              → False

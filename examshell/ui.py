@@ -249,9 +249,10 @@ def pause(text="press enter to continue"):
     input(_rl_safe("  " + paint(text, MUTED, "italic") + " "))
 
 
-def confirm(question):
-    answer = input(_rl_safe("  " + paint(question, HILITE) + paint(" [y/N] ", MUTED))).strip().lower()
-    return answer in ("y", "yes")
+def confirm(question, default_yes=False):
+    hint = " [Y/n] " if default_yes else " [y/N] "
+    answer = input(_rl_safe("  " + paint(question, HILITE) + paint(hint, MUTED))).strip().lower()
+    return answer in ("y", "yes") or (default_yes and answer == "")
 
 
 def menu(title, options, footer=""):

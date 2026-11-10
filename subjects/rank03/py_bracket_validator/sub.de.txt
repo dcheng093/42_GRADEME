@@ -1,0 +1,25 @@
+Assignment name  : py_bracket_validator
+Expected files   : py_bracket_validator.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die prüft, ob Klammern in einem String korrekt gepaart und geschachtelt sind.
+Unterstütze drei Arten: (), [], {}.
+
+Die Funktion soll:
+- True zurückgeben, wenn alle Klammern korrekt gepaart sind
+- True für Strings ohne Klammern zurückgeben
+- False bei nicht passenden oder falsch geschachtelten Klammern zurückgeben
+- Zeichen außerhalb von Klammern ignorieren
+
+def bracket_validator(s: str) -> bool:
+
+Beispiele:
+
+bracket_validator("()")            → True
+bracket_validator("()[]{}")        → True
+bracket_validator("(]")            → False
+bracket_validator("([)]")          → False
+bracket_validator("{[]}")          → True
+bracket_validator("hello(world)")  → True
+bracket_validator("((())")         → False
+bracket_validator("")              → True

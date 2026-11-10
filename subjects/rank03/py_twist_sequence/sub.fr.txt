@@ -1,0 +1,15 @@
+Assignment name  : py_twist_sequence
+Expected files   : py_twist_sequence.py
+--------------------------------------------------------------------------------
+
+Écris une fonction qui effectue une rotation à droite d'un tableau de k positions. Une rotation à droite de k signifie que les k derniers éléments sont déplacés vers l'avant.
+
+def twist_sequence(arr: list[int], k: int) -> list[int]:
+
+Exemples:
+
+twist_sequence([1,2,3,4,5], 2)  → [4,5,1,2,3]
+twist_sequence([1,2,3], 1)      → [3,1,2]
+twist_sequence([1,2,3,4], 0)    → [1,2,3,4]
+twist_sequence([1,2,3], 5)      → [2,3,1]
+twist_sequence([], 3)           → []

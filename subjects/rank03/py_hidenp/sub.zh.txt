@@ -1,0 +1,17 @@
+Assignment name  : py_hidenp
+Expected files   : py_hidenp.py
+--------------------------------------------------------------------------------
+
+编写一个函数，检查字符串 'small' 是否为 'big' 的子序列（Subsequence）。子序列意味着 'small' 中的所有字符都按相同顺序出现在 'big' 中，但不需要连续出现。函数区分大小写。
+
+def hidenp(small: str, big: str) -> bool:
+
+示例:
+
+hidenp("abc", "a1b2c3")               → True
+hidenp("ace", "abcde")                → True
+hidenp("aec", "abcde")                → False
+hidenp("", "abc")                     → True
+hidenp("abc", "ab")                   → False
+hidenp("aaaa", "aaa")                 → False
+hidenp("sing","subsequence testing")  → True

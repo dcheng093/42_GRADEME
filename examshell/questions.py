@@ -25,7 +25,18 @@ class Question:
 
     @property
     def subject(self) -> str:
-        return (self.path / "sub.txt").read_text(errors="replace").rstrip()
+        return self.subject_in("en")
+
+    def subject_in(self, lang="en") -> str:
+        """Subject text in `lang` (sub.<lang>.txt), falling back to English."""
+        path = self.path / f"sub.{lang}.txt"
+        if lang == "en" or not path.is_file():
+            path = self.path / "sub.txt"
+        return path.read_text(encoding="utf-8", errors="replace").rstrip()
+
+    @property
+    def languages(self) -> list:
+        return ["en"] + [lang for lang in config.LANGUAGES[1:] if (self.path / f"sub.{lang}.txt").is_file()]
 
     @cached_property
     def expected_files(self) -> list:

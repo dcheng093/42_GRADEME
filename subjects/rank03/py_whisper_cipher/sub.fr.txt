@@ -1,0 +1,16 @@
+Assignment name  : py_whisper_cipher
+Expected files   : py_whisper_cipher.py
+--------------------------------------------------------------------------------
+
+Écris une fonction qui réalise un chiffrement simple en décalant les lettres d’une chaîne d’un montant donné. Les caractères non alphabétiques restent inchangés.
+
+def whisper_cipher(text: str, shift: int) -> str:
+
+Exemples:
+
+whisper_cipher("hello", 3)         → "khoor"
+whisper_cipher("Hello World!", 1)  → "Ifmmp Xpsme!"
+whisper_cipher("xyz", 3)           → "abc"
+whisper_cipher("ABC123def", 5)     → "FGH123ijk"
+whisper_cipher("", 10)             → ""
+whisper_cipher("abc", -3)          → "xyz"

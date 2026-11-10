@@ -1,0 +1,17 @@
+Assignment name  : py_pattern_tracker
+Expected files   : py_pattern_tracker.py
+--------------------------------------------------------------------------------
+
+Écris une fonction qui compte le nombre de paires de chiffres consécutifs valides dans une chaîne. Une paire valide est formée de deux chiffres adjacents dont le second vaut exactement un de plus que le premier. Un 9 suivi d’un 0 n’est PAS une paire valide.
+
+def pattern_tracker(text: str) -> int:
+
+Exemples:
+
+pattern_tracker("123")        → 2
+pattern_tracker("12a34")      → 2
+pattern_tracker("987654321")  → 0
+pattern_tracker("01234567")   → 7
+pattern_tracker("abc")        → 0
+pattern_tracker("1a2b3c4")    → 0
+pattern_tracker("112233")     → 2

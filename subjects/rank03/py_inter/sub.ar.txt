@@ -1,0 +1,15 @@
+Assignment name  : py_inter
+Expected files   : py_inter.py
+--------------------------------------------------------------------------------
+
+اكتب دالة ترجع سلسلة نصية تحتوي على الأحرف المشتركة بين السلسلتين، دون أي تكرار. تُضاف الأحرف بنفس ترتيب ظهورها في السلسلة الأولى.
+
+def inter(s1: str, s2: str) -> str:
+
+أمثلة:
+
+inter("hello", "world")  → "lo"
+inter("banana", "band")  → "ban"
+inter("abcabc", "bc")    → "bc"
+inter("abc", "xyz")      → ""
+inter("", "abc")         → ""

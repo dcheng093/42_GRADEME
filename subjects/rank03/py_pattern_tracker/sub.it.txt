@@ -1,0 +1,17 @@
+Assignment name  : py_pattern_tracker
+Expected files   : py_pattern_tracker.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che conti quante coppie consecutive di cifre valide ci sono in una stringa. Una coppia valida è formata da due cifre adiacenti in cui la seconda è esattamente uno più della prima. Un 9 seguito da 0 NON è una coppia valida.
+
+def pattern_tracker(text: str) -> int:
+
+Esempi:
+
+pattern_tracker("123")        → 2
+pattern_tracker("12a34")      → 2
+pattern_tracker("987654321")  → 0
+pattern_tracker("01234567")   → 7
+pattern_tracker("abc")        → 0
+pattern_tracker("1a2b3c4")    → 0
+pattern_tracker("112233")     → 2

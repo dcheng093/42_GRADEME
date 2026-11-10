@@ -1,0 +1,16 @@
+Assignment name  : py_anagram
+Expected files   : py_anagram.py
+--------------------------------------------------------------------------------
+
+编写一个函数，检查两个字符串是否为变位词（Anagram）。两个字符串必须包含完全相同的字母和相同数量，忽略大小写和空格。
+
+def anagram(s1: str, s2: str) -> bool:
+
+示例:
+
+anagram("listen", "silent")         → True
+anagram("Triangle", "Integral")     → True
+anagram("Dormitory", "Dirty Room")  → True
+anagram("hello", "world")           → False
+anagram("", "")                     → True
+anagram("abc", "abcc")              → False

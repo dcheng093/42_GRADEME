@@ -1,0 +1,22 @@
+Assignment name  : py_bracket_validator
+Expected files   : py_bracket_validator.py
+--------------------------------------------------------------------------------
+
+Bir dizedeki parantezlerin geçerli olup olmadığını kontrol eden bir fonksiyon yazın.
+
+Her açılış parantezinin doğru sırada eşleşen bir kapanış parantezi varsa dize geçerlidir.
+
+İzin verilen parantezler: (), [], {}
+
+def bracket_validator(s: str) -> bool:
+
+Örnekler:
+
+bracket_validator("()")            → True
+bracket_validator("()[]{}")        → True
+bracket_validator("(]")            → False
+bracket_validator("([)]")          → False
+bracket_validator("{[]}")          → True
+bracket_validator("hello(world)")  → True
+bracket_validator("((())")         → False
+bracket_validator("")              → True

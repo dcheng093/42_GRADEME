@@ -1,0 +1,19 @@
+Assignment name  : py_number_base_converter
+Expected files   : py_number_base_converter.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die eine Zahl von einer Basis in eine andere konvertiert.
+Unterstütze Basen von 2 bis 36 einschließlich, mit Ziffern 0-9 und Buchstaben A-Z für die Werte 10-35. Gib bei ungültigen Eingaben (Basis, Ziffern) "ERROR" zurück.
+
+def number_base_converter(number: str, from_base: int, to_base: int) -> str:
+
+Beispiele:
+
+number_base_converter("1010", 2, 10)  → "10"
+number_base_converter("FF", 16, 10)   → "255"
+number_base_converter("255", 10, 16)  → "FF"
+number_base_converter("123", 10, 2)   → "1111011"
+number_base_converter("Z", 36, 10)    → "35"
+number_base_converter("35", 10, 36)   → "Z"
+number_base_converter("123", 1, 10)   → "ERROR"
+number_base_converter("G", 16, 10)    → "ERROR"

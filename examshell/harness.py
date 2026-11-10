@@ -5,6 +5,7 @@
 Exit 0 = every check passed, 1 = failed / crashed.
 """
 
+import ast
 import contextlib
 import importlib.util
 import io
@@ -78,6 +79,55 @@ def _crash_location(error, candidate):
     return frames[-1] if frames else None
 
 
+def find_forbidden(source, forbidden):
+    """[(name, line)] for each forbidden call in `source`.
+
+    `forbidden` entries look like "sorted()" (a function, also caught through
+    aliases such as `from builtins import sorted as s`) or ".sort()" (any method
+    with that name). Raises SyntaxError if the source does not parse.
+    """
+    if not forbidden:
+        return []
+    tree = ast.parse(source)
+    aliases = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                aliases[alias.asname or alias.name.split(".")[0]] = alias.name if alias.asname else alias.name.split(".")[0]
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            for alias in node.names:
+                aliases[alias.asname or alias.name] = f"{node.module}.{alias.name}"
+
+    def qualified(node):
+        if isinstance(node, ast.Name):
+            return aliases.get(node.id, node.id)
+        if isinstance(node, ast.Attribute):
+            base = qualified(node.value)
+            return f"{base}.{node.attr}" if base else "." + node.attr
+        return None
+
+    def match(name):
+        for original in forbidden:
+            target = original[:-2] if original.endswith("()") else original
+            if target.startswith("."):
+                if name.endswith(target):
+                    return original
+            elif name in (target, f"builtins.{target}"):
+                return original
+        return None
+
+    found = []
+    for node in ast.walk(tree):
+        # calls, plus bare references like `key=sorted` or `f = list.sort`
+        target = node.func if isinstance(node, ast.Call) else node
+        if isinstance(target, (ast.Name, ast.Attribute)):
+            name = qualified(target)
+            hit = name and match(name)
+            if hit and (hit, node.lineno) not in found:
+                found.append((hit, node.lineno))
+    return sorted(found, key=lambda f: f[1])
+
+
 def main(argv):
     if len(argv) != 3:
         print("usage: python3 -m examshell.harness QUESTION_DIR CANDIDATE", file=sys.stderr)
@@ -92,6 +142,23 @@ def main(argv):
     tests = load_module(f"tests_{question}", qdir / "tests.py")
     script_mode = getattr(tests, "MODE", "module") == "script"
     module = None
+
+    forbidden = getattr(tests, "FORBIDDEN", None)
+    if forbidden and candidate.is_file():
+        source = candidate.read_text(errors="replace")
+        try:
+            used = find_forbidden(source, forbidden)
+        except SyntaxError:
+            used = []  # reported properly below
+        if used:
+            rel = f"rendu/{candidate.parent.name}/{candidate.name}"
+            lines = source.splitlines()
+            rows = [("forbidden", ", ".join(forbidden))]
+            for name, lineno in used:
+                rows += [("used", f"{name}  at {rel} line {lineno}"),
+                         ("code", lines[lineno - 1].strip() if lineno <= len(lines) else "")]
+            print(_card("forbidden function used", rows))
+            return 1
 
     try:
         if not candidate.is_file():

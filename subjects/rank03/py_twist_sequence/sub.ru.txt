@@ -1,0 +1,15 @@
+Assignment name  : py_twist_sequence
+Expected files   : py_twist_sequence.py
+--------------------------------------------------------------------------------
+
+Напишите функцию, которая сдвигает массив вправо на k позиций. Сдвиг вправо на k позиций означает, что последние k элементов переносятся в начало.
+
+def twist_sequence(arr: list[int], k: int) -> list[int]:
+
+Примеры:
+
+twist_sequence([1,2,3,4,5], 2)  → [4,5,1,2,3]
+twist_sequence([1,2,3], 1)      → [3,1,2]
+twist_sequence([1,2,3,4], 0)    → [1,2,3,4]
+twist_sequence([1,2,3], 5)      → [2,3,1]
+twist_sequence([], 3)           → []

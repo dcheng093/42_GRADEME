@@ -1,0 +1,22 @@
+Assignment name  : py_mirror_matrix
+Expected files   : py_mirror_matrix.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che specchia una matrice 2D in orizzontale invertendo ogni riga.
+
+La funzione deve:
+- Prendere in input una lista 2D (matrice) di interi
+- Restituire una nuova lista 2D in cui ogni riga è invertita orizzontalmente
+- Gestire matrici di qualsiasi dimensione (quadrate o rettangolari)
+- Preservare l’ordine originale delle righe
+- Non modificare la matrice originale
+
+def mirror_matrix(matrix: list[list[int]]) -> list[list[int]]:
+
+Esempi:
+
+mirror_matrix([[1,2,3],[4,5,6]])    → [[3,2,1],[6,5,4]]
+mirror_matrix([[1,2],[3,4],[5,6]])  → [[2,1],[4,3],[6,5]]
+mirror_matrix([[7]])                → [[7]]
+mirror_matrix([[1,2,3,4]])          → [[4,3,2,1]]
+mirror_matrix([[-1,-2],[-3,-4]])    → [[-2,-1],[-4,-3]]

@@ -1,0 +1,22 @@
+Assignment name  : py_cryptic_sorter
+Expected files   : py_cryptic_sorter.py
+Forbidden functions : sorted(), .sort()
+--------------------------------------------------------------------------------
+
+اكتب دالة تقوم بفرز قائمة من السلاسل النصية وفقاً لمعايير متعددة:
+1. الفرز الأساسي: حسب طول السلسلة (الأقصر أولاً)
+2. الفرز الثانوي: بترتيب ASCII، مع مقارنة الحروف دون مراعاة حالة الأحرف (للسلاسل ذات الطول نفسه)
+3. الفرز الثالث: حسب عدد أحرف العلة (تصاعدياً، للسلاسل ذات الطول المتساوي والمتطابقة معجمياً)
+4. السلاسل المتطابقة تظهر بنفس الترتيب الذي وردت به في القائمة المدخلة.
+
+الوظائف الممنوعة: ()sorted و ()list.sort
+
+def cryptic_sorter(strings: list[str]) -> list[str]:
+
+أمثلة:
+
+cryptic_sorter(["apple","cat","banana","dog","elephant"])  → ["cat","dog","apple","banana","elephant"]
+cryptic_sorter(["aaa","bbb","AAA","BBB"])                  → ["aaa", "AAA", "bbb", "BBB"]
+cryptic_sorter(["hello","world","hi","test"])              → ["hi","test","hello","world"]
+cryptic_sorter([])                                         → []
+cryptic_sorter([""])                                       → [""]

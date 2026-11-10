@@ -1,0 +1,22 @@
+Assignment name  : py_bracket_validator
+Expected files   : py_bracket_validator.py
+--------------------------------------------------------------------------------
+
+编写一个函数，检查字符串中的括号是否有效。
+
+如果每个开括号都有按正确顺序匹配的闭括号，则该字符串有效。
+
+允许的括号类型：()、[]、{}
+
+def bracket_validator(s: str) -> bool:
+
+示例:
+
+bracket_validator("()")            → True
+bracket_validator("()[]{}")        → True
+bracket_validator("(]")            → False
+bracket_validator("([)]")          → False
+bracket_validator("{[]}")          → True
+bracket_validator("hello(world)")  → True
+bracket_validator("((())")         → False
+bracket_validator("")              → True

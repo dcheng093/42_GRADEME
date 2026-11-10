@@ -1,0 +1,22 @@
+Assignment name  : py_mirror_matrix
+Expected files   : py_mirror_matrix.py
+--------------------------------------------------------------------------------
+
+Escribe una función que espeje una matriz 2D horizontalmente invirtiendo cada fila.
+
+La función debe:
+- Recibir una lista 2D (matriz) de enteros
+- Devolver una nueva lista 2D donde cada fila esté invertida horizontalmente
+- Manejar matrices de cualquier tamaño (cuadradas o rectangulares)
+- Conservar el orden original de las filas
+- No modificar la matriz original
+
+def mirror_matrix(matrix: list[list[int]]) -> list[list[int]]:
+
+Ejemplos:
+
+mirror_matrix([[1,2,3],[4,5,6]])    → [[3,2,1],[6,5,4]]
+mirror_matrix([[1,2],[3,4],[5,6]])  → [[2,1],[4,3],[6,5]]
+mirror_matrix([[7]])                → [[7]]
+mirror_matrix([[1,2,3,4]])          → [[4,3,2,1]]
+mirror_matrix([[-1,-2],[-3,-4]])    → [[-2,-1],[-4,-3]]

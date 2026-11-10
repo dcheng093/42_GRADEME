@@ -1,0 +1,17 @@
+Assignment name  : py_hidenp
+Expected files   : py_hidenp.py
+--------------------------------------------------------------------------------
+
+'small' dizesinin 'big' dizesinin bir alt dizisi (subsequence) olup olmadığını kontrol eden bir fonksiyon yazın. Alt dizi, 'small' dizesindeki tüm karakterlerin 'big' dizesinde aynı sırada, ancak ardışık olması gerekmeksizin bulunması anlamına gelir. Fonksiyon büyük/küçük harfe duyarlıdır.
+
+def hidenp(small: str, big: str) -> bool:
+
+Örnekler:
+
+hidenp("abc", "a1b2c3")               → True
+hidenp("ace", "abcde")                → True
+hidenp("aec", "abcde")                → False
+hidenp("", "abc")                     → True
+hidenp("abc", "ab")                   → False
+hidenp("aaaa", "aaa")                 → False
+hidenp("sing","subsequence testing")  → True

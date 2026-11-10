@@ -1,0 +1,21 @@
+Assignment name  : py_number_base_converter
+Expected files   : py_number_base_converter.py
+--------------------------------------------------------------------------------
+
+اكتب دالة تقوم بتحويل رقم من نظام عد إلى نظام عد آخر.
+تدعم الدالة أنظمة العد من 2 إلى 36 ضمناً.
+استخدم الأرقام 0-9 والحروف A-Z للقيم من 10 إلى 35.
+أرجع "ERROR" في حال كانت المدخلات غير صالحة.
+
+def number_base_converter(number: str, from_base: int, to_base: int) -> str:
+
+أمثلة:
+
+number_base_converter("1010", 2, 10)  → "10"
+number_base_converter("FF", 16, 10)   → "255"
+number_base_converter("255", 10, 16)  → "FF"
+number_base_converter("123", 10, 2)   → "1111011"
+number_base_converter("Z", 36, 10)    → "35"
+number_base_converter("35", 10, 36)   → "Z"
+number_base_converter("123", 1, 10)   → "ERROR"
+number_base_converter("G", 16, 10)    → "ERROR"

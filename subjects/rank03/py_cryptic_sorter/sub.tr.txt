@@ -1,0 +1,22 @@
+Assignment name  : py_cryptic_sorter
+Expected files   : py_cryptic_sorter.py
+Forbidden functions : sorted(), .sort()
+--------------------------------------------------------------------------------
+
+Bir dize listesini birden çok kritere göre sıralayan bir fonksiyon yazın:
+1. Birincil sıralama: Dize uzunluğuna göre (en kısa önce)
+2. İkincil sıralama: ASCII sırası, ancak harfler büyük/küçük harf duyarsız karşılaştırılır (aynı uzunluktaki dizeler için)
+3. Üçüncül sıralama: Sesli harf sayısına göre (artan sırada, aynı uzunlukta ve sözcüksel olarak eşitse)
+4. Eşit dizeler girdi listesindeki sırayla kalmalıdır.
+
+Yasak fonksiyonlar: sorted(), list.sort()
+
+def cryptic_sorter(strings: list[str]) -> list[str]:
+
+Örnekler:
+
+cryptic_sorter(["apple","cat","banana","dog","elephant"])  → ["cat","dog","apple","banana","elephant"]
+cryptic_sorter(["aaa","bbb","AAA","BBB"])                  → ["aaa", "AAA", "bbb", "BBB"]
+cryptic_sorter(["hello","world","hi","test"])              → ["hi","test","hello","world"]
+cryptic_sorter([])                                         → []
+cryptic_sorter([""])                                       → [""]

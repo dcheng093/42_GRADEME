@@ -1,0 +1,17 @@
+Assignment name  : py_echo_validator
+Expected files   : py_echo_validator.py
+--------------------------------------------------------------------------------
+
+Escribe una función que compruebe si una cadena es un palíndromo, ignorando espacios y mayúsculas/minúsculas, y considerando solo caracteres alfabéticos en la comparación.
+
+def echo_validator(text: str) -> bool:
+
+Ejemplos:
+
+echo_validator("racecar")                      → True
+echo_validator("A man a plan a canal Panama")  → True
+echo_validator("race a car")                   → False
+echo_validator("Was it a car or a cat I saw")  → True
+echo_validator("hello")                        → False
+echo_validator("Madam Im Adam")                → True
+echo_validator("")                             → False

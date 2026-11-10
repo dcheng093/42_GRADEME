@@ -1,0 +1,18 @@
+Assignment name  : py_pattern_tracker
+Expected files   : py_pattern_tracker.py
+--------------------------------------------------------------------------------
+
+Напишите функцию, которая подсчитывает количество правильных пар последовательных цифр в строке. Правильная пара состоит из двух соседних цифр, где вторая цифра ровно на единицу больше первой.
+Цифра 9, за которой следует 0, НЕ является правильной парой.
+
+def pattern_tracker(text: str) -> int:
+
+Примеры:
+
+pattern_tracker("123")        → 2
+pattern_tracker("12a34")      → 2
+pattern_tracker("987654321")  → 0
+pattern_tracker("01234567")   → 7
+pattern_tracker("abc")        → 0
+pattern_tracker("1a2b3c4")    → 0
+pattern_tracker("112233")     → 2

@@ -1,0 +1,17 @@
+Assignment name  : py_echo_validator
+Expected files   : py_echo_validator.py
+--------------------------------------------------------------------------------
+
+编写一个函数，检查字符串是否为回文串。忽略空格和大小写，仅比较字母字符。
+
+def echo_validator(text: str) -> bool:
+
+示例:
+
+echo_validator("racecar")                      → True
+echo_validator("A man a plan a canal Panama")  → True
+echo_validator("race a car")                   → False
+echo_validator("Was it a car or a cat I saw")  → True
+echo_validator("hello")                        → False
+echo_validator("Madam Im Adam")                → True
+echo_validator("")                             → False

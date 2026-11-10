@@ -1,0 +1,22 @@
+Assignment name  : py_cryptic_sorter
+Expected files   : py_cryptic_sorter.py
+Forbidden functions : sorted(), .sort()
+--------------------------------------------------------------------------------
+
+编写一个函数，根据多个条件对字符串列表进行排序：
+1. 主要排序：按字符串长度（短的排在前面）
+2. 次要排序：ASCII 顺序，字母不区分大小写（针对长度相同的字符串）
+3. 第三排序：按元音字母数量（升序，针对长度相同且字典序相等的字符串）
+4. 相等的字符串在结果中保持其在输入列表中的原始相对顺序。
+
+禁用函数：sorted()、list.sort()
+
+def cryptic_sorter(strings: list[str]) -> list[str]:
+
+示例:
+
+cryptic_sorter(["apple","cat","banana","dog","elephant"])  → ["cat","dog","apple","banana","elephant"]
+cryptic_sorter(["aaa","bbb","AAA","BBB"])                  → ["aaa", "AAA", "bbb", "BBB"]
+cryptic_sorter(["hello","world","hi","test"])              → ["hi","test","hello","world"]
+cryptic_sorter([])                                         → []
+cryptic_sorter([""])                                       → [""]

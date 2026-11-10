@@ -1,0 +1,18 @@
+Assignment name  : py_pattern_tracker
+Expected files   : py_pattern_tracker.py
+--------------------------------------------------------------------------------
+
+اكتب دالة تحسب عدد أزواج الأرقام المتتالية الصالحة في سلسلة نصية. يتكون الزوج الصالح من رقمين متجاورين حيث يكون الرقم الثاني أكبر من الأول بواحد تماماً.
+الرقم 9 متبوعاً بـ 0 لا يعتبر زوجاً صالحاً.
+
+def pattern_tracker(text: str) -> int:
+
+أمثلة:
+
+pattern_tracker("123")        → 2
+pattern_tracker("12a34")      → 2
+pattern_tracker("987654321")  → 0
+pattern_tracker("01234567")   → 7
+pattern_tracker("abc")        → 0
+pattern_tracker("1a2b3c4")    → 0
+pattern_tracker("112233")     → 2

@@ -34,14 +34,15 @@ def _archive():
                       + ui.paint(f"{trace.relative_to(config.ROOT)}/", ui.HILITE))
 
 
-def choose_rank(purpose):
+def choose_rank(purpose, exam=False):
+    ranks = [r for r in config.RANKS.values() if r.exam or not exam]
     options = [
         (i, r.title, f"{'C' if r.language == 'c' else 'Python'} · {len(r.levels)} levels · "
                      f"{len(all_questions(r))} questions")
-        for i, r in enumerate(config.RANKS.values(), 1)
+        for i, r in enumerate(ranks, 1)
     ]
     choice = ui.menu(purpose, options, footer="enter = back")
-    return None if choice is None else list(config.RANKS.values())[choice - 1]
+    return None if choice is None else ranks[choice - 1]
 
 
 def _mark(stats, q):
@@ -221,7 +222,7 @@ def main_menu(stats):
                     session.practice(rank, playlist, stats)
                     _archive()
         elif choice == 2:
-            rank = choose_rank("real exam · choose a rank")
+            rank = choose_rank("real exam · choose a rank", exam=True)
             if rank:
                 session.exam(rank, stats)
         elif choice == 3:
