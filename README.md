@@ -6,8 +6,17 @@
     ██████  ██    ██  ██    ██  ██████    ████████  ██      ██  ████████
 ```
 
-**A terminal exam simulator for every 42 exam rank: C, C++ and Python, current and old curriculum.**
+**The all-in-one 42 examshell: every exam rank, in C, C++ and Python, on the Python cursus and the C cursus.**
 It has real levels, a ticking clock, cooldowns when you fail, and a grade out of 100. Or practise at your own pace and peek at the solution when you're stuck.
+
+Other examshells check that your output matches. This one also grades the way an examiner would:
+- hidden test mains and edge cases, not just the subject's examples
+- valgrind for leaks, invalid accesses and open fds
+- fd and zombie checks for the process exercises, and real sockets for the servers
+- speed checks where a subject asks for a complexity
+- a verdict your program can't fake by printing "PASSED"
+
+`make selftest` proves the graders fail 20 deliberately broken answers.
 
 The shell has no dependencies: Python 3.10+, a terminal, and `gcc`/`c++` for the C and C++ ranks. `valgrind` is optional and adds leak checks.
 
@@ -25,9 +34,9 @@ Write your answer in `rendu/<question>/`, then type `test`.
 
 ## What's inside
 
-### Current curriculum
+### Python cursus
 
-Rank 02 is in C. Ranks 03 to 06 are in Python. The pools match [42exam.net](https://42exam.net/).
+This is 42's current curriculum: Rank 02 is in C, and ranks 03 to 06 are in Python. The pools match [42exam.net](https://42exam.net/).
 
 | rank | levels | questions |
 |------|--------|-----------|
@@ -36,20 +45,20 @@ Rank 02 is in C. Ranks 03 to 06 are in Python. The pools match [42exam.net](http
 | **Rank 04** | 4 | L1 py_array_rotation_detector, py_constellation_mapper · L2 py_list_intersection_finder, py_merge_sorted_lists · L3 py_palindrome_partitioner, py_package_dependency_resolver · L4 py_sliding_window_maximum |
 | **Rank 05** | 3 | L1 py_compress_decompress, py_spiral_matrix, py_room_scheduler · L2 py_graph_cycle_detector, py_island_matrix_counter · L3 py_prism_detector, py_word_ladder |
 | **Rank 06** | 2 | L1 prefix_dictionary, pack_strings, task_order, redundant_link, trie_autocomplete · L2 union_find_system, cache_keeper, min_heap, bridge_finder |
+| **Rank 03 · Python beta pool** | 6 | the first Python pool (alternate_case, atoi, rotate_90, …), practice only |
 
 Watch the names in the Python ranks. The file is `py_<name>.py`, but the function usually has no `py_` prefix (`def bracket_validator(...)`), except where the subject's signature says otherwise (`py_graph_cycle_detector`). Every Python subject is available in EN, DE, FR, ES, IT, RU, TR, ZH and AR (`sub fr`). Rank 06 asks for classes too; your file then starts with the class skeleton already written.
 
-### Old curriculum
+### C cursus
 
-These are the exams from before the switch to Python.
+These are the exams from before the switch to Python: C, then C++ in rank 05.
 
 | rank | levels | questions |
 |------|--------|-----------|
-| **Rank 03 · old** (C) | 2 | L1 broken_gnl, filter, scanf · L2 n_queens, permutations, powerset, rip, tsp |
-| **Rank 04 · old** (C) | 2 | L1 ft_popen, picoshell, sandbox · L2 argo, vbc |
-| **Rank 05 · old** (C++ / C) | 2 | L1 bigint, polyset, vect2 (C++98) · L2 bsq, life |
-| **Rank 06 · old** (C / C++) | 1 | mini_serv, mini_db |
-| **Rank 03 · Python beta pool** | 6 | the first Python pool (alternate_case, atoi, rotate_90, …), practice only |
+| **Rank 03** (C) | 2 | L1 broken_gnl, filter, scanf · L2 n_queens, permutations, powerset, rip, tsp |
+| **Rank 04** (C) | 2 | L1 ft_popen, picoshell, sandbox · L2 argo, vbc |
+| **Rank 05** (C++ / C) | 2 | L1 bigint, polyset, vect2 (C++98) · L2 bsq, life |
+| **Rank 06** (C / C++) | 1 | mini_serv, mini_db |
 
 When a subject hands out files, they are copied to `rendu/<question>/`: the tsp and scanf skeletons, the broken get_next_line, the argo and vbc starters, polyset's bag classes, and the subject `main.cpp`. Polyset's bag classes are only for reading. The tests always compile the originals, so editing your copy changes nothing.
 
@@ -119,6 +128,11 @@ You get one random question per level, a 3-hour clock, and a grade that goes up 
 
 The verdict comes from the harness itself, never from what your program prints, so printing "checks passed" gets you nothing.
 
+It's quick:
+- The reference's results are cached in `.examshell/refcache/`, so a test only builds and runs your code.
+- Builds and cases run in parallel. The report still shows the first failing case in order.
+- A `test` usually takes about a second; the slowest, mini_serv, takes about 3s.
+
 ## When a test fails
 
 You don't get 100 lines of `PASS`. You get the first case that broke:
@@ -174,9 +188,9 @@ When you leave a session, `rendu/` is moved to `trace/<date>/`, so you can alway
 | target              | does                                                                |
 |---------------------|---------------------------------------------------------------------|
 | `make`              | start the shell                                                     |
-| `make check`        | run every reference solution through its tester (131/131)           |
-| `make check-current`| the same for the current curriculum only                            |
-| `make check-old`    | the same for the old curriculum only                                |
+| `make check`        | run every reference solution through its tester (131/131, ~10s)     |
+| `make check-python` | the same for the Python cursus only                                 |
+| `make check-c`      | the same for the C cursus only                                      |
 | `make selftest`     | feed the graders 20 broken answers: every one must fail             |
 | `make clean`        | delete `rendu/`, `trace/` and caches                                |
 
@@ -186,7 +200,7 @@ You can also grade a whole folder of your own answers at once:
 python3 -m examshell --check rank02 --answers ~/my-rank02-answers
 ```
 
-It finds `<question>/<file>` anywhere inside the folder. `--check` takes a rank key (`rank04`, `old_rank05`, …), `current`, `old` or `all`.
+It finds `<question>/<file>` anywhere inside the folder. `--check` takes a rank key (`rank04`, `old_rank05`, …), `python`, `c` or `all`.
 
 ## Adding or updating questions
 
@@ -235,7 +249,7 @@ examshell/            the app (stdlib only)
 subjects/
   rank02/levelN/<q>/        sub.txt, <q>.c, main.c, cases.json
   rank03..06/<q>/           sub*.txt, solution.py, tests.py, starter.py
-  old_rank03..06/<q>/       sub.txt, spec.json, ref/, mains/, given/, handout/, tester.py
+  old_rank03..06/<q>/       the C cursus: sub.txt, spec.json, ref/, mains/, given/, handout/, tester.py
   rank03_legacy/<q>/        the Python beta pool
 scripts/
   fetch_42exam.py · import_python.py · python_cases.py · selftest.py · data/
@@ -255,6 +269,6 @@ See [CREDITS.md](CREDITS.md):
 - the Rank 02 exercises and cases are from [terminal-42s/42_examshell](https://github.com/terminal-42s/42_examshell)
 - the Python ranks are from [42exam.net](https://42exam.net/) and [examshell-python](https://pypi.org/project/examshell-python/)
 - the old Python pool is adapted from [sergioromero2k/42_Exam_Ranks](https://github.com/sergioromero2k/42_Exam_Ranks) and [this post](https://note.com/it_morning/n/n070a3e238fe6?hl=en)
-- the old-curriculum subjects are 42's
+- the C cursus subjects are 42's
 
-The engine, the old-curriculum references, tests and testers, and the Python ranks' reference solutions and tests were written for GRADEME.
+The engine, the C cursus references, tests and testers, and the Python ranks' reference solutions and tests were written for GRADEME.

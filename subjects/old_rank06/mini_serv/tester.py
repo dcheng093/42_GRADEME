@@ -8,7 +8,7 @@ import time
 
 TOTAL = 15
 WAIT = 2.0  # seconds to wait for a message that should come
-QUIET = 0.3  # seconds of silence that count as "nothing was sent"
+QUIET = 0.2  # seconds of silence that count as "nothing was sent"
 
 
 def free_port():

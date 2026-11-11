@@ -6,6 +6,7 @@ import random
 import shutil
 import subprocess
 import sys
+import threading
 from concurrent.futures import ThreadPoolExecutor
 
 from . import config, runner, session, ui, workspace
@@ -39,7 +40,7 @@ def _archive():
 def choose_rank(purpose, exam=False):
     ranks = [r for r in config.RANKS.values() if r.exam or not exam]
     options, order = [], []
-    for curriculum, header in config.CURRICULA:
+    for curriculum, header, _ in config.CURRICULA:
         group = [r for r in ranks if r.curriculum == curriculum]
         if not group:
             continue
@@ -76,7 +77,7 @@ def pick_question(rank, stats):
     col = max(len(q.name) + (7 if q.extra else 0) for q in questions) + 10
     per_row = max(1, min(3, (ui.card_width() - 4) // col))
     print()
-    print(ui.status_strip(ui.chip(config.APP_NAME) + "  " + ui.paint(rank.title, "bold") + "  " + ui.chip("PRACTICE"),
+    print(ui.status_strip(ui.chip(config.APP_NAME) + "  " + ui.paint(rank.label, "bold") + "  " + ui.chip("PRACTICE"),
                           ui.paint("pick where to start", ui.MUTED)))
     print()
     for li, level in enumerate(rank.levels):
@@ -121,7 +122,7 @@ def stats_screen(stats):
         untouched = []
         for rank in config.RANKS.values():
             if not any(stats.question(q.id).get("attempts") for q in all_questions(rank)):
-                untouched.append(rank.title)
+                untouched.append(rank.label)
                 continue
             lines = []
             for li, level in enumerate(rank.levels):
@@ -140,7 +141,7 @@ def stats_screen(stats):
                     weak = ui.paint("  weak", ui.ERR, "bold") if s["fails"] > s["passes"] else ""
                     lines.append(f"   {q.name:<24} {ui.bar(rate, 12, ui.OK if rate >= .5 else ui.HILITE)} "
                                  f"{s['passes']:>2}/{s['attempts']:<3} {ui.paint('best', ui.MUTED)} {best}{weak}")
-            print(ui.card(lines, title=rank.title))
+            print(ui.card(lines, title=rank.label))
             print()
         if untouched:
             print("  " + ui.paint("not tried yet: " + ", ".join(untouched), ui.MUTED))
@@ -150,7 +151,7 @@ def stats_screen(stats):
             lines = []
             for e in reversed(exams):
                 g = e["grade"]
-                title = config.RANKS[e["rank"]].title if e["rank"] in config.RANKS else e["rank"]
+                title = config.RANKS[e["rank"]].label if e["rank"] in config.RANKS else e["rank"]
                 lines.append(f"{ui.paint(e['date'].replace('T', ' '), ui.MUTED)}  {title:<16}"
                              f" {ui.bar(g / 100, 10, ui.OK if g == 100 else ui.HILITE if g >= 50 else ui.ERR)}"
                              f" {g:>3}/100  {ui.paint(ui.duration(e['duration']), ui.MUTED)}")
@@ -293,13 +294,18 @@ def check(ranks, answers=None):
     """Grade every question with the reference solution (or your answers folder)."""
     if config.RENDU.exists():
         workspace.archive()
+    if answers is None:
+        # the references are known not to leak: a smaller valgrind sample keeps this quick
+        os.environ.setdefault("EXAMSHELL_LEAK_SAMPLE", "2")
     failures, skipped = [], []
     # every question has its own rendu/<q>/ and harness process, so grade them side by side
     with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
+        # every question of every rank is queued at once; results print in order
+        jobs = {r.key: [(q, pool.submit(_check_one, q, answers)) for q in all_questions(r)] for r in ranks}
         for rank in ranks:
-            print(ui.paint(f"\n{rank.title}", "bold"))
-            questions = all_questions(rank)
-            for q, result in zip(questions, pool.map(lambda q: _check_one(q, answers), questions)):
+            print(ui.paint(f"\n{rank.label}", "bold"))
+            for q, job in jobs[rank.key]:
+                result = job.result()
                 if result is None:
                     skipped.append(q.id)
                     print(f"  {ui.paint('-', 'gray')} {q.name:<26} {ui.paint('no answer found', 'gray')}")
@@ -319,8 +325,20 @@ def check(ranks, answers=None):
     return 1 if failures else 0
 
 
+_RENDU_LOCKS = {}
+_RENDU_GUARD = threading.Lock()
+
+
 def _check_one(q, answers):
     """Grade one question with its reference (or your answer). None = no answer found."""
+    # two ranks can share a question name, and so a rendu/<name>/ folder
+    with _RENDU_GUARD:
+        lock = _RENDU_LOCKS.setdefault(q.name, threading.Lock())
+    with lock:
+        return _check_one_locked(q, answers)
+
+
+def _check_one_locked(q, answers):
     source = _find_answer(q, answers) if answers else q.reference_dir
     if source is None:
         return None
@@ -348,14 +366,15 @@ def _find_answer(q, root):
 def _ranks_for(choice):
     if choice == "all":
         return list(config.RANKS.values())
-    if choice in ("current", "old"):
-        return [r for r in config.RANKS.values() if r.curriculum == choice]
+    groups = {"python": "current", "current": "current", "c": "old", "old": "old"}
+    if choice in groups:
+        return [r for r in config.RANKS.values() if r.curriculum == groups[choice]]
     return [config.RANKS[choice]]
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="examshell", description=f"{config.APP_NAME} — 42 exam practice")
-    parser.add_argument("--check", nargs="?", const="all", choices=["all", "current", "old", *config.RANKS],
+    parser.add_argument("--check", nargs="?", const="all", choices=["all", "python", "c", "current", "old", *config.RANKS],
                         help="grade every question with the reference solutions")
     parser.add_argument("--answers", metavar="DIR",
                         help="with --check: grade your own answers from DIR (<question>/<file> anywhere inside)")

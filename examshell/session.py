@@ -47,7 +47,7 @@ SUB_WORDS = ("sub", "s", "clear", "subject")
 
 # ── shared screen pieces ────────────────────────────────────────────────────
 def _header(rank, mode_chip, right1="", left2="", right2=""):
-    left1 = ui.chip(config.APP_NAME) + "  " + ui.paint(rank.title, "bold") + "  " + mode_chip
+    left1 = ui.chip(config.APP_NAME) + "  " + ui.paint(rank.label, "bold") + "  " + mode_chip
     print()
     print(ui.status_strip(left1, right1))
     if left2 or right2:
@@ -354,14 +354,14 @@ def _level_complete(rank, level, questions, solved, elapsed, next_level):
             ui.paint(f"{'level':<10}", ui.MUTED) + _level_label(rank, level),
             ui.paint(f"{'solved':<10}", ui.MUTED) + ui.level_bar(solved_so_far, len(questions), 20),
             ui.paint(f"{'time':<10}", ui.MUTED) + ui.duration(elapsed),
-        ] + rest, title=f"{rank.title} · level {level + 1} complete", color=ui.OK if not missed else ui.LINE)
+        ] + rest, title=f"{rank.label} · level {level + 1} complete", color=ui.OK if not missed else ui.LINE)
 
     ui.count_up(summary, 0, len(done), duration=0.6)
     print()
     if next_level is None:
         ui.confetti("ALL DONE", ui.ACCENT)
         print()
-        ui.say(f"that was the last level of {rank.title} — great run.", ui.ACCENT, "bold")
+        ui.say(f"that was the last level of {rank.label} — great run.", ui.ACCENT, "bold")
         print()
         try:
             ui.pause("press enter to go back to the menu")
@@ -426,7 +426,7 @@ def _boot(rank):
             print()
         time.sleep(0.2)
         n = len(rank.levels)
-        print("  " + ui.paint(f"You are registered to the exam: {rank.title} ({rank.key}).", "bold"))
+        print("  " + ui.paint(f"You are registered to the exam: {rank.label} ({rank.key}).", "bold"))
         print("  " + ui.paint(f"{n} level{'s' * (n != 1)} · one assignment per level · {ui.duration(rank.time_limit)} · "
                               f"{_points(rank)} potential points each", ui.MUTED))
         print()
@@ -521,7 +521,7 @@ def _status(rank, level, passed, clock, history, q):
         ui.paint(f"{'rendu':<9}", ui.MUTED) + ui.paint(str(q.rendu_dir.relative_to(config.ROOT)) + "/", ui.HILITE, "bold"),
     ]
     print()
-    print(ui.card(lines, title="status", right=ui.paint(rank.title, ui.MUTED)))
+    print(ui.card(lines, title="status", right=ui.paint(rank.label, ui.MUTED)))
     print()
 
 
@@ -672,5 +672,5 @@ def _exam_result(rank, grade, passed, elapsed, reason, trace):
     ]
     if trace:
         lines.append(ui.paint(f"{'your code':<10}", ui.MUTED) + ui.paint(f"{trace.relative_to(config.ROOT)}/", ui.HILITE))
-    print(ui.card(lines, title=f"{rank.title} · exam over", color=color))
+    print(ui.card(lines, title=f"{rank.label} · exam over", color=color))
     print()

@@ -36,6 +36,7 @@ Exit 0 = every check passed, 1 = failed, 2 = the question itself is broken.
 The verdict is also written to --report as JSON, never parsed from output.
 """
 
+import base64
 import fnmatch
 import hashlib
 import json
@@ -46,6 +47,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
@@ -216,6 +218,13 @@ class Builder:
         for g in spec.given:
             shutil.copy(g, self.given_dir / g.name)
         self.cache = {}
+        self._locks = {}
+        self._guard = threading.Lock()
+
+    def _lock(self, key):
+        """One lock per build: parallel cases needing the same binary build it once."""
+        with self._guard:
+            return self._locks.setdefault(key, threading.Lock())
 
     def _given_sources(self):
         return [str(self.given_dir / g.name) for g in self.spec.given if g.name.endswith(SOURCE_EXT)]
@@ -228,8 +237,12 @@ class Builder:
 
     def ref(self, main=None, defines=(), out=None):
         key = ("ref", main, tuple(defines or ()))
-        if key in self.cache:
-            return self.cache[key]
+        with self._lock(key):
+            if key not in self.cache:
+                self.cache[key] = self._build_ref(key, main, defines, out)
+        return self.cache[key]
+
+    def _build_ref(self, key, main, defines, out):
         binary = self.tmp / (out or _binary_name(key))
         includes = {str(s.parent) for s in self.spec.ref_sources}
         cmd = [self.spec.compiler, "-w", *[f for f in self.spec.flags if f.startswith("-std")],
@@ -241,13 +254,16 @@ class Builder:
             log = (proc.stdout + proc.stderr).splitlines()
             raise Fail(_card("the reference solution doesn't compile (bug in this tool)",
                              [("output", "\n".join(log[:8]))]), code=2)
-        self.cache[key] = binary
         return binary
 
     def user(self, main=None, defines=(), out=None, sources=None):
         key = ("user", main, tuple(defines or ()))
-        if key in self.cache:
-            return self.cache[key]
+        with self._lock(key):
+            if key not in self.cache:
+                self.cache[key] = self._build_user(key, main, defines, out, sources)
+        return self.cache[key]
+
+    def _build_user(self, key, main, defines, out, sources):
         sources = self.spec.user_sources(self.user_dir) if sources is None else sources
         missing = [s for s in sources if not (self.user_dir / s).is_file()]
         globs = [p for p in self.spec.expected if any(c in p for c in "*?[") and p.endswith(SOURCE_EXT)]
@@ -262,14 +278,17 @@ class Builder:
         proc = subprocess.run(cmd, cwd=self.tmp, capture_output=True, text=True, errors="replace")
         if proc.returncode:
             raise Fail(self.compile_card(proc.stdout + proc.stderr, defines))
-        self.cache[key] = binary
         return binary
 
     def preload(self, source):
         """Compile a test shim (e.g. a read() that returns short chunks) for LD_PRELOAD."""
         key = ("preload", source)
-        if key in self.cache:
-            return self.cache[key]
+        with self._lock(key):
+            if key not in self.cache:
+                self.cache[key] = self._build_preload(key, source)
+        return self.cache[key]
+
+    def _build_preload(self, key, source):
         lib = self.tmp / f"{_binary_name(key)}.so"
         cc = shutil.which("gcc") or shutil.which("cc") or "cc"
         proc = subprocess.run([cc, "-shared", "-fPIC", "-o", str(lib), str(self.spec.qdir / source), "-ldl"],
@@ -277,7 +296,6 @@ class Builder:
         if proc.returncode:
             raise Fail(_card("a test helper doesn't compile (bug in this tool)",
                              [("output", "\n".join((proc.stdout + proc.stderr).splitlines()[:8]))]), code=2)
-        self.cache[key] = lib
         return lib
 
     def env_for(self, build):
@@ -689,62 +707,142 @@ class Checker:
         draw(self.out, self.states, max(self.total or 0, self.count))
 
 
+# ── reference results cache ─────────────────────────────────────────────────
+# The reference always prints the same thing for the same case, so its results
+# are kept in .examshell/refcache/: a test then only builds and runs your code.
+CACHE_VERSION = "1"
+CACHE_DIR = Path(__file__).resolve().parent.parent / ".examshell" / "refcache"
+
+
+def _file_digest(paths):
+    h = hashlib.sha256()
+    for path in sorted(set(paths)):
+        h.update(str(path.name).encode() + b"\0")
+        try:
+            h.update(path.read_bytes())
+        except OSError:
+            h.update(b"(missing)")
+        h.update(b"\0")
+    return h.hexdigest()
+
+
+class RefCache:
+    def __init__(self, spec):
+        self.enabled = not os.environ.get("EXAMSHELL_NO_REFCACHE")
+        q = spec.qdir
+        ref_dir = q / "ref"
+        inputs = list(spec.ref_sources) + list(spec.given) + list(q.glob("*.h"))
+        if ref_dir.is_dir():
+            inputs += [f for f in ref_dir.iterdir() if f.is_file()]
+        self.base = "|".join([CACHE_VERSION, sys.platform, spec.compiler, " ".join(spec.flags),
+                              " ".join(spec.ldflags), _file_digest(inputs)])
+
+    def key(self, spec, build, case):
+        extra = [spec.qdir / build["main"]] if build.get("main") else []
+        if build.get("preload"):
+            extra.append(spec.qdir / build["preload"])
+        material = json.dumps({"base": self.base, "deps": _file_digest(extra),
+                               "defines": build.get("defines", []), "preload": bool(build.get("preload")),
+                               "case": {k: case.get(k) for k in ("argv", "stdin", "files", "timeout")}},
+                              sort_keys=True)
+        return hashlib.sha256(material.encode()).hexdigest()
+
+    def get(self, key):
+        if not self.enabled:
+            return None
+        try:
+            data = json.loads((CACHE_DIR / f"{key[:2]}/{key}.json").read_text())
+            return Run(base64.b64decode(data["out"]), base64.b64decode(data["err"]), data["code"])
+        except (OSError, ValueError, KeyError):
+            return None
+
+    def put(self, key, run):
+        if not self.enabled or run.timed_out:
+            return
+        try:
+            folder = CACHE_DIR / key[:2]
+            folder.mkdir(parents=True, exist_ok=True)
+            tmp = folder / f"{key}.{os.getpid()}.{threading.get_ident()}.tmp"
+            tmp.write_text(json.dumps({"out": base64.b64encode(run.stdout).decode(),
+                                       "err": base64.b64encode(run.stderr).decode(), "code": run.code}))
+            os.replace(tmp, folder / f"{key}.json")
+        except OSError:
+            pass  # a cache that can't be written just means slower tests
+
+
+# ── running the cases ───────────────────────────────────────────────────────
+CASE_WORKERS = max(2, min(6, os.cpu_count() or 2))
+
+
 def run_cases(spec, builder, tmp, out, ctx):
     plan = []  # (build, case)
     for build in spec.builds:
         for case in build.get("cases", []):
             plan.append((build, _normalize(case)))
     total = len(plan)
+    cache = RefCache(spec)
     if out.isatty():
         out.write(f"  {ui.paint('◌', ui.ACCENT)} {ui.paint('compiling…', ui.MUTED)}")
         out.flush()
     try:
-        # build everything up front: one compile error is reported before any run
+        # your builds, all at once; the first compile error (in order) is reported.
+        # The reference is only built if a case isn't cached yet.
         with ThreadPoolExecutor(max_workers=4) as pool:
-            jobs = []
-            for build in spec.builds:
-                args = (build.get("main"), build.get("defines", ()))
-                jobs.append(pool.submit(builder.ref, *args))
+            jobs = [pool.submit(builder.user, b.get("main"), b.get("defines", ())) for b in spec.builds]
             for job in jobs:
                 job.result()
-        for build in spec.builds:
-            builder.user(build.get("main"), build.get("defines", ()))
     finally:
         _clear_line(out)
 
-    leak_candidates = []
-    states = []
-    for n, (build, case) in enumerate(plan, 1):
-        draw(out, states + ["run"], total)
+    def evaluate(n, build, case):
         args = (build.get("main"), build.get("defines", ()))
-        ref_bin, user_bin = builder.ref(*args), builder.user(*args)
         cwd = _prepare_cwd(tmp, case, n)
         timeout = case.get("timeout", spec.timeout)
         argv, stdin = case.get("argv", []), case.get("stdin", "")
         env = builder.env_for(build)
-        ref = execute(ref_bin, argv, stdin, timeout * 4, cwd, env)
-        if ref.timed_out:
-            raise Fail(_card("the reference solution timed out (bug in this tool)",
-                             [("run", command_line(spec.name, case))]), code=2)
-        got = execute(user_bin, argv, stdin, timeout, cwd, env)
-        modes = case.get("compare", build.get("compare", spec.data.get("compare", ["stdout"])))
-        problem = compare(ref, got, modes, timeout)
-        if problem:
-            _clear_line(out)
-            print(f"  {strip(states + ['fail'], total)}  {ui.paint(f'{n - 1}/{total}', ui.MUTED)}")
-            title, rows = problem
-            run_rows = [("run", command_line(spec.name, case))]
-            if build.get("name"):
-                run_rows.insert(0, ("test", build["name"]))
-            if build.get("defines"):
-                run_rows.append(("built with", " ".join(f"-D{d}" for d in build["defines"])))
-            if case.get("hint"):
-                rows = rows + [("why", case["hint"])]
-            raise Fail(_card(f"{title}  (case {n} of {total}, {n - 1} passed before it)", run_rows + rows))
-        states.append("ok")
-        wants = case.get("leaks", build.get("leaks", spec.data.get("leaks", False)))
-        if wants:
-            leak_candidates.append((n, build, case, user_bin, cwd, env))
+        key = cache.key(spec, build, case)
+        ref = cache.get(key)
+        if ref is None:
+            ref = execute(builder.ref(*args), argv, stdin, timeout * 4, cwd, env)
+            cache.put(key, ref)
+        got = execute(builder.user(*args), argv, stdin, timeout, cwd, env)
+        return ref, got, cwd, env
+
+    serial = any(c.get("serial") for _, c in plan) or spec.data.get("serial")
+    pool = ThreadPoolExecutor(max_workers=1 if serial else CASE_WORKERS)
+    futures = [pool.submit(evaluate, n, build, case) for n, (build, case) in enumerate(plan, 1)]
+    leak_candidates = []
+    states = []
+    try:
+        # results are read in order: same progress and same "case N" as one by one
+        for n, ((build, case), future) in enumerate(zip(plan, futures), 1):
+            draw(out, states + ["run"], total)
+            ref, got, cwd, env = future.result()
+            timeout = case.get("timeout", spec.timeout)
+            if ref.timed_out:
+                raise Fail(_card("the reference solution timed out (bug in this tool)",
+                                 [("run", command_line(spec.name, case))]), code=2)
+            modes = case.get("compare", build.get("compare", spec.data.get("compare", ["stdout"])))
+            problem = compare(ref, got, modes, timeout)
+            if problem:
+                _clear_line(out)
+                print(f"  {strip(states + ['fail'], total)}  {ui.paint(f'{n - 1}/{total}', ui.MUTED)}")
+                title, rows = problem
+                run_rows = [("run", command_line(spec.name, case))]
+                if build.get("name"):
+                    run_rows.insert(0, ("test", build["name"]))
+                if build.get("defines"):
+                    run_rows.append(("built with", " ".join(f"-D{d}" for d in build["defines"])))
+                if case.get("hint"):
+                    rows = rows + [("why", case["hint"])]
+                raise Fail(_card(f"{title}  (case {n} of {total}, {n - 1} passed before it)", run_rows + rows))
+            states.append("ok")
+            wants = case.get("leaks", build.get("leaks", spec.data.get("leaks", False)))
+            if wants:
+                leak_candidates.append((n, build, case, builder.user(build.get("main"), build.get("defines", ())),
+                                        cwd, env))
+    finally:
+        pool.shutdown(wait=False, cancel_futures=True)
 
     _clear_line(out)
     _leak_pass(spec, leak_candidates, ctx, out)
@@ -759,10 +857,15 @@ def _leak_pass(spec, candidates, ctx, out):
         return
     explicit = [c for c in candidates if c[2].get("leaks") is True]
     limit = spec.data.get("leak_cases", 6)
+    if os.environ.get("EXAMSHELL_LEAK_SAMPLE"):  # `make check` on the references: a lighter pass
+        limit = min(limit, max(1, int(os.environ["EXAMSHELL_LEAK_SAMPLE"])))
     chosen = explicit or candidates
     if len(chosen) > limit:  # spread over the list: first, last and in between
-        step = (len(chosen) - 1) / (limit - 1)
-        chosen = [chosen[round(i * step)] for i in range(limit)]
+        if limit == 1:
+            chosen = chosen[:1]
+        else:
+            step = (len(chosen) - 1) / (limit - 1)
+            chosen = [chosen[round(i * step)] for i in range(limit)]
     if out.isatty():
         out.write(f"  {ui.paint('◌', ui.ACCENT)} {ui.paint(f'leak check ({len(chosen)} runs under valgrind)…', ui.MUTED)}")
         out.flush()

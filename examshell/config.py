@@ -44,16 +44,28 @@ class Rank:
     time_limit: int  # seconds, real exam mode
     levels: tuple
     exam: bool = True  # offered in real-exam mode (False = practice only)
-    curriculum: str = "current"  # "current" (2025+: rank02 C, ranks 03-06 Python) or "old"
+    curriculum: str = "current"  # "current" = Python cursus (rank02 C, ranks 03-06 Python), "old" = C cursus
     note: str = ""  # one line shown in the rank picker
 
     @property
     def language_label(self):
         return LANGUAGE_LABELS.get(self.language, self.language)
 
+    @property
+    def cursus(self):
+        """Short name of the rank's group: "Python" or "C"."""
+        return next((short for key, _, short in CURRICULA if key == self.curriculum), "")
+
+    @property
+    def label(self):
+        """The title plus its cursus, for screens where the group isn't shown."""
+        return f"{self.title}  {self.cursus}" if self.cursus else self.title
+
 
 LANGUAGE_LABELS = {"c": "C", "cpp": "C++", "python": "Python", "mixed": "C / C++"}
-CURRICULA = (("current", "current curriculum"), ("old", "old curriculum"))
+# (key, group header, short tag). Two ranks may share a title ("Rank 03"): the
+# group tells them apart.
+CURRICULA = (("current", "Python cursus", "Python"), ("old", "C cursus", "C"))
 
 
 RANKS = {
@@ -136,10 +148,10 @@ RANKS = {
             Level("advanced structures", pool=("union_find_system", "cache_keeper", "min_heap", "bridge_finder")),
         ),
     ),
-    # ── old curriculum (before the Python ranks) ──
+    # ── C cursus (the exams before the switch to Python) ──
     "old_rank03": Rank(
         key="old_rank03",
-        title="Rank 03 · old",
+        title="Rank 03",
         language="c",
         time_limit=3 * 60 * 60,
         curriculum="old",
@@ -151,7 +163,7 @@ RANKS = {
     ),
     "old_rank04": Rank(
         key="old_rank04",
-        title="Rank 04 · old",
+        title="Rank 04",
         language="c",
         time_limit=3 * 60 * 60,
         curriculum="old",
@@ -163,7 +175,7 @@ RANKS = {
     ),
     "old_rank05": Rank(
         key="old_rank05",
-        title="Rank 05 · old",
+        title="Rank 05",
         language="mixed",
         time_limit=3 * 60 * 60,
         curriculum="old",
@@ -175,7 +187,7 @@ RANKS = {
     ),
     "old_rank06": Rank(
         key="old_rank06",
-        title="Rank 06 · old",
+        title="Rank 06",
         language="mixed",
         time_limit=3 * 60 * 60,
         curriculum="old",
@@ -191,7 +203,6 @@ RANKS = {
         language="python",
         time_limit=3 * 60 * 60,
         exam=False,
-        curriculum="old",
         note="the first Python pool, before the current one",
         levels=(
             Level("strings", pool=("alternate_case", "capitalize_words", "valid_anagram")),
