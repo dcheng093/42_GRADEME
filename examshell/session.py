@@ -427,7 +427,7 @@ def _boot(rank):
         time.sleep(0.2)
         n = len(rank.levels)
         print("  " + ui.paint(f"You are registered to the exam: {rank.title} ({rank.key}).", "bold"))
-        print("  " + ui.paint(f"{n} levels · one assignment per level · {ui.duration(rank.time_limit)} · "
+        print("  " + ui.paint(f"{n} level{'s' * (n != 1)} · one assignment per level · {ui.duration(rank.time_limit)} · "
                               f"{_points(rank)} potential points each", ui.MUTED))
         print()
         rules = [

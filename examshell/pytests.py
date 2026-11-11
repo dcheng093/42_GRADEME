@@ -143,7 +143,7 @@ def _timed(fn, limit):
     return result, time.perf_counter() - start
 
 
-def run_perf(module, check, tests_file, perf, slack=30, floor=1.5):
+def run_perf(module, check, tests_file, perf, slack=10, floor=1.5):
     """Big inputs: right answer, and not much slower than the reference.
 
     perf: [(description, kind, name, build)] where kind is "call" (build(rng)

@@ -6,8 +6,17 @@ run:
 check:
 	@$(PYTHON) -m examshell --check
 
+check-current:
+	@$(PYTHON) -m examshell --check current
+
+check-old:
+	@$(PYTHON) -m examshell --check old
+
+selftest:
+	@$(PYTHON) scripts/selftest.py
+
 clean:
 	@rm -rf rendu trace
 	@find . -name __pycache__ -prune -exec rm -rf {} +
 
-.PHONY: run check clean
+.PHONY: run check check-current check-old selftest clean

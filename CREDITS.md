@@ -11,8 +11,17 @@
 
 ## Code and tests
 
-All harnesses, reference solutions, test cases, test mains and testers in this
-repository were written for GRADEME.
+- **Rank 02** exercises, references and test cases come from
+  [terminal-42s/42_examshell](https://github.com/terminal-42s/42_examshell)
+  (`ft_strpbrk` and `ft_strspn` were added here).
+- **Rank 03 · Python beta pool** is adapted from
+  [sergioromero2k/42_Exam_Ranks](https://github.com/sergioromero2k/42_Exam_Ranks)
+  and [this post](https://note.com/it_morning/n/n070a3e238fe6?hl=en).
+- Everything else was written for GRADEME:
+  - the engine and harnesses
+  - the Python tests of ranks 03–06 and the reference solutions of ranks 04–06
+    (rank03's references started from the examshell-python solutions)
+  - every old-curriculum reference, given file, handout, test main and tester
 
 The first rank03 import used data from **examshell_python** by Denys Bobrov,
 released under the MIT license:

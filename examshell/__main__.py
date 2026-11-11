@@ -47,7 +47,7 @@ def choose_rank(purpose, exam=False):
         for r in group:
             order.append(r)
             hint = (f"{r.language_label} · {len(r.levels)} level{'s' * (len(r.levels) > 1)} · "
-                    f"{len(all_questions(r))} questions" + (f" · {r.note}" if r.note else ""))
+                    f"{len(all_questions(r))} questions")
             options.append((len(order), r.title, hint))
     choice = ui.menu(purpose, options, footer="enter = back")
     return None if choice is None else order[choice - 1]
@@ -118,7 +118,11 @@ def stats_screen(stats):
         print()
         ui.reveal("STATS")
         print()
+        untouched = []
         for rank in config.RANKS.values():
+            if not any(stats.question(q.id).get("attempts") for q in all_questions(rank)):
+                untouched.append(rank.title)
+                continue
             lines = []
             for li, level in enumerate(rank.levels):
                 qs = [q for q in all_questions(rank) if q.level == li]
@@ -138,13 +142,16 @@ def stats_screen(stats):
                                  f"{s['passes']:>2}/{s['attempts']:<3} {ui.paint('best', ui.MUTED)} {best}{weak}")
             print(ui.card(lines, title=rank.title))
             print()
+        if untouched:
+            print("  " + ui.paint("not tried yet: " + ", ".join(untouched), ui.MUTED))
+            print()
         exams = stats.data["exams"][-8:]
         if exams:
             lines = []
             for e in reversed(exams):
                 g = e["grade"]
                 title = config.RANKS[e["rank"]].title if e["rank"] in config.RANKS else e["rank"]
-                lines.append(f"{ui.paint(e['date'].replace('T', ' '), ui.MUTED)}  {title:<8}"
+                lines.append(f"{ui.paint(e['date'].replace('T', ' '), ui.MUTED)}  {title:<16}"
                              f" {ui.bar(g / 100, 10, ui.OK if g == 100 else ui.HILITE if g >= 50 else ui.ERR)}"
                              f" {g:>3}/100  {ui.paint(ui.duration(e['duration']), ui.MUTED)}")
             print(ui.card(lines, title="recent exams"))
@@ -175,7 +182,16 @@ def help_screen():
         "  one random question per level, a countdown clock,",
         "  a cooldown after each failed test, grade out of 100.",
         "",
-        f"write your answer in {ui.paint('rendu/<question>/', ui.HILITE)} — the file is created for you.",
+        ui.paint("grading", ui.ACCENT, "bold"),
+        "  Python: your function against hidden cases, forbidden imports,",
+        "  and a speed check where the subject asks for a complexity.",
+        "  C / C++: compiled with the exam flags, run against a reference",
+        "  on hidden mains and inputs, then checked with valgrind for leaks,",
+        "  bad memory accesses and open fds (when valgrind is installed).",
+        "  servers (mini_serv, mini_db) are driven with real sockets.",
+        "",
+        f"write your answer in {ui.paint('rendu/<question>/', ui.HILITE)} — the files are created for you.",
+        "files a subject hands out are copied there too; the tests always use the originals.",
         f"when you leave a session, rendu/ is moved to {ui.paint('trace/<date>/', ui.HILITE)}.",
     ], title="modes"))
     print()
