@@ -95,6 +95,11 @@ int main(int ac, char **av)
 # (rank, question, what is wrong, {file: whole content} or {file: [(old, new)]})
 MUTANTS = [
     ("rank02", "first_word", "prints 'checks passed' instead of working", {"first_word.c": CHEAT_C}),
+    ("piscine_exam00", "aff_a", "no newline when there's no 'a'",
+     {"aff_a.c": [("\t\twrite(1, \"a\", 1);\n\twrite(1, \"\\n\", 1);", "\t\twrite(1, \"a\\n\", 2);")]}),
+    ("piscine_final", "str_maxlenoc", "keeps the last of two equal-length answers",
+     {"str_maxlenoc.c": [("for (int start = 0; start + len <= n; start++)",
+                          "for (int start = n - len; start >= 0; start--)")]}),
     ("rank03", "py_inter", "prints 'checks passed', returns nothing useful", {"py_inter.py": CHEAT_PY}),
     ("rank04", "py_sliding_window_maximum", "O(n*k) instead of O(n)", {"py_sliding_window_maximum.py": SLOW_WINDOW}),
     ("rank06", "min_heap", "uses the forbidden heapq", {"min_heap.py": HEAPQ}),

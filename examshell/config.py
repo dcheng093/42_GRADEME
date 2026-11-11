@@ -1,6 +1,6 @@
 """Everything you might want to tweak lives here: name, levels, timers."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 APP_NAME = "GRADEME"
@@ -44,8 +44,27 @@ class Rank:
     time_limit: int  # seconds, real exam mode
     levels: tuple
     exam: bool = True  # offered in real-exam mode (False = practice only)
-    curriculum: str = "current"  # "current" = Python cursus (rank02 C, ranks 03-06 Python), "old" = C cursus
+    curriculum: str = "current"  # "piscine", "current" = Python cursus, "old" = C cursus
     note: str = ""  # one line shown in the rank picker
+    points: int = 0  # points per level (grade capped at 100); 0 = 100 split evenly over the levels
+    borrow: tuple = ()  # folders under subjects/ to find questions in (shared with other ranks)
+    exam_plan: tuple = ()  # exam levels as indexes into `levels` (a pool can come back); () = each once
+
+    def exam_view(self):
+        """The rank as an exam plays it: `exam_plan` expanded into levels."""
+        if not self.exam_plan:
+            return self
+        return replace(self, levels=tuple(self.levels[i] for i in self.exam_plan), exam_plan=())
+
+    @property
+    def level_points(self):
+        return self.points or round(100 / len(self.levels))
+
+    def grade(self, passed):
+        """The grade out of 100 for `passed` levels."""
+        if self.points:
+            return min(100, passed * self.points)
+        return round(passed * 100 / len(self.levels))
 
     @property
     def language_label(self):
@@ -58,17 +77,80 @@ class Rank:
 
     @property
     def label(self):
-        """The title plus its cursus, for screens where the group isn't shown."""
-        return f"{self.title}  {self.cursus}" if self.cursus else self.title
+        """The title, plus its cursus when another rank has the same title ("Rank 03  C")."""
+        twins = sum(1 for r in RANKS.values() if r.title == self.title)
+        return f"{self.title}  {self.cursus}" if twins > 1 and self.cursus else self.title
 
 
 LANGUAGE_LABELS = {"c": "C", "cpp": "C++", "python": "Python", "mixed": "C / C++"}
 # (key, group header, short tag). Two ranks may share a title ("Rank 03"): the
 # group tells them apart.
-CURRICULA = (("current", "Python cursus", "Python"), ("old", "C cursus", "C"))
+CURRICULA = (("piscine", "Piscine", "Piscine"), ("current", "Python cursus", "Python"), ("old", "C cursus", "C"))
 
+
+# ── Piscine: the weekly exams (pools as in wkratos/42-examshell) ──
+# questions are shared with rank02; the ones only the piscine has are in subjects/piscine/
+PISCINE_SOURCES = ("piscine", "rank02/level0", "rank02/level1", "rank02/level2", "rank02/level3")
+
+
+def _piscine(pools, themes=None):
+    """Levels from pools; `themes` names them (default: level by level)."""
+    return tuple(Level(themes[i] if themes else f"step {i + 1}", pool=tuple(pool), extras=tuple(extra))
+                 for i, (pool, extra) in enumerate(pools))
+
+
+# weeks 1 and 2 have 8 pools spread over 10 levels of 10 points (pool i*7//9)
+_WEEK1 = [["aff_a", "ft_countdown", "ft_print_numbers"], ["hello", "maff_alpha"],
+          ["aff_first_param", "aff_last_param", "aff_z"], ["maff_revalpha", "only_a", "only_z"],
+          ["ft_strcpy", "ft_strlen"], ["repeat_alpha", "search_and_replace", "ulstr"],
+          ["first_word", "ft_putstr", "ft_swap"], ["rev_print", "rot_13", "rotone"]]
+_WEEK2 = [["ft_strcpy", "ft_strlen", "repeat_alpha"], ["search_and_replace", "ulstr"],
+          ["first_word", "ft_putstr", "ft_swap"], ["rev_print", "rot_13", "rotone"],
+          ["ft_atoi", "ft_strdup", "inter"], ["last_word", "reverse_bits", "swap_bits", "union"],
+          ["alpha_mirror", "do_op", "ft_strcmp", "ft_strrev"], ["is_power_of_2", "max", "print_bits", "wdmatch"]]
+_WEEK3 = [["aff_a", "ft_countdown"], ["do_op", "first_word", "ft_print_numbers", "ft_strrev", "max", "wdmatch"],
+          ["ft_strlen", "repeat_alpha"],
+          ["expand_str", "ft_atoi_base", "ft_range", "lcm", "paramsum", "rev_print", "rot_13", "str_capitalizer",
+           "tab_mult"],
+          ["rotone", "search_and_replace"], ["inter", "ulstr"], ["last_word", "union"], ["alpha_mirror", "wdmatch"],
+          ["add_prime_sum", "epur_str"], ["expand_str", "paramsum"]]
+_FINAL = [["aff_a", "ft_countdown"], ["first_word", "ft_print_numbers"], ["ft_strlen", "repeat_alpha"],
+          ["rev_print", "rot_13"], ["rotone", "search_and_replace"], ["do_op", "ulstr"], ["inter", "last_word"],
+          ["union", "wdmatch"], ["alpha_mirror", "print_bits"], ["reverse_bits", "swap_bits"],
+          ["ft_putstr", "ft_strcpy"], ["ft_atoi", "ft_swap"], ["ft_strcmp", "ft_strdup"],
+          ["ft_strrev", "is_power_of_2"], ["max", "only_a"], ["fprime", "rstr_capitalizer"], ["rostring", "tab_mult"]]
+_FINAL_EXTRAS = {16: ["count_alpha", "str_maxlenoc"]}  # from older final exams: practice only
+
+
+def _spread(pools, levels=10):
+    """Exam levels over fewer pools, the way the piscine exams do it (pool i*7//9 for 8)."""
+    return tuple(i * (len(pools) - 1) // (levels - 1) for i in range(levels))
+
+
+PISCINE = {
+    "piscine_exam00": Rank(
+        key="piscine_exam00", title="Exam 00", language="c", time_limit=4 * 60 * 60, curriculum="piscine",
+        note="week 1", points=10, borrow=PISCINE_SOURCES, levels=_piscine([(p, []) for p in _WEEK1]),
+        exam_plan=_spread(_WEEK1),
+    ),
+    "piscine_exam01": Rank(
+        key="piscine_exam01", title="Exam 01", language="c", time_limit=4 * 60 * 60, curriculum="piscine",
+        note="week 2", points=10, borrow=PISCINE_SOURCES, levels=_piscine([(p, []) for p in _WEEK2]),
+        exam_plan=_spread(_WEEK2),
+    ),
+    "piscine_exam02": Rank(
+        key="piscine_exam02", title="Exam 02", language="c", time_limit=4 * 60 * 60, curriculum="piscine",
+        note="week 3", points=10, borrow=PISCINE_SOURCES, levels=_piscine([(p, []) for p in _WEEK3]),
+    ),
+    "piscine_final": Rank(
+        key="piscine_final", title="Final exam", language="c", time_limit=8 * 60 * 60, curriculum="piscine",
+        note="week 4", points=6, borrow=PISCINE_SOURCES,
+        levels=_piscine([(p, _FINAL_EXTRAS.get(i, [])) for i, p in enumerate(_FINAL)]),
+    ),
+}
 
 RANKS = {
+    **PISCINE,
     "rank02": Rank(
         key="rank02",
         title="Rank 02",

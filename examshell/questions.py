@@ -1,6 +1,7 @@
 """Question lookup: turns config.RANKS into concrete folders and files."""
 
 import fnmatch
+import functools
 import json
 import re
 from dataclasses import dataclass
@@ -23,7 +24,10 @@ class Question:
     @property
     def path(self) -> Path:
         folder = self.rank.levels[self.level].folder
-        return config.SUBJECTS / self.rank.key / folder / self.name
+        own = config.SUBJECTS / self.rank.key / folder / self.name
+        if own.is_dir() or not self.rank.borrow:
+            return own
+        return _borrowed(self.rank.borrow, self.name) or own
 
     @property
     def subject(self) -> str:
@@ -141,6 +145,16 @@ class Question:
     def solution(self):
         files = self.solution_files
         return files[0] if files else None
+
+
+@functools.lru_cache(maxsize=None)
+def _borrowed(folders, name):
+    """The first <subjects>/<folder>/<name> that exists (a question shared between ranks)."""
+    for folder in folders:
+        path = config.SUBJECTS / folder / name
+        if path.is_dir():
+            return path
+    return None
 
 
 def _is_glob(name):

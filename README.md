@@ -6,7 +6,7 @@
     ██████  ██    ██  ██    ██  ██████    ████████  ██      ██  ████████
 ```
 
-**The all-in-one 42 examshell: every exam rank, in C, C++ and Python, on the Python cursus and the C cursus.**
+**The all-in-one 42 examshell: the piscine exams, then every exam rank in C, C++ and Python, on the Python cursus and the C cursus.**
 It has real levels, a ticking clock, cooldowns when you fail, and a grade out of 100. Or practise at your own pace and peek at the solution when you're stuck.
 
 Other examshells check that your output matches. This one also grades the way an examiner would:
@@ -16,7 +16,7 @@ Other examshells check that your output matches. This one also grades the way an
 - speed checks where a subject asks for a complexity
 - a verdict your program can't fake by printing "PASSED"
 
-`make selftest` proves the graders fail 20 deliberately broken answers.
+`make selftest` proves the graders fail 22 deliberately broken answers.
 
 The shell has no dependencies: Python 3.10+, a terminal, and `gcc`/`c++` for the C and C++ ranks. `valgrind` is optional and adds leak checks.
 
@@ -33,6 +33,19 @@ make
 Write your answer in `rendu/<question>/`, then type `test`.
 
 ## What's inside
+
+### Piscine
+
+These are the weekly exams of the piscine, with the pools and scoring of [wkratos/42-examshell](https://github.com/wkratos/42-examshell).
+
+| exam | time | scoring | questions |
+|------|------|---------|-----------|
+| **Exam 00** (week 1) | 4h | 10 levels × 10 points | aff_a, ft_countdown, ft_print_numbers, hello, maff_alpha, aff_first_param, aff_last_param, aff_z, maff_revalpha, only_a, only_z, then ft_strcpy … rotone |
+| **Exam 01** (week 2) | 4h | 10 levels × 10 points | ft_strcpy, ft_strlen, repeat_alpha … through is_power_of_2, max, print_bits, wdmatch |
+| **Exam 02** (week 3) | 4h | 10 levels × 10 points | aff_a … expand_str, ft_atoi_base, ft_range, lcm, paramsum, … add_prime_sum, epur_str |
+| **Final exam** (week 4) | 8h | 17 levels × 6 points (max 100) | aff_a … fprime, rstr_capitalizer, rostring, tab_mult, plus count_alpha and str_maxlenoc as practice-only extras |
+
+Weeks 1 and 2 have 8 pools spread over 10 levels, so a pool can come back. The exam then gives you a question you haven't had yet. The questions they share with Rank 02 are the same subjects, and they're graded the same way.
 
 ### Python cursus
 
@@ -188,10 +201,11 @@ When you leave a session, `rendu/` is moved to `trace/<date>/`, so you can alway
 | target              | does                                                                |
 |---------------------|---------------------------------------------------------------------|
 | `make`              | start the shell                                                     |
-| `make check`        | run every reference solution through its tester (131/131, ~10s)     |
+| `make check`        | run every reference solution through its tester (144/144, ~10s)     |
+| `make check-piscine`| the same for the piscine exams only                                 |
 | `make check-python` | the same for the Python cursus only                                 |
 | `make check-c`      | the same for the C cursus only                                      |
-| `make selftest`     | feed the graders 20 broken answers: every one must fail             |
+| `make selftest`     | feed the graders 22 broken answers: every one must fail             |
 | `make clean`        | delete `rendu/`, `trace/` and caches                                |
 
 You can also grade a whole folder of your own answers at once:
@@ -200,7 +214,7 @@ You can also grade a whole folder of your own answers at once:
 python3 -m examshell --check rank02 --answers ~/my-rank02-answers
 ```
 
-It finds `<question>/<file>` anywhere inside the folder. `--check` takes a rank key (`rank04`, `old_rank05`, …), `python`, `c` or `all`.
+It finds `<question>/<file>` anywhere inside the folder. `--check` takes a rank key (`rank04`, `old_rank05`, `piscine_final`, …), `piscine`, `python`, `c` or `all`. A subject folder shared by several ranks is checked once.
 
 ## Adding or updating questions
 
@@ -247,6 +261,7 @@ examshell/            the app (stdlib only)
   questions.py        a question's files, subject, reference
   ui.py · stats.py · workspace.py
 subjects/
+  piscine/<q>/              the piscine-only questions (the rest are borrowed from rank02)
   rank02/levelN/<q>/        sub.txt, <q>.c, main.c, cases.json
   rank03..06/<q>/           sub*.txt, solution.py, tests.py, starter.py
   old_rank03..06/<q>/       the C cursus: sub.txt, spec.json, ref/, mains/, given/, handout/, tester.py
@@ -266,6 +281,7 @@ scripts/
 ## Credits
 
 See [CREDITS.md](CREDITS.md):
+- the piscine pools and scoring are from [wkratos/42-examshell](https://github.com/wkratos/42-examshell) (Apache-2.0), with two extras from [waltergcc/42-Piscine](https://github.com/waltergcc/42-Piscine)
 - the Rank 02 exercises and cases are from [terminal-42s/42_examshell](https://github.com/terminal-42s/42_examshell)
 - the Python ranks are from [42exam.net](https://42exam.net/) and [examshell-python](https://pypi.org/project/examshell-python/)
 - the old Python pool is adapted from [sergioromero2k/42_Exam_Ranks](https://github.com/sergioromero2k/42_Exam_Ranks) and [this post](https://note.com/it_morning/n/n070a3e238fe6?hl=en)

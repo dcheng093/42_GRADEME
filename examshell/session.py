@@ -448,10 +448,11 @@ def _boot(rank):
 
 
 def _points(rank):
-    return round(100 / len(rank.levels))
+    return rank.level_points
 
 
 def exam(rank, stats):
+    rank = rank.exam_view()
     if not _boot(rank):
         return
 
@@ -471,7 +472,7 @@ def exam(rank, stats):
         reason, quit_after = over.reason, over.quit_after
 
     elapsed = time.monotonic() - clock["start"]
-    grade = round(passed * 100 / n)
+    grade = rank.grade(passed)
     stats.record_exam(rank.key, grade, elapsed, passed, n)
     trace = workspace.archive()
     _exam_result(rank, grade, passed, elapsed, reason, trace)
@@ -497,7 +498,7 @@ def _remaining_words(seconds):
 def _status(rank, level, passed, clock, history, q):
     """The examshell `status` screen."""
     pts = _points(rank)
-    grade = round(passed * 100 / len(rank.levels))
+    grade = rank.grade(passed)
     marks = {"Success": ui.OK, "Failure": ui.ERR, "Current": ui.HILITE, "Skipped": ui.MUTED}
     lines = [
         f"You're connected as {ui.paint(_login(), 'bold')}.",
@@ -528,6 +529,9 @@ def _status(rank, level, passed, clock, history, q):
 def _exam_level(rank, level, passed, clock, stats, history):
     pool = list(rank.levels[level].pool)
     random.shuffle(pool)
+    # levels can share questions (the piscine exams): give fresh ones first
+    done = {name for name, _ in history}
+    pool.sort(key=lambda name: name not in done)
     seen = [pool.pop()]
     q = Question(rank, level, seen[0])
     history.append([q.name, "Current"])
@@ -544,7 +548,7 @@ def _exam_level(rank, level, passed, clock, stats, history):
             ui.clear()
             left = _time_left(clock)
             clock_color = ui.ERR if left < 15 * 60 else ui.HILITE if left < 60 * 60 else ui.OK
-            grade = round(passed * 100 / len(rank.levels))
+            grade = rank.grade(passed)
             right = (ui.paint("grade ", ui.MUTED) + ui.paint(str(grade), "bold") + "   "
                      + ui.paint("◷ " + ui.duration(left), clock_color, "bold"))
             _header(rank, ui.chip("EXAM", ui.ERR), right, ui.roadmap(rank, level, passed), _level_label(rank, level))

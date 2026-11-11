@@ -9,6 +9,13 @@
   a student-made site that isn't affiliated with 42. The snapshots are in `scripts/data/`.
   `scripts/fetch_42exam.py` refreshes them.
 
+- **Piscine exams**: the level pools, the scoring (10 points a level, 6 for the
+  final) and the subject texts of the piscine-only questions come from
+  [wkratos/42-examshell](https://github.com/wkratos/42-examshell), Apache License
+  2.0, itself based on jcluzet's 42_EXAM. count_alpha and str_maxlenoc come from
+  [waltergcc/42-Piscine](https://github.com/waltergcc/42-Piscine). The
+  references and test cases of the piscine-only questions were written for GRADEME.
+
 ## Code and tests
 
 - **Rank 02** exercises, references and test cases come from

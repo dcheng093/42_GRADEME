@@ -47,7 +47,8 @@ def choose_rank(purpose, exam=False):
         options.append((None, header, None))
         for r in group:
             order.append(r)
-            hint = (f"{r.language_label} · {len(r.levels)} level{'s' * (len(r.levels) > 1)} · "
+            n = len(r.exam_view().levels)
+            hint = (f"{r.language_label} · {n} level{'s' * (n > 1)} · "
                     f"{len(all_questions(r))} questions")
             options.append((len(order), r.title, hint))
     choice = ui.menu(purpose, options, footer="enter = back")
@@ -301,9 +302,20 @@ def check(ranks, answers=None):
     # every question has its own rendu/<q>/ and harness process, so grade them side by side
     with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
         # every question of every rank is queued at once; results print in order
-        jobs = {r.key: [(q, pool.submit(_check_one, q, answers)) for q in all_questions(r)] for r in ranks}
+        # a subject folder shared by several ranks (the piscine borrows rank02's) is graded once
+        jobs, seen, shared = {}, set(), {}
+        for r in sorted(ranks, key=lambda r: bool(r.borrow)):  # owners first, borrowers after
+            jobs[r.key] = []
+            for q in all_questions(r):
+                if q.path in seen:
+                    shared[r.key] = shared.get(r.key, 0) + 1
+                    continue
+                seen.add(q.path)
+                jobs[r.key].append((q, pool.submit(_check_one, q, answers)))
         for rank in ranks:
             print(ui.paint(f"\n{rank.label}", "bold"))
+            if shared.get(rank.key):
+                print(f"  {ui.paint('·', 'gray')} {ui.paint(f'{shared[rank.key]} shared with another rank, checked once', 'gray')}")
             for q, job in jobs[rank.key]:
                 result = job.result()
                 if result is None:
@@ -317,7 +329,7 @@ def check(ranks, answers=None):
                     failures.append(q.id)
     shutil.rmtree(config.RENDU, ignore_errors=True)
     workspace.clean_caches()
-    total = sum(len(all_questions(r)) for r in ranks) - len(skipped)
+    total = sum(len(j) for j in jobs.values()) - len(skipped)
     print()
     print(f"{total - len(failures)}/{total} passed" + (f", {len(skipped)} without an answer" if skipped else ""))
     for f in failures:
@@ -366,7 +378,7 @@ def _find_answer(q, root):
 def _ranks_for(choice):
     if choice == "all":
         return list(config.RANKS.values())
-    groups = {"python": "current", "current": "current", "c": "old", "old": "old"}
+    groups = {"piscine": "piscine", "python": "current", "current": "current", "c": "old", "old": "old"}
     if choice in groups:
         return [r for r in config.RANKS.values() if r.curriculum == groups[choice]]
     return [config.RANKS[choice]]
@@ -374,7 +386,7 @@ def _ranks_for(choice):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="examshell", description=f"{config.APP_NAME} — 42 exam practice")
-    parser.add_argument("--check", nargs="?", const="all", choices=["all", "python", "c", "current", "old", *config.RANKS],
+    parser.add_argument("--check", nargs="?", const="all", choices=["all", "piscine", "python", "c", "current", "old", *config.RANKS],
                         help="grade every question with the reference solutions")
     parser.add_argument("--answers", metavar="DIR",
                         help="with --check: grade your own answers from DIR (<question>/<file> anywhere inside)")
