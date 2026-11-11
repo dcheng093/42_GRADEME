@@ -6,9 +6,5 @@ trace/
 # python
 __pycache__/
 *.pyc
-
+.mypy_cache/
 .DS_Store
-
-# third-party package the new rank03 pool was imported from
-examshell_python-*/
-42_examshell/

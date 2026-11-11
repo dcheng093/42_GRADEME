@@ -1,5 +1,11 @@
-def run(module, check):
-    cases = [
+from types import ModuleType
+from typing import Any
+
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+    cases: list[Any] = [
         # basic
         ("hello", "Hello"),
         ("world", "World"),
@@ -11,7 +17,6 @@ def run(module, check):
         ("python programming language", "Python Programming Language"),
         ("capitalize every word", "Capitalize Every Word"),
         ("hello world today", "Hello World Today"),
-
         # mixed case
         ("HELLO", "Hello"),
         ("WORLD", "World"),
@@ -23,7 +28,6 @@ def run(module, check):
         ("tEST case", "Test Case"),
         ("aBcDeF", "Abcdef"),
         ("ABC DEF GHI", "Abc Def Ghi"),
-
         # multiple spaces
         ("  hello", "  Hello"),
         ("hello  world", "Hello  World"),
@@ -35,7 +39,6 @@ def run(module, check):
         ("  multiple   spaces ", "  Multiple   Spaces "),
         ("hello    beautiful    world", "Hello    Beautiful    World"),
         ("   hello   world   test   ", "   Hello   World   Test   "),
-
         # empty and spaces
         ("", ""),
         (" ", " "),
@@ -44,7 +47,6 @@ def run(module, check):
         ("    hello    ", "    Hello    "),
         ("\t", "\t"),
         ("\n", "\n"),
-
         # single-letter words
         ("a", "A"),
         ("i", "I"),
@@ -56,7 +58,6 @@ def run(module, check):
         ("a simple test", "A Simple Test"),
         ("x marks spot", "X Marks Spot"),
         ("i love python", "I Love Python"),
-
         # numbers
         ("42", "42"),
         ("123", "123"),
@@ -68,7 +69,6 @@ def run(module, check):
         ("hello 42 world", "Hello 42 World"),
         ("1 2 3 hello", "1 2 3 Hello"),
         ("42 PYTHON 99 TEST", "42 Python 99 Test"),
-
         # numbers attached to letters
         ("abc123", "Abc123"),
         ("123abc", "123abc"),
@@ -80,7 +80,6 @@ def run(module, check):
         ("madrid42", "Madrid42"),
         ("test123case", "Test123case"),
         ("123test123", "123test123"),
-
         # punctuation
         ("hello!", "Hello!"),
         ("hello?", "Hello?"),
@@ -92,7 +91,6 @@ def run(module, check):
         ("hello_world", "Hello_world"),
         ("hello/world", "Hello/world"),
         ("hello@world", "Hello@world"),
-
         # punctuation between words
         ("hello, world", "Hello, World"),
         ("hello! world", "Hello! World"),
@@ -104,7 +102,6 @@ def run(module, check):
         ("hello / world", "Hello / World"),
         ("hello @ world", "Hello @ World"),
         ("hello # world", "Hello # World"),
-
         # punctuation + multiple words
         ("hello,world", "Hello,world"),
         ("hello,world test", "Hello,world Test"),
@@ -116,7 +113,6 @@ def run(module, check):
         ("hello_world test", "Hello_world Test"),
         ("hello@world test", "Hello@world Test"),
         ("hello#world test", "Hello#world Test"),
-
         # longer sentences
         (
             "the quick brown fox",
@@ -163,8 +159,4 @@ def run(module, check):
     for value, expected in cases:
         result = module.capitalize_words(value)
 
-        check(
-            f"capitalize_words({value!r})",
-            result,
-            expected
-        )
+        check(f"capitalize_words({value!r})", result, expected)

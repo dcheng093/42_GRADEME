@@ -1,6 +1,12 @@
-def run(module, check):
+from types import ModuleType
+from typing import Any
 
-    cases = [
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+
+    cases: list[Any] = [
         # basic cases
         ("racecar", "carrace", True),
         ("jar", "jam", False),
@@ -12,7 +18,6 @@ def run(module, check):
         ("hello", "olleh", True),
         ("world", "dlrow", True),
         ("python", "typhon", True),
-
         # short strings
         ("a", "a", True),
         ("a", "b", False),
@@ -24,7 +29,6 @@ def run(module, check):
         ("abc", "abd", False),
         ("abcd", "dcba", True),
         ("abcd", "abce", False),
-
         # repeated letters
         ("aa", "aa", True),
         ("aa", "ab", False),
@@ -36,7 +40,6 @@ def run(module, check):
         ("abb", "baa", False),
         ("aabb", "bbaa", True),
         ("aabb", "abab", True),
-
         # longer common words
         ("evil", "vile", True),
         ("evil", "live", True),
@@ -48,7 +51,6 @@ def run(module, check):
         ("night", "thing", True),
         ("state", "taste", True),
         ("save", "vase", True),
-
         # common false anagrams
         ("evil", "vilex", False),
         ("dusty", "studyx", False),
@@ -60,7 +62,6 @@ def run(module, check):
         ("listen", "listens", False),
         ("triangle", "integralx", False),
         ("binary", "brainy", True),
-
         # longer true anagrams
         ("triangle", "integral", True),
         ("integral", "altering", True),
@@ -72,7 +73,6 @@ def run(module, check):
         ("schoolmaster", "theclassroom", True),
         ("theeyes", "theysee", True),
         ("astronomer", "moonstarer", True),
-
         # duplicates and counts
         ("aaaab", "aabaa", True),
         ("aaaab", "aaaba", True),
@@ -84,7 +84,6 @@ def run(module, check):
         ("aabbccdd", "abcdabcd", True),
         ("aaaabbbb", "bbaaaabb", True),
         ("aabcc", "ccaba", True),
-
         # false due to one count differing
         ("aabbcc", "aabbcd", False),
         ("aabbcc", "aabccc", False),
@@ -96,7 +95,6 @@ def run(module, check):
         ("aabb", "aaab", False),
         ("aabbcc", "aabbc", False),
         ("abcabc", "abcabd", False),
-
         # numbers
         ("123", "321", True),
         ("12345", "54321", True),
@@ -108,7 +106,6 @@ def run(module, check):
         ("112358", "835211", True),
         ("1234567890", "0987654321", True),
         ("1234", "1245", False),
-
         # letters and numbers
         ("a1b2", "2b1a", True),
         ("abc123", "321cba", True),

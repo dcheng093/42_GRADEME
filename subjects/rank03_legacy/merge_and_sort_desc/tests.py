@@ -1,5 +1,11 @@
-def run(module, check):
-    cases = [
+from types import ModuleType
+from typing import Any
+
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+    cases: list[Any] = [
         # basic
         ([1], [2], [2, 1]),
         ([1, 2], [3, 4], [4, 3, 2, 1]),
@@ -11,7 +17,6 @@ def run(module, check):
         ([50], [100], [100, 50]),
         ([3, 1, 2], [6, 5, 4], [6, 5, 4, 3, 2, 1]),
         ([9, 1, 5], [2, 8, 3], [9, 8, 5, 3, 2, 1]),
-
         # empty lists
         ([], [], []),
         ([], [1], [1]),
@@ -23,7 +28,6 @@ def run(module, check):
         ([], [100, -1, 0], [100, 0, -1]),
         ([100, -1, 0], [], [100, 0, -1]),
         ([], [0], [0]),
-
         # duplicates
         ([1, 1], [1, 1], [1, 1, 1, 1]),
         ([2, 2, 2], [2, 2], [2, 2, 2, 2, 2]),
@@ -35,7 +39,6 @@ def run(module, check):
         ([3, 3, 3], [], [3, 3, 3]),
         ([], [4, 4, 4], [4, 4, 4]),
         ([9, 9], [9], [9, 9, 9]),
-
         # negative numbers
         ([-1], [-2], [-1, -2]),
         ([-5, -1], [-3, -2], [-1, -2, -3, -5]),
@@ -47,7 +50,6 @@ def run(module, check):
         ([-7, -3], [-9, -1], [-1, -3, -7, -9]),
         ([-100, -50], [-75, -25], [-25, -50, -75, -100]),
         ([-1, -1], [-2, -2], [-1, -1, -2, -2]),
-
         # zeros
         ([0], [0], [0, 0]),
         ([0, 1], [0, 2], [2, 1, 0, 0]),
@@ -59,21 +61,18 @@ def run(module, check):
         ([0, 0], [-1, -2], [0, 0, -1, -2]),
         ([-3, 0, -1], [0, -2], [0, 0, -1, -2, -3]),
         ([10, 0], [5, 0], [10, 5, 0, 0]),
-
         # already ascending
         ([1, 2, 3], [4, 5, 6], [6, 5, 4, 3, 2, 1]),
         ([1, 2], [3], [3, 2, 1]),
         ([1], [2, 3], [3, 2, 1]),
         ([-5, -4, -3], [-2, -1], [-1, -2, -3, -4, -5]),
         ([0, 1, 2], [3, 4, 5], [5, 4, 3, 2, 1, 0]),
-
         # already descending
         ([5, 4, 3], [2, 1], [5, 4, 3, 2, 1]),
         ([10, 9, 8], [7, 6, 5], [10, 9, 8, 7, 6, 5]),
         ([3, 2, 1], [6, 5, 4], [6, 5, 4, 3, 2, 1]),
         ([-1, -2, -3], [-4, -5], [-1, -2, -3, -4, -5]),
         ([100, 50, 25], [75, 60, 10], [100, 75, 60, 50, 25, 10]),
-
         # unsorted
         ([3, 1, 4, 2], [8, 6, 7, 5], [8, 7, 6, 5, 4, 3, 2, 1]),
         ([10, 1, 8, 3], [7, 2, 9, 4], [10, 9, 8, 7, 4, 3, 2, 1]),
@@ -85,20 +84,21 @@ def run(module, check):
         ([11, 4, 6], [9, 2, 8], [11, 9, 8, 6, 4, 2]),
         ([14, 1, 13], [12, 3, 15], [15, 14, 13, 12, 3, 1]),
         ([7, 2, 10], [5, 9, 1], [10, 9, 7, 5, 2, 1]),
-
         # large positive values
         ([1000, 500], [750, 250], [1000, 750, 500, 250]),
         ([9999], [10000], [10000, 9999]),
         ([100000, 1], [50000, 2], [100000, 50000, 2, 1]),
-        ([1000000, 500000], [750000, 250000], [1000000, 750000, 500000,
-                                               250000]),
+        (
+            [1000000, 500000],
+            [750000, 250000],
+            [1000000, 750000, 500000, 250000],
+        ),
         ([999, 100], [500, 1000], [1000, 999, 500, 100]),
         ([2147483647], [-2147483648], [2147483647, -2147483648]),
         ([1000000000], [999999999], [1000000000, 999999999]),
         ([123456, 654321], [111111, 999999], [999999, 654321, 123456, 111111]),
         ([5000, 4000], [3000, 2000], [5000, 4000, 3000, 2000]),
         ([99999, 1], [88888, 2], [99999, 88888, 2, 1]),
-
         # mixed positive and negative
         ([-5, 10, -2], [3, -8, 7], [10, 7, 3, -2, -5, -8]),
         ([100, -100], [50, -50], [100, 50, -50, -100]),
@@ -110,7 +110,6 @@ def run(module, check):
         ([9, -9], [8, -8], [9, 8, -8, -9]),
         ([-1, 5, -3], [4, -2, 6], [6, 5, 4, -1, -2, -3]),
         ([-50, 75], [25, -100], [75, 25, -50, -100]),
-
         # single element combinations
         ([5], [5], [5, 5]),
         ([-5], [-5], [-5, -5]),
@@ -122,7 +121,6 @@ def run(module, check):
         ([1], [-1], [1, -1]),
         ([-1], [1], [1, -1]),
         ([42], [42], [42, 42]),
-
         # more duplicates and combinations
         ([1, 3, 3, 5], [2, 3, 4, 5], [5, 5, 4, 3, 3, 3, 2, 1]),
         ([10, 20, 10], [20, 10, 20], [20, 20, 20, 10, 10, 10]),
@@ -146,34 +144,30 @@ def run(module, check):
 
         if result != expected:
             errors.append(
-                f"\nwrong result\n"
+                "\nwrong result\n"
                 f"       Expected: {expected!r}\n"
                 f"       Got:      {result!r}"
             )
 
         if first != first_original:
             errors.append(
-                f"\nfirst list was modified\n"
+                "\nfirst list was modified\n"
                 f"       Original: {first_original!r}\n"
                 f"       Got:      {first!r}"
             )
 
         if second != second_original:
             errors.append(
-                f"\nsecond list was modified\n"
+                "\nsecond list was modified\n"
                 f"       Original: {second_original!r}\n"
                 f"       Got:      {second!r}"
             )
 
         if result is first:
-            errors.append(
-                "\nfunction returned the first input list"
-            )
+            errors.append("\nfunction returned the first input list")
 
         if result is second:
-            errors.append(
-                "\nfunction returned the second input list"
-            )
+            errors.append("\nfunction returned the second input list")
 
         check(
             f"merge_and_sort_desc({first_original!r}, {second_original!r})",

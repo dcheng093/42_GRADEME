@@ -1,9 +1,9 @@
 class CacheKeeper:
-    def __init__(self, capacity: int):
+    def __init__(self, capacity: int) -> None:
         pass
 
     def get(self, key: int) -> int:
-        pass
+        raise NotImplementedError
 
     def put(self, key: int, value: int) -> None:
         pass

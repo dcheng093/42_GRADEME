@@ -1,6 +1,6 @@
 def pack(strs: list[str]) -> str:
-    pass
+    raise NotImplementedError
 
 
 def unpack(s: str) -> list[str]:
-    pass
+    raise NotImplementedError

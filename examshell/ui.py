@@ -8,29 +8,52 @@ import shutil
 import sys
 import textwrap
 import time
+from collections.abc import Callable, Iterator, Sequence
+from typing import Any
 
 from . import config
 
-COLOR = sys.stdout.isatty() and "NO_COLOR" not in os.environ and os.environ.get("TERM") != "dumb"
+COLOR = (
+    sys.stdout.isatty()
+    and "NO_COLOR" not in os.environ
+    and os.environ.get("TERM") != "dumb"
+)
 
 # ── theme ───────────────────────────────────────────────────────────────────
-ACCENT = 37    # teal: titles, commands, prompt
-HILITE = 221   # warm yellow: files, current level, warnings
-OK = 78        # green: passed, solved
-ERR = 203      # red: failed
-MUTED = 245    # grey: labels, hints
-LINE = 240     # dark grey: card borders
-SHADOW = 238   # banner drop shadow
+ACCENT = 37  # teal: titles, commands, prompt
+HILITE = 221  # warm yellow: files, current level, warnings
+OK = 78  # green: passed, solved
+ERR = 203  # red: failed
+MUTED = 245  # grey: labels, hints
+LINE = 240  # dark grey: card borders
+SHADOW = 238  # banner drop shadow
 
 _STYLES = {
-    "bold": "1", "dim": "2", "italic": "3", "under": "4",
-    "red": "31", "green": "32", "yellow": "33", "blue": "34",
-    "magenta": "35", "cyan": "36", "white": "97", "gray": "90",
+    "bold": "1",
+    "dim": "2",
+    "italic": "3",
+    "under": "4",
+    "red": "31",
+    "green": "32",
+    "yellow": "33",
+    "blue": "34",
+    "magenta": "35",
+    "cyan": "36",
+    "white": "97",
+    "gray": "90",
 }
 _ANSI = re.compile(r"\x1b\[[0-9;]*m|[\x01\x02]")
 
+# a _STYLES name, a 256-colour foreground, or ("bg", n) for a background
+Style = str | int | tuple[str, int]
+# one banner cell: the character and its colour (None: no colour)
+Cell = tuple[str, int | None]
+Grid = list[list[Cell]]
+# what play() draws: a frame, or (frame, seconds to show it)
+Frame = str | tuple[str, float]
 
-def paint(text, *styles):
+
+def paint(text: object, *styles: Style) -> str:
     """paint("hi", "bold", ACCENT); ("bg", n) sets a 256-colour background."""
     if not COLOR or not styles:
         return str(text)
@@ -45,22 +68,23 @@ def paint(text, *styles):
     return f"\x1b[{';'.join(codes)}m{text}\x1b[0m"
 
 
-def chip(text, bg=ACCENT, fg=16):
-    """A solid label: ' PRACTICE ' on a coloured background ([PRACTICE] without colour)."""
+def chip(text: str, bg: int = ACCENT, fg: int = 16) -> str:
+    """A solid label: ' PRACTICE ' on a coloured background ([PRACTICE]
+    without colour)."""
     if not COLOR:
         return f"[{text}]"
     return paint(f" {text} ", ("bg", bg), fg, "bold")
 
 
-def visible_len(text):
+def visible_len(text: str) -> int:
     return len(_ANSI.sub("", text))
 
 
-def width():
+def width() -> int:
     return min(shutil.get_terminal_size((80, 24)).columns, 100)
 
 
-def clear():
+def clear() -> None:
     if sys.stdout.isatty():
         sys.stdout.write("\x1b[H\x1b[2J\x1b[3J")
         sys.stdout.flush()
@@ -110,24 +134,25 @@ _FONT = {
 }
 
 
-def _big_rows(text):
+def _big_rows(text: str) -> list[str]:
     glyphs = [_FONT[ch] for ch in text.upper() if ch in _FONT]
     rows = [" ".join(g[r] for g in glyphs).replace("#", "█") for r in range(5)]
     return [r.replace("█", "██").replace(" ", "  ") for r in rows]
 
 
-def _big_fits(rows, indent):
+def _big_fits(rows: list[str], indent: int) -> bool:
     return len(rows[0]) + 1 + indent <= width()
 
 
-def _big_cells(rows, color):
-    """Grid of (char, colour) cells: solid letters plus a grey drop shadow one row taller."""
+def _big_cells(rows: list[str], color: int) -> Grid:
+    """Grid of (char, colour) cells: solid letters plus a grey drop shadow one
+    row taller."""
     w = len(rows[0]) + 1
     filled = [[c < len(r) and r[c] == "█" for c in range(w)] for r in rows]
     filled.append([False] * w)
-    grid = []
+    grid: Grid = []
     for r in range(len(filled)):
-        cells = []
+        cells: list[Cell] = []
         for c in range(w):
             if filled[r][c]:
                 cells.append(("█", color))
@@ -139,10 +164,11 @@ def _big_cells(rows, color):
     return grid
 
 
-def _render(grid, indent=2):
+def _render(grid: Grid, indent: int = 2) -> str:
     out = []
     for cells in grid:
-        line, run, run_color = "", "", None
+        line, run = "", ""
+        run_color: int | str | None = None
         for ch, col in cells + [("", "end")]:
             if col != run_color:
                 line += paint(run, run_color) if run_color else run
@@ -152,7 +178,7 @@ def _render(grid, indent=2):
     return "\n".join(out)
 
 
-def big(text, color=ACCENT, indent=2):
+def big(text: str, color: int = ACCENT, indent: int = 2) -> str:
     """Render text in the block font, solid colour with a grey drop shadow."""
     rows = _big_rows(text)
     if not _big_fits(rows, indent):
@@ -167,22 +193,23 @@ GLEAM = 231  # bright white: shimmer and flash
 CONFETTI = "✦*·•+"
 
 
-def animated():
+def animated() -> bool:
     return COLOR and sys.stdout.isatty() and config.ANIMATIONS
 
 
 @contextlib.contextmanager
-def _quiet_keyboard():
+def _quiet_keyboard() -> Iterator[None]:
     """No echo while animating, and drop anything typed meanwhile (so a stray
     Enter doesn't answer the next prompt)."""
     try:
         import termios
+
         fd = sys.stdin.fileno()
         saved = termios.tcgetattr(fd)
         quiet = list(saved)
         quiet[3] &= ~termios.ECHO
         termios.tcsetattr(fd, termios.TCSADRAIN, quiet)
-    except Exception:  # noqa: BLE001 - no tty, no termios (Windows): just animate
+    except Exception:  # no tty, no termios (Windows): just animate
         yield
         return
     try:
@@ -195,26 +222,30 @@ def _quiet_keyboard():
             pass
 
 
-def play(frames, delay=0.03):
-    """Draw multi-line frames in place. A frame is a string or (string, seconds).
+def play(frames: Sequence[Frame], delay: float = 0.03) -> None:
+    """Draw multi-line frames in place. A frame is a string or
+    (string, seconds).
 
-    Without a terminal (or with animations off) only the last frame is printed.
-    Ctrl-C skips straight to the last frame.
+    Without a terminal (or with animations off) only the last frame is
+    printed. Ctrl-C skips straight to the last frame.
     """
-    frames = [f if isinstance(f, tuple) else (f, delay) for f in frames]
-    if not frames:
+    timed = [f if isinstance(f, tuple) else (f, delay) for f in frames]
+    if not timed:
         return
     if not animated():
-        print(frames[-1][0])
+        print(timed[-1][0])
         return
-    height = max(text.count("\n") + 1 for text, _ in frames)
+    height = max(text.count("\n") + 1 for text, _ in timed)
     out, drawn = sys.stdout, False
 
-    def draw(text):
+    def draw(text: str) -> None:
         nonlocal drawn
         lines = text.split("\n")
         lines += [""] * (height - len(lines))
-        out.write((f"\x1b[{height}F" if drawn else "") + "".join(f"\r{l}\x1b[K\n" for l in lines))
+        out.write(
+            (f"\x1b[{height}F" if drawn else "")
+            + "".join(f"\r{line}\x1b[K\n" for line in lines)
+        )
         out.flush()
         drawn = True
 
@@ -222,53 +253,93 @@ def play(frames, delay=0.03):
     try:
         with _quiet_keyboard():
             try:
-                for i, (text, pause) in enumerate(frames):
+                for i, (text, pause) in enumerate(timed):
                     draw(text)
-                    if i + 1 < len(frames):
+                    if i + 1 < len(timed):
                         time.sleep(pause)
             except KeyboardInterrupt:
-                draw(frames[-1][0])
+                draw(timed[-1][0])
     finally:
         out.write("\x1b[?25h")
         out.flush()
 
 
-def _recolor(grid, fn):
-    """Copy of `grid` with each letter cell's colour replaced by fn(row, col, colour)."""
-    return [[(ch, fn(r, c, col)) if ch == "█" else (ch, col) for c, (ch, col) in enumerate(row)]
-            for r, row in enumerate(grid)]
+def _recolor(
+    grid: Grid, fn: Callable[[int, int, int | None], int | None]
+) -> Grid:
+    """Copy of `grid` with each letter cell's colour replaced by
+    fn(row, col, colour)."""
+    return [
+        [
+            (ch, fn(r, c, col)) if ch == "█" else (ch, col)
+            for c, (ch, col) in enumerate(row)
+        ]
+        for r, row in enumerate(grid)
+    ]
 
 
-def _shimmer(grid, indent, step=4, band=3, delay=0.015):
+def _shimmer(
+    grid: Grid,
+    indent: int,
+    step: int = 4,
+    band: int = 3,
+    delay: float = 0.015,
+) -> list[Frame]:
     """A diagonal band of light sweeping left to right across the letters."""
     w, h = len(grid[0]), len(grid)
-    return [(_render(_recolor(grid, lambda r, c, col: GLEAM if 0 <= c - r - p < band else col), indent), delay)
-            for p in range(-band, w + h, step)]
+    return [
+        (
+            _render(
+                _recolor(
+                    grid,
+                    lambda r, c, col: GLEAM if 0 <= c - r - p < band else col,
+                ),
+                indent,
+            ),
+            delay,
+        )
+        for p in range(-band, w + h, step)
+    ]
 
 
-_REVEALED = set()
+_REVEALED: set[str] = set()
 
 
-def reveal(text, color=ACCENT, indent=2):
+def reveal(text: str, color: int = ACCENT, indent: int = 2) -> None:
     """Print a banner: wipe in left to right the first time, then a shimmer."""
     rows = _big_rows(text)
     if not (animated() and _big_fits(rows, indent)):
         print(big(text, color, indent))
         return
     grid = _big_cells(rows, color)
-    frames = []
+    frames: list[Frame] = []
     if text not in _REVEALED:
         _REVEALED.add(text)
-        blank = (" ", None)
-        frames += [(_render([[cell if c < cut else blank for c, cell in enumerate(row)] for row in grid],
-                            indent), 0.018)
-                   for cut in range(0, len(grid[0]), 3)]
+        blank: Cell = (" ", None)
+        frames += [
+            (
+                _render(
+                    [
+                        [
+                            cell if c < cut else blank
+                            for c, cell in enumerate(row)
+                        ]
+                        for row in grid
+                    ],
+                    indent,
+                ),
+                0.018,
+            )
+            for cut in range(0, len(grid[0]), 3)
+        ]
     frames += _shimmer(grid, indent)
     frames.append(_render(grid, indent))
     play(frames)
 
 
-def pass_banner(text="PASSED", color=OK, indent=2):
+def pass_banner(
+    text: str = "PASSED", color: int = OK, indent: int = 2
+) -> None:
     """Two quick white flashes, then a shimmer."""
     rows = _big_rows(text)
     if not (animated() and _big_fits(rows, indent)):
@@ -277,20 +348,28 @@ def pass_banner(text="PASSED", color=OK, indent=2):
     grid = _big_cells(rows, color)
     lit = _render(_recolor(grid, lambda r, c, col: GLEAM), indent)
     calm = _render(grid, indent)
-    play([(lit, 0.07), (calm, 0.07), (lit, 0.07), (calm, 0.05)] + _shimmer(grid, indent) + [calm])
+    flashes: list[Frame] = [(lit, 0.07), (calm, 0.07), (lit, 0.07)]
+    play(flashes + [(calm, 0.05)] + _shimmer(grid, indent) + [calm])
 
 
-def fail_banner(text="FAILED", color=ERR, indent=2):
+def fail_banner(
+    text: str = "FAILED", color: int = ERR, indent: int = 2
+) -> None:
     """A short sideways shake."""
     rows = _big_rows(text)
     if not (animated() and _big_fits(rows, indent + 4)):
         print(big(text, color, indent))
         return
     grid = _big_cells(rows, color)
-    play([(_render(grid, indent + offset), 0.045) for offset in (3, -2, 2, -1, 1, 0)])
+    play([
+        (_render(grid, indent + offset), 0.045)
+        for offset in (3, -2, 2, -1, 1, 0)
+    ])
 
 
-def confetti(text, color=OK, indent=2, count=34):
+def confetti(
+    text: str, color: int = OK, indent: int = 2, count: int = 34
+) -> None:
     """The banner with sparkles falling through it (only over empty cells)."""
     rows = _big_rows(text)
     if not (animated() and _big_fits(rows, indent)):
@@ -299,24 +378,40 @@ def confetti(text, color=OK, indent=2, count=34):
     grid = _big_cells(rows, color)
     h, w = len(grid), len(grid[0])
     colors = (OK, HILITE, ACCENT, 213)
-    bits = [(random.randrange(w), -random.randrange(18), random.choice(CONFETTI), random.choice(colors))
-            for _ in range(count)]
-    frames = []
+    bits = [
+        (
+            random.randrange(w),
+            -random.randrange(18),
+            random.choice(CONFETTI),
+            random.choice(colors),
+        )
+        for _ in range(count)
+    ]
+    frames: list[Frame] = []
     for f in range(18 + h):
         frame = [list(row) for row in grid]
         for x, start, ch, col in bits:
             y = start + f
             if 0 <= y < h and frame[y][x][0] == " ":
-                frame[y][x] = (CONFETTI[(CONFETTI.index(ch) + f // 3) % len(CONFETTI)], col)
+                frame[y][x] = (
+                    CONFETTI[(CONFETTI.index(ch) + f // 3) % len(CONFETTI)],
+                    col,
+                )
         frames.append((_render(frame, indent), 0.04))
     frames.append(_render(grid, indent))
     play(frames)
 
 
-def count_up(make_frame, start, end, duration=0.7, max_frames=20):
+def count_up(
+    make_frame: Callable[[int], str],
+    start: int,
+    end: int,
+    duration: float = 0.7,
+    max_frames: int = 20,
+) -> None:
     """Ease-out tween: frames make_frame(v) for v from start to end (ints)."""
     n = max(2, min(max_frames, abs(end - start) + 1))
-    values = []
+    values: list[int] = []
     for i in range(n):
         t = i / (n - 1)
         v = round(start + (end - start) * (1 - (1 - t) ** 3))
@@ -326,67 +421,107 @@ def count_up(make_frame, start, end, duration=0.7, max_frames=20):
 
 
 # ── layout pieces ───────────────────────────────────────────────────────────
-def card_width():
+def card_width() -> int:
     return width() - 4
 
 
-def rule(char="─", color=LINE):
+def rule(char: str = "─", color: int = LINE) -> str:
     return paint(char * (width() - 2), color)
 
 
-def _fit(line, room):
+def _fit(line: str, room: int) -> list[str]:
     """Wrap plain lines that are too long; truncate coloured ones."""
     if visible_len(line) <= room:
         return [line]
     if _ANSI.search(line):
         return [_ANSI.sub("", line)[:room - 1] + "…"]
     lead = len(line) - len(line.lstrip(" "))
-    return textwrap.wrap(line, room, subsequent_indent=" " * (lead + 2),
-                         drop_whitespace=False, break_on_hyphens=False) or [""]
+    return textwrap.wrap(
+        line,
+        room,
+        subsequent_indent=" " * (lead + 2),
+        drop_whitespace=False,
+        break_on_hyphens=False,
+    ) or [""]
 
 
-def card(lines, title="", right="", color=LINE, title_color=ACCENT):
-    """Full-width rounded card. All cards share one width so they stack neatly."""
+def card(
+    lines: Sequence[str],
+    title: str = "",
+    right: str = "",
+    color: int = LINE,
+    title_color: int = ACCENT,
+) -> str:
+    """Full-width rounded card. All cards share one width so they stack
+    neatly."""
     w = card_width()
     room = w - 4
-    left = paint("╭─ ", color) + paint(title, title_color, "bold") + " " if title else paint("╭", color)
-    tail = (" " + right + " " + paint("─╮", color)) if right else paint("╮", color)
+    left = (
+        paint("╭─ ", color) + paint(title, title_color, "bold") + " "
+        if title
+        else paint("╭", color)
+    )
+    tail = (
+        (" " + right + " " + paint("─╮", color))
+        if right
+        else paint("╮", color)
+    )
     dashes = max(w - visible_len(left) - visible_len(tail), 0)
     out = [left + paint("─" * dashes, color) + tail]
     for line in lines:
         for piece in _fit(line.replace("\t", "    "), room):
             gap = max(room - visible_len(piece), 0)
-            out.append(paint("│", color) + " " + piece + " " * (gap + 1) + paint("│", color))
+            out.append(
+                paint("│", color)
+                + " "
+                + piece
+                + " " * (gap + 1)
+                + paint("│", color)
+            )
     out.append(paint("╰" + "─" * (w - 2) + "╯", color))
-    return "\n".join("  " + l for l in out)
+    return "\n".join("  " + line for line in out)
 
 
-def command_card(commands, title="commands", footer="", color=LINE):
+def command_card(
+    commands: Sequence[tuple[str, str]],
+    title: str = "commands",
+    footer: str = "",
+    color: int = LINE,
+) -> str:
     """Commands one per line: ▸ name   what it does."""
     pad = max(visible_len(n) for n, _ in commands)
-    lines = [paint("▸ ", ACCENT) + paint(n, ACCENT, "bold") + " " * (pad - visible_len(n) + 3) + d
-             for n, d in commands]
+    lines = [
+        paint("▸ ", ACCENT)
+        + paint(n, ACCENT, "bold")
+        + " " * (pad - visible_len(n) + 3)
+        + d
+        for n, d in commands
+    ]
     if footer:
         lines += ["", paint(footer, MUTED)]
     return card(lines, title=title, color=color)
 
 
-def status_strip(left, right=""):
+def status_strip(left: str, right: str = "") -> str:
     gap = width() - visible_len(left) - visible_len(right) - 2
     return " " + left + " " * max(gap, 2) + right
 
 
-def bar(fraction, size=20, color=OK):
+def bar(fraction: float, size: int = 20, color: int = OK) -> str:
     fraction = max(0.0, min(1.0, fraction))
     filled = round(fraction * size)
     return paint("█" * filled, color) + paint("░" * (size - filled), LINE)
 
 
-def level_bar(solved, total, size=12):
-    return bar(solved / total if total else 0, size) + " " + paint(f"{solved}/{total} solved", MUTED)
+def level_bar(solved: int, total: int, size: int = 12) -> str:
+    return (
+        bar(solved / total if total else 0, size)
+        + " "
+        + paint(f"{solved}/{total} solved", MUTED)
+    )
 
 
-def roadmap(rank, current, passed):
+def roadmap(rank: config.Rank, current: int, passed: int) -> str:
     """● L1 ━━ ● L2 ━━ ◉ L3 ━━ ○ L4 ..."""
     parts = []
     for i in range(len(rank.levels)):
@@ -396,23 +531,27 @@ def roadmap(rank, current, passed):
             dot = paint("◉", HILITE, "bold")
         else:
             dot = paint("○", MUTED)
-        label = paint(f"L{i + 1}", HILITE, "bold") if i == current else paint(f"L{i + 1}", MUTED)
+        label = (
+            paint(f"L{i + 1}", HILITE, "bold")
+            if i == current
+            else paint(f"L{i + 1}", MUTED)
+        )
         parts.append(f"{dot} {label}")
     return paint(" ━━ ", LINE).join(parts)
 
 
-def duration(seconds):
+def duration(seconds: float) -> str:
     seconds = max(int(seconds), 0)
     h, rem = divmod(seconds, 3600)
     m, s = divmod(rem, 60)
     return f"{h}:{m:02}:{s:02}" if h else f"{m:02}:{s:02}"
 
 
-def indent_block(text, prefix="  "):
+def indent_block(text: str, prefix: str = "  ") -> str:
     return "\n".join(prefix + line for line in text.splitlines())
 
 
-def say(text, color=MUTED, *styles):
+def say(text: str, color: Style = MUTED, *styles: Style) -> None:
     print("  " + paint(text, color, *styles))
 
 
@@ -423,33 +562,46 @@ except ImportError:
     pass
 
 
-def _rl_safe(text):
+def _rl_safe(text: str) -> str:
     """Wrap colour codes so readline measures the prompt width correctly."""
     return re.sub(r"(\x1b\[[0-9;]*m)", "\x01\\1\x02", text)
 
 
-def ask(label="", symbol="❯", color=ACCENT):
-    prompt = (paint(label, MUTED) + " " if label else "") + paint(symbol, color, "bold") + " "
+def ask(label: str = "", symbol: str = "❯", color: int = ACCENT) -> str:
+    prompt = (
+        (paint(label, MUTED) + " " if label else "")
+        + paint(symbol, color, "bold")
+        + " "
+    )
     return input(_rl_safe("  " + prompt)).strip()
 
 
-def pause(text="press enter to continue"):
+def pause(text: str = "press enter to continue") -> None:
     input(_rl_safe("  " + paint(text, MUTED, "italic") + " "))
 
 
-def confirm(question, default_yes=False):
+def confirm(question: str, default_yes: bool = False) -> bool:
     hint = " [Y/n] " if default_yes else " [y/N] "
-    answer = input(_rl_safe("  " + paint(question, HILITE) + paint(hint, MUTED))).strip().lower()
+    answer = (
+        input(_rl_safe("  " + paint(question, HILITE) + paint(hint, MUTED)))
+        .strip()
+        .lower()
+    )
     return answer in ("y", "yes") or (default_yes and answer == "")
 
 
-def menu(title, options, footer=""):
-    """options: list of (key, label, hint). Returns the chosen key, or None for back.
+def menu(
+    title: str,
+    options: Sequence[tuple[Any, str, str]],
+    footer: str = "",
+) -> Any:
+    """options: list of (key, label, hint). Returns the chosen key, or None
+    for back.
 
     An option with key None is a section header: options are then listed
     compactly under their headers.
     """
-    lines = []
+    lines: list[str] = []
     real = [o for o in options if o[0] is not None]
     sections = len(real) != len(options)
     pad = max(len(label) for _, label, _ in real)
@@ -463,7 +615,10 @@ def menu(title, options, footer=""):
         if i and not sections:
             lines.append("")
         k = chip(f"{key:^{keyw}}")
-        lines.append(f"{k}  {paint(f'{label:<{pad}}', 'bold')}" + (f"   {paint(hint, MUTED)}" if hint else ""))
+        lines.append(
+            f"{k}  {paint(f'{label:<{pad}}', 'bold')}"
+            + (f"   {paint(hint, MUTED)}" if hint else "")
+        )
     if footer:
         lines += ["", paint(footer, MUTED)]
     print(card(lines, title=title))

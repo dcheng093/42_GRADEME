@@ -206,6 +206,7 @@ When you leave a session, `rendu/` is moved to `trace/<date>/`, so you can alway
 | `make check-python` | the same for the Python cursus only                                 |
 | `make check-c`      | the same for the C cursus only                                      |
 | `make selftest`     | feed the graders 22 broken answers: every one must fail             |
+| `make lint`         | flake8 + mypy (the 42 flags) on every `.py` file                    |
 | `make clean`        | delete `rendu/`, `trace/` and caches                                |
 
 You can also grade a whole folder of your own answers at once:
@@ -246,7 +247,7 @@ Comparisons are `stdout`, `stdout_unordered`, `stdout_numbers` (±0.01), `exit` 
 
 For anything that isn't "run and compare" (servers, timing), a `tester.py` with `run(ctx, check)` takes over. See `examshell/native_harness.py` for `ctx`.
 
-After any change, run `make check` and `make selftest`.
+After any change, run `make check`, `make selftest` and `make lint`.
 
 ## Layout
 

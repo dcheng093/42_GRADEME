@@ -1,12 +1,12 @@
 class PrefixDictionary:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def insert(self, word: str) -> None:
         pass
 
     def search(self, word: str) -> bool:
-        pass
+        raise NotImplementedError
 
     def starts_with(self, prefix: str) -> bool:
-        pass
+        raise NotImplementedError

@@ -1,12 +1,12 @@
 class UnionFind:
-    def __init__(self, n: int):
+    def __init__(self, n: int) -> None:
         pass
 
     def find(self, x: int) -> int:
-        pass
+        raise NotImplementedError
 
     def union(self, x: int, y: int) -> bool:
-        pass
+        raise NotImplementedError
 
     def connected(self, x: int, y: int) -> bool:
-        pass
+        raise NotImplementedError

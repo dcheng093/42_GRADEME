@@ -5,7 +5,7 @@ def pack(strs: list[str]) -> str:
 
 
 def unpack(s: str) -> list[str]:
-    result = []
+    result: list[str] = []
     i = 0
     while i < len(s):
         sep = s.index("#", i)

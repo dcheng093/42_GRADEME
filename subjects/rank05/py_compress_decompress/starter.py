@@ -1,6 +1,6 @@
 def compress(s: str) -> str:
-    pass
+    raise NotImplementedError
 
 
 def decompress(s: str) -> str:
-    pass
+    raise NotImplementedError

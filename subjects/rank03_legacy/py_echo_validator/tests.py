@@ -1,6 +1,12 @@
-def run(module, check):
+from types import ModuleType
+from typing import Any
 
-    cases = [
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+
+    cases: list[Any] = [
         # basic palindromes
         ("", True),
         ("a", True),
@@ -12,7 +18,6 @@ def run(module, check):
         ("level", True),
         ("radar", True),
         ("civic", True),
-
         # basic non-palindromes
         ("ab", False),
         ("abc", False),
@@ -24,7 +29,6 @@ def run(module, check):
         ("racecars", False),
         ("levelup", False),
         ("abcdef", False),
-
         # case-insensitive
         ("A", True),
         ("Aa", True),
@@ -36,7 +40,6 @@ def run(module, check):
         ("LEVEL", True),
         ("LeVeL", True),
         ("CiViC", True),
-
         # case-insensitive non-palindromes
         ("Ab", False),
         ("aB", False),
@@ -48,7 +51,6 @@ def run(module, check):
         ("PyThOn", False),
         ("AbCd", False),
         ("WoRlD", False),
-
         # spaces
         ("a a", True),
         ("a b a", True),
@@ -60,7 +62,6 @@ def run(module, check):
         ("step on no pets", True),
         ("was it a car or a cat i saw", True),
         ("this is not a palindrome", False),
-
         # punctuation
         ("a!", True),
         ("!a!", True),
@@ -72,7 +73,6 @@ def run(module, check):
         ("madam?", True),
         ("madam.", True),
         ("hello!", False),
-
         # classic examples
         ("Was it a car or a cat I saw?", True),
         ("tab a cat", False),
@@ -84,7 +84,6 @@ def run(module, check):
         ("Was it Eliot's toilet I saw?", True),
         ("Yo, banana boy!", True),
         ("Eva, can I see bees in a cave?", True),
-
         # numbers
         ("1", True),
         ("11", True),
@@ -96,7 +95,6 @@ def run(module, check):
         ("1002", False),
         ("1234321", True),
         ("1234567", False),
-
         # letters + numbers
         ("a1a", True),
         ("a1b", False),
@@ -108,7 +106,6 @@ def run(module, check):
         ("123abc321", False),
         ("123abc123", False),
         ("a1b2b1a", True),
-
         # special characters / symbols
         ("!!!", True),
         ("@@@", True),
@@ -120,7 +117,6 @@ def run(module, check):
         ("1!!!2", False),
         ("(())", True),
         ("(a)", True),
-
         # more mixed cases
         ("Madam, I'm Adam", True),
         ("Able was I ere I saw Elba", True),
@@ -132,7 +128,6 @@ def run(module, check):
         ("Some men interpret nine memos", True),
         ("Too hot to hoot", True),
         ("Not a palindrome!", False),
-
         # whitespace-only / punctuation-only
         (" ", True),
         ("   ", True),
@@ -150,5 +145,5 @@ def run(module, check):
         check(
             f"py_echo_validator({value!r})",
             module.py_echo_validator(value),
-            expected
+            expected,
         )

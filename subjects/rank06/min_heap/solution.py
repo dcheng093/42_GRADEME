@@ -1,6 +1,6 @@
 class MinHeap:
-    def __init__(self):
-        self.data = []
+    def __init__(self) -> None:
+        self.data: list[int] = []
 
     def push(self, val: int) -> None:
         data = self.data

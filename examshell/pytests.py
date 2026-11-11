@@ -3,7 +3,8 @@
 A tests.py holds data (cases, computed with the reference solution) and calls
 one of these from its run(module, check). They run inside the harness process.
 
-`current` names the call being made, so a crash card can say what was running.
+`current` names the call being made, so a crash card can say what was
+running.
 """
 
 import copy
@@ -11,22 +12,49 @@ import random
 import runpy
 import signal
 import time
+from collections.abc import Callable, Sequence
 from pathlib import Path
+from types import FrameType, ModuleType
+from typing import Any, NoReturn, Protocol
 
-current = None  # description of the call in progress (shown if it crashes)
+# description of the call in progress (shown if it crashes)
+current: str | None = None
 
 
-def call_text(fname, args):
+class Check(Protocol):
+    """The `check` callable a tests.py run() gets (harness.Checker)."""
+
+    def __call__(
+        self,
+        description: str,
+        result: object,
+        expected: object = None,
+        errors: list[str] | None = None,
+    ) -> None:
+        pass
+
+
+# (method name, args): one call in a class test script
+Op = tuple[str, tuple[Any, ...]]
+
+
+def call_text(fname: str, args: Sequence[Any]) -> str:
     return f"{fname}({', '.join(map(repr, args))})"
 
 
-def _unordered(value):
+def _unordered(value: Any) -> Any:
     if isinstance(value, (list, tuple)):
         return sorted(value, key=repr)
     return value
 
 
-def run_calls(module, check, cases, unordered=False, no_mutation=False):
+def run_calls(
+    module: ModuleType,
+    check: Check,
+    cases: Sequence[tuple[str, tuple[Any, ...], Any]],
+    unordered: bool = False,
+    no_mutation: bool = False,
+) -> None:
     """cases: [(function name, args tuple, expected)]."""
     global current
     for fname, args, expected in cases:
@@ -37,14 +65,22 @@ def run_calls(module, check, cases, unordered=False, no_mutation=False):
         got = fn(*given)
         current = None
         if unordered:
-            check(text + "   (any order)", _unordered(got), _unordered(expected))
+            check(
+                text + "   (any order)", _unordered(got), _unordered(expected)
+            )
         else:
             check(text, got, expected)
         if no_mutation:
             check(text + "  must not modify its input", given == args)
 
 
-def run_roundtrip(module, check, encode, decode, cases):
+def run_roundtrip(
+    module: ModuleType,
+    check: Check,
+    encode: str,
+    decode: str,
+    cases: Sequence[tuple[Any]],
+) -> None:
     """decode(encode(x)) == x for every x, and encode returns a str."""
     global current
     enc, dec = getattr(module, encode), getattr(module, decode)
@@ -53,7 +89,11 @@ def run_roundtrip(module, check, encode, decode, cases):
         current = f"{encode}({value!r})"
         packed = enc(copy.deepcopy(value))
         if not isinstance(packed, str):
-            check(f"{encode}({value!r}) must return a str", type(packed).__name__, "str")
+            check(
+                f"{encode}({value!r}) must return a str",
+                type(packed).__name__,
+                "str",
+            )
         current = text
         got = dec(packed)
         current = None
@@ -63,14 +103,14 @@ def run_roundtrip(module, check, encode, decode, cases):
 SAME_ROOT = "__same_root__"  # pseudo-method: obj.find(a) == obj.find(b)
 
 
-def _op_text(var, method, args):
+def _op_text(var: str, method: str, args: tuple[Any, ...]) -> str:
     if method == SAME_ROOT:
         a, b = args
         return f"{var}.find({a!r}) == {var}.find({b!r})"
     return f"{var}.{method}({', '.join(map(repr, args))})"
 
 
-def apply_ops(obj, ops):
+def apply_ops(obj: Any, ops: Sequence[Op]) -> list[Any]:
     """Run ops on obj, returning the list of results."""
     results = []
     for method, args in ops:
@@ -81,11 +121,17 @@ def apply_ops(obj, ops):
     return results
 
 
-def run_class(module, check, cls_name, var, cases):
-    """cases: [(constructor args, [(method, args)], [expected result per op])].
+def run_class(
+    module: ModuleType,
+    check: Check,
+    cls_name: str,
+    var: str,
+    cases: Sequence[tuple[tuple[Any, ...], Sequence[Op], Sequence[Any]]],
+) -> None:
+    """cases: [(constructor args, [(method, args)], [expected per op])].
 
-    Every op's return value is compared; the failure shows the script up to the
-    first wrong one, the way the subject writes its examples.
+    Every op's return value is compared; the failure shows the script up to
+    the first wrong one, the way the subject writes its examples.
     """
     global current
     cls = getattr(module, cls_name)
@@ -111,11 +157,13 @@ def run_class(module, check, cls_name, var, cases):
             check(_short_script(steps), True)
 
 
-def _short_script(steps, keep=12):
+def _short_script(steps: list[str], keep: int = 12) -> str:
     if len(steps) <= keep:
         return "; ".join(steps)
     hidden = len(steps) - keep
-    return "; ".join(steps[:2] + [f"… {hidden} more calls …"] + steps[-(keep - 2):])
+    return "; ".join(
+        steps[:2] + [f"… {hidden} more calls …"] + steps[-(keep - 2):]
+    )
 
 
 # ── speed ───────────────────────────────────────────────────────────────────
@@ -123,12 +171,13 @@ class TooSlow(Exception):
     pass
 
 
-def _alarm(_signum, _frame):
+def _alarm(_signum: int, _frame: FrameType | None) -> NoReturn:
     raise TooSlow()
 
 
-def _timed(fn, limit):
-    """(result, seconds); raises TooSlow after `limit` seconds where SIGALRM exists."""
+def _timed(fn: Callable[[], Any], limit: float) -> tuple[Any, float]:
+    """(result, seconds); raises TooSlow after `limit` seconds where SIGALRM
+    exists."""
     use_alarm = hasattr(signal, "setitimer")
     if use_alarm:
         old = signal.signal(signal.SIGALRM, _alarm)
@@ -143,7 +192,14 @@ def _timed(fn, limit):
     return result, time.perf_counter() - start
 
 
-def run_perf(module, check, tests_file, perf, slack=10, floor=1.5):
+def run_perf(
+    module: ModuleType,
+    check: Check,
+    tests_file: str,
+    perf: Sequence[tuple[str, str, str, Callable[[random.Random], Any]]],
+    slack: float = 10,
+    floor: float = 1.5,
+) -> None:
     """Big inputs: right answer, and not much slower than the reference.
 
     perf: [(description, kind, name, build)] where kind is "call" (build(rng)
@@ -154,6 +210,8 @@ def run_perf(module, check, tests_file, perf, slack=10, floor=1.5):
     ref = runpy.run_path(str(Path(tests_file).with_name("solution.py")))
     for description, kind, name, build in perf:
         args = build(random.Random(description))
+        run_ref: Callable[[], Any]
+        run_you: Callable[[], Any]
         if kind == "call":
             ref_fn, fn = ref[name], getattr(module, name)
             run_ref = lambda: ref_fn(*copy.deepcopy(args))  # noqa: E731
@@ -170,17 +228,28 @@ def run_perf(module, check, tests_file, perf, slack=10, floor=1.5):
             got, _ = _timed(run_you, limit)
         except TooSlow:
             current = None
-            check(f"{description}: finish within {limit:.1f}s  (the reference takes {ref_time:.2f}s)",
-                  False, errors=["too slow: probably a nested loop where the subject wants",
-                                 "something faster (see the complexity it asks for)"])
+            check(
+                f"{description}: finish within {limit:.1f}s  (the reference"
+                f" takes {ref_time:.2f}s)",
+                False,
+                errors=[
+                    "too slow: probably a nested loop where the subject wants",
+                    "something faster (see the complexity it asks for)",
+                ],
+            )
         current = None
         if got != want:
-            check(f"{description}: right answer on a big input", False,
-                  errors=[f"expected {_brief(want)}", f"got      {_brief(got)}"])
+            check(
+                f"{description}: right answer on a big input",
+                False,
+                errors=[f"expected {_brief(want)}", f"got      {_brief(got)}"],
+            )
         else:
             check(f"{description}: fast enough", True)
 
 
-def _brief(value, limit=120):
+def _brief(value: object, limit: int = 120) -> str:
     text = repr(value)
-    return text if len(text) <= limit else text[:limit] + f"… ({len(text)} chars)"
+    return (
+        text if len(text) <= limit else text[:limit] + f"… ({len(text)} chars)"
+    )

@@ -1,5 +1,11 @@
-def run(module, check):
-    cases = [
+from types import ModuleType
+from typing import Any
+
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+    cases: list[Any] = [
         # basic valid
         ("", True),
         ("()", True),
@@ -11,7 +17,6 @@ def run(module, check):
         ("a(b)c", True),
         ("a[b]c", True),
         ("a{b}c", True),
-
         # basic invalid
         ("(", False),
         (")", False),
@@ -23,7 +28,6 @@ def run(module, check):
         ("][", False),
         ("}{", False),
         ("([)", False),
-
         # simple matching
         ("()[]{}", True),
         ("[](){}", True),
@@ -35,7 +39,6 @@ def run(module, check):
         ("[]()", True),
         ("{}[]", True),
         ("({})", True),
-
         # nested brackets
         ("(())", True),
         ("[[]]", True),
@@ -47,7 +50,6 @@ def run(module, check):
         ("[({})]", True),
         ("{[()]}", True),
         ("({[]})", True),
-
         # deep nesting
         ("(((())))", True),
         ("[[[[]]]]", True),
@@ -59,7 +61,6 @@ def run(module, check):
         ("{{[()]}}", True),
         ("([{()}])", True),
         ("{({[]})}", True),
-
         # wrong bracket types
         ("(]", False),
         ("[)", False),
@@ -71,7 +72,6 @@ def run(module, check):
         ("[(])", False),
         ("{[}]", False),
         ("{(])}", False),
-
         # extra closing brackets
         (")()", False),
         ("())", False),
@@ -83,7 +83,6 @@ def run(module, check):
         ("abc)", False),
         ("abc]", False),
         ("abc}", False),
-
         # extra opening brackets
         ("(()", False),
         ("[[]", False),
@@ -95,7 +94,6 @@ def run(module, check):
         ("abc[", False),
         ("abc{", False),
         ("hello(world", False),
-
         # text inside brackets
         ("(abc)", True),
         ("[abc]", True),
@@ -107,7 +105,6 @@ def run(module, check):
         ("[a{b}c]", True),
         ("{a(b)c}", True),
         ("a(b[c]d)e", True),
-
         # numbers and symbols
         ("(123)", True),
         ("[123]", True),
@@ -119,7 +116,6 @@ def run(module, check):
         ("abc{[123(xyz)]}", True),
         ("[{adaudna}]", True),
         ("[{adaudna}])", False),
-
         # spaces and newlines
         ("( )", True),
         ("[ ]", True),
@@ -131,7 +127,6 @@ def run(module, check):
         ("hello { world }", True),
         ("(hello [world] test)", True),
         ("( hello [ world ]", False),
-
         # mixed valid
         ("a(b[c]d)e", True),
         ("a{b[c(d)e]f}g", True),
@@ -143,7 +138,6 @@ def run(module, check):
         ("((a)[b]{c})", True),
         ("a(b)c[d]e{f}", True),
         ("abc{[123(xyz)]}", True),
-
         # mixed invalid
         ("a(b[c)d]e", False),
         ("a{b[c}d]e", False),
@@ -155,7 +149,6 @@ def run(module, check):
         ("{{[()]}", False),
         ("abc{[123(xyz]}]", False),
         ("[{adaudna}])", False),
-
         # more edge cases
         ("((((()))))", True),
         ("[[[[[]]]]]", True),
@@ -171,8 +164,4 @@ def run(module, check):
 
     for value, expected in cases:
         result = module.brackets(value)
-        check(
-            f"brackets({value!r})",
-            result,
-            expected
-        )
+        check(f"brackets({value!r})", result, expected)

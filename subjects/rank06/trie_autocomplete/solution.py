@@ -1,6 +1,10 @@
+from typing import Any
+
+
 def trie_autocomplete(words: list[str], prefix: str) -> list[str]:
     END = None  # key marking the end of a word (never a character)
-    root = {}
+    # a node: child nodes by character, plus END -> True for a whole word
+    root: dict[str | None, Any] = {}
     for word in words:
         node = root
         for char in word:
@@ -13,13 +17,13 @@ def trie_autocomplete(words: list[str], prefix: str) -> list[str]:
             return []
         node = node[char]
 
-    found = []
-    stack = [(node, prefix)]
+    found: list[str] = []
+    stack: list[tuple[dict[str | None, Any], str]] = [(node, prefix)]
     while stack:
         node, word = stack.pop()
         if END in node:
             found.append(word)
-        for char in node:
-            if char is not END:
-                stack.append((node[char], word + char))
+        for key in node:
+            if key is not None:  # END
+                stack.append((node[key], word + key))
     return sorted(found)

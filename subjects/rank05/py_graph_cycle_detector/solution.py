@@ -1,6 +1,6 @@
 def py_graph_cycle_detector(graph: dict[int, list[int]]) -> bool:
     WHITE, GREY, BLACK = 0, 1, 2
-    color = {}
+    color: dict[int, int] = {}
     for start in graph:
         if color.get(start, WHITE) != WHITE:
             continue

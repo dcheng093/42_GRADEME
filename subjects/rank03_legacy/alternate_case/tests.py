@@ -1,5 +1,11 @@
-def run(module, check):
-    cases = [
+from types import ModuleType
+from typing import Any
+
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+    cases: list[Any] = [
         # basic words
         ("hello", "HeLlO"),
         ("world", "WoRlD"),
@@ -11,7 +17,6 @@ def run(module, check):
         ("abcdefgh", "AbCdEfGh"),
         ("abcdefghi", "AbCdEfGhI"),
         ("abcdefghij", "AbCdEfGhIj"),
-
         # multiple words
         ("hello world", "HeLlO wOrLd"),
         ("hello python", "HeLlO pYtHoN"),
@@ -23,7 +28,6 @@ def run(module, check):
         ("this is a test", "ThIs Is A tEsT"),
         ("python is fun", "PyThOn Is FuN"),
         ("i love coding", "I lOvE cOdInG"),
-
         # empty and whitespace
         ("", ""),
         (" ", " "),
@@ -35,7 +39,6 @@ def run(module, check):
         ("hello  world", "HeLlO  wOrLd"),
         ("hello   world", "HeLlO   wOrLd"),
         ("  hello  world  ", "  HeLlO  wOrLd  "),
-
         # lowercase input
         ("a", "A"),
         ("ab", "Ab"),
@@ -47,7 +50,6 @@ def run(module, check):
         ("aaaaaaaa", "AaAaAaAa"),
         ("bbbbbbbb", "BbBbBbBb"),
         ("helloworld", "HeLlOwOrLd"),
-
         # uppercase input
         ("A", "A"),
         ("AB", "Ab"),
@@ -59,7 +61,6 @@ def run(module, check):
         ("AAAAAAAA", "AaAaAaAa"),
         ("BBBBBBBB", "BbBbBbBb"),
         ("HELLOWORLD", "HeLlOwOrLd"),
-
         # mixed input case
         ("hElLo", "HeLlO"),
         ("HeLLo", "HeLlO"),
@@ -71,7 +72,6 @@ def run(module, check):
         ("pYtHoN", "PyThOn"),
         ("TeStInG", "TeStInG"),
         ("tEsTiNg", "TeStInG"),
-
         # numbers
         ("123", "123"),
         ("12345", "12345"),
@@ -83,14 +83,12 @@ def run(module, check):
         ("1a2b3c", "1A2b3C"),
         ("hello123", "HeLlO123"),
         ("123hello", "123HeLlO"),
-
         # numbers between letters
         ("hello123world", "HeLlO123wOrLd"),
         ("abc123def", "AbC123dEf"),
         ("12hello34", "12HeLlO34"),
         ("test123case", "TeSt123CaSe"),
         ("123test456", "123TeSt456"),
-
         # punctuation
         ("hello!", "HeLlO!"),
         ("hello?", "HeLlO?"),
@@ -102,7 +100,6 @@ def run(module, check):
         ("hello/world", "HeLlO/wOrLd"),
         ("hello@world", "HeLlO@wOrLd"),
         ("hello#world", "HeLlO#wOrLd"),
-
         # punctuation between letters
         ("a!b?c", "A!b?C"),
         ("a-b-c", "A-b-C"),
@@ -114,7 +111,6 @@ def run(module, check):
         ("a:b:c", "A:b:C"),
         ("a;b;c", "A;b;C"),
         ("a,b,c", "A,b,C"),
-
         # punctuation at beginning/end
         ("!hello", "!HeLlO"),
         ("?hello", "?HeLlO"),
@@ -126,7 +122,6 @@ def run(module, check):
         ("...hello...", "...HeLlO..."),
         ("---hello---", "---HeLlO---"),
         ("***hello***", "***HeLlO***"),
-
         # numbers + punctuation
         ("1a2b3c", "1A2b3C"),
         ("1-a-2-b-3-c", "1-A-2-b-3-C"),
@@ -138,14 +133,12 @@ def run(module, check):
         ("3blindmice", "3BlInDmIcE"),
         ("version2test", "VeRsIoN2tEsT"),
         ("test123test456test", "TeSt123TeSt456TeSt"),
-
         # no alphabetic characters
         ("1234567890", "1234567890"),
         ("!@#$%^&*()", "!@#$%^&*()"),
         ("123!@#456", "123!@#456"),
         ("---___---", "---___---"),
         ("...,,,!!!", "...,,,!!!"),
-
         # longer examples
         (
             "thequickbrownfox",
@@ -191,8 +184,4 @@ def run(module, check):
 
     for value, expected in cases:
         result = module.alternate_case(value)
-        check(
-            f"alternate_case({value!r})",
-            result,
-            expected
-        )
+        check(f"alternate_case({value!r})", result, expected)

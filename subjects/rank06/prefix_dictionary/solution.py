@@ -1,7 +1,14 @@
+from typing import Any
+
+# a trie node: child nodes by character, plus END -> True for a whole word
+Node = dict[str, Any]
+
+
 class PrefixDictionary:
-    def __init__(self):
-        self.root = {}
-        self.END = "$"  # marks the end of an inserted word (inputs are a-z only)
+    def __init__(self) -> None:
+        self.root: Node = {}
+        # marks the end of an inserted word (inputs are a-z only)
+        self.END = "$"
 
     def insert(self, word: str) -> None:
         node = self.root
@@ -9,7 +16,7 @@ class PrefixDictionary:
             node = node.setdefault(char, {})
         node[self.END] = True
 
-    def _walk(self, text):
+    def _walk(self, text: str) -> Node | None:
         node = self.root
         for char in text:
             if char not in node:

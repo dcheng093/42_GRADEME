@@ -1,5 +1,5 @@
 def topKFrequent(nums: list[int], k: int) -> list[int]:
-    freq = {}
+    freq: dict[int, int] = {}
 
     for n in nums:
         if n in freq:

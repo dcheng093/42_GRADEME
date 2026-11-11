@@ -15,24 +15,27 @@ import json
 import sys
 import urllib.request
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "scripts" / "data"
 URL = "https://rank{:02d}.42exam.net/js/data.js"
 
 
-def js_literal_to_json(src):
+def js_literal_to_json(src: str) -> Any:
     """The first [...] after `SUBJECTS =` in `src`, as Python data.
 
     Handles what the files use: unquoted keys, double-quoted strings, trailing
     commas and // or /* */ comments.
     """
     start = src.index("[", src.index("SUBJECTS"))
-    out, i, depth = [], start, 0
+    out: list[str] = []
+    i, depth = start, 0
     while i < len(src):
         ch = src[i]
         if ch == '"' or ch == "'":
-            j, buf = i + 1, []
+            j = i + 1
+            buf: list[str] = []
             while src[j] != ch:
                 if src[j] == "\\":
                     nxt = src[j + 1]
@@ -68,7 +71,9 @@ def js_literal_to_json(src):
             continue
         if ch == ",":
             k = i + 1
-            while k < len(src) and (src[k] in " \t\r\n" or src.startswith("//", k)):
+            while k < len(src) and (
+                src[k] in " \t\r\n" or src.startswith("//", k)
+            ):
                 k = src.index("\n", k) if src.startswith("//", k) else k + 1
             if src[k] in "]}":
                 i += 1  # trailing comma
@@ -85,8 +90,10 @@ def js_literal_to_json(src):
     return json.loads("".join(out))
 
 
-def fetch(rank):
-    req = urllib.request.Request(URL.format(rank), headers={"User-Agent": "examshell-fetch"})
+def fetch(rank: int) -> None:
+    req = urllib.request.Request(
+        URL.format(rank), headers={"User-Agent": "examshell-fetch"}
+    )
     with urllib.request.urlopen(req, timeout=30) as resp:
         src = resp.read().decode("utf-8")
     data = js_literal_to_json(src)
@@ -94,11 +101,13 @@ def fetch(rank):
         task["level"] = int(task["level"])
     OUT.mkdir(parents=True, exist_ok=True)
     path = OUT / f"rank{rank:02d}.json"
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8"
+    )
     print(f"rank{rank:02d}: {len(data)} subjects -> {path.relative_to(ROOT)}")
 
 
-def main(argv):
+def main(argv: list[str]) -> int:
     ranks = [int(a) for a in argv[1:]] or [2, 3, 4, 5, 6]
     for rank in ranks:
         fetch(rank)

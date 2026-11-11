@@ -1,15 +1,15 @@
 class MinHeap:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def push(self, val: int) -> None:
         pass
 
     def pop(self) -> int | None:
-        pass
+        raise NotImplementedError
 
     def peek(self) -> int | None:
-        pass
+        raise NotImplementedError
 
     def size(self) -> int:
-        pass
+        raise NotImplementedError

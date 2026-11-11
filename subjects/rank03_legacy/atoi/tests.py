@@ -1,5 +1,11 @@
-def run(module, check):
-    cases = [
+from types import ModuleType
+from typing import Any
+
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+    cases: list[Any] = [
         # basic numbers
         ("0", 0),
         ("1", 1),
@@ -11,7 +17,6 @@ def run(module, check):
         ("999", 999),
         ("1000", 1000),
         ("12345", 12345),
-
         # positive sign
         ("+0", 0),
         ("+1", 1),
@@ -23,7 +28,6 @@ def run(module, check):
         ("+1000", 1000),
         ("+12345", 12345),
         ("+00042", 42),
-
         # negative numbers
         ("-0", 0),
         ("-1", -1),
@@ -35,7 +39,6 @@ def run(module, check):
         ("-1000", -1000),
         ("-12345", -12345),
         ("-00042", -42),
-
         # leading whitespace
         (" 0", 0),
         (" 1", 1),
@@ -47,7 +50,6 @@ def run(module, check):
         ("\t 42", 42),
         (" \t 123", 123),
         ("\n\t -42", -42),
-
         # whitespace + positive sign
         (" +1", 1),
         (" +42", 42),
@@ -59,7 +61,6 @@ def run(module, check):
         ("\t +7", 7),
         (" \t +88", 88),
         ("    +9999", 9999),
-
         # whitespace + negative sign
         (" -1", -1),
         (" -42", -42),
@@ -71,7 +72,6 @@ def run(module, check):
         ("\t -7", -7),
         (" \t -88", -88),
         ("    -9999", -9999),
-
         # stop at letters
         ("42abc", 42),
         ("123abc", 123),
@@ -83,7 +83,6 @@ def run(module, check):
         ("  +123xyz", 123),
         ("123abc456", 123),
         ("-123abc456", -123),
-
         # stop at punctuation
         ("42!", 42),
         ("123.", 123),
@@ -95,7 +94,6 @@ def run(module, check):
         ("999#test", 999),
         ("100@home", 100),
         ("77$money", 77),
-
         # invalid / no digits
         ("", 0),
         ("abc", 0),
@@ -107,7 +105,6 @@ def run(module, check):
         ("   ", 0),
         ("\t", 0),
         ("\n", 0),
-
         # sign followed by whitespace
         ("+ 42", 0),
         ("- 42", 0),
@@ -119,7 +116,6 @@ def run(module, check):
         ("-\t42", 0),
         ("+ 123abc", 0),
         ("- 123abc", 0),
-
         # leading zeros
         ("00", 0),
         ("000", 0),
@@ -131,7 +127,6 @@ def run(module, check):
         ("-00042", -42),
         ("+000123", 123),
         ("000000100", 100),
-
         # very large values
         ("123456789", 123456789),
         ("987654321", 987654321),
@@ -143,7 +138,6 @@ def run(module, check):
         ("999999999999", 999999999999),
         ("-999999999999", -999999999999),
         ("123456789012345", 123456789012345),
-
         # digits followed by whitespace
         ("42 ", 42),
         ("123  ", 123),
@@ -159,8 +153,4 @@ def run(module, check):
 
     for value, expected in cases:
         result = module.atoi(value)
-        check(
-            f"atoi({value!r})",
-            result,
-            expected
-        )
+        check(f"atoi({value!r})", result, expected)

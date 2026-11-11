@@ -4,7 +4,7 @@ from collections import deque
 def sliding_window_maximum(nums: list[int], k: int) -> list[int]:
     if k <= 0 or k > len(nums):
         return []
-    window = deque()  # indexes, their values decreasing
+    window: deque[int] = deque()  # indexes, their values decreasing
     result = []
     for i, value in enumerate(nums):
         while window and nums[window[-1]] <= value:

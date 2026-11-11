@@ -1,11 +1,8 @@
 def inter(s1: str, s2: str) -> str:
-    second = set(s2)
-    seen = set()
-    result = []
+    result = ""
 
     for char in s1:
-        if char in second and char not in seen:
-            seen.add(char)
-            result.append(char)
+        if char in s2 and char not in result:
+            result += char
 
-    return "".join(result)
+    return result

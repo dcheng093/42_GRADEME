@@ -6,7 +6,7 @@ def cryptic_sorter(strings: list[str]) -> list[str]:
         vowel_count = sum(char in vowels for char in lowered)
         return len(value), lowered, vowel_count
 
-    result = []
+    result: list[str] = []
     for value in strings:
         index = len(result)
         value_key = key(value)

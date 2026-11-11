@@ -1,6 +1,12 @@
-def run(module, check):
+from types import ModuleType
+from typing import Any
 
-    cases = [
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+
+    cases: list[Any] = [
         # basic cases
         ([2, 7, 11, 15], 9, [0, 1]),
         ([5, 5], 10, [0, 1]),
@@ -12,7 +18,6 @@ def run(module, check):
         ([-1, 1], 0, [0, 1]),
         ([-5, 5], 0, [0, 1]),
         ([-3, -2], -5, [0, 1]),
-
         # solution at different positions
         ([1, 2, 3, 7], 10, [2, 3]),
         ([1, 2, 3, 7], 4, [0, 2]),
@@ -24,7 +29,6 @@ def run(module, check):
         ([8, 2, 5, 3], 7, [1, 2]),
         ([8, 2, 5, 3], 5, [1, 3]),
         ([8, 2, 5, 3], 13, [0, 2]),
-
         # idk
         ([3, 3, 8], 6, [0, 1]),
         ([4, 4, 10], 8, [0, 1]),
@@ -34,7 +38,6 @@ def run(module, check):
         ([5, 4, 1, 3], 9, [0, 1]),
         ([6, 1, 6, 4], 12, [0, 2]),
         ([2, 9, 2, 7], 4, [0, 2]),
-
         # negative numbers
         ([-1, -2, -3, -4], -5, [1, 2]),
         ([-1, -2, -3, 5], 2, [2, 3]),
@@ -44,7 +47,6 @@ def run(module, check):
         ([-6, 1, 2, 10], 4, [0, 3]),
         ([-4, -1, 3, 8], 7, [1, 3]),
         ([-3, 1, 4, 6], 3, [0, 3]),
-
         # zero and positives
         ([0, 0, 1, 2], 0, [0, 1]),
         ([0, 1, 2, 3], 4, [1, 3]),
@@ -52,7 +54,6 @@ def run(module, check):
         ([0, 5, 7, 11], 12, [1, 2]),
         ([0, 6, 8, 13], 14, [1, 2]),
         ([0, 7, 9, 15], 16, [1, 2]),
-
         # solution near the middle
         ([8, 3, 7, 2, 5], 9, [2, 3]),
         ([4, 11, 6, 1, 9], 7, [2, 3]),
@@ -61,7 +62,6 @@ def run(module, check):
         ([7, 2, 14, 6, 1], 16, [1, 2]),
         ([3, 10, 5, 8, 2], 5, [0, 4]),
         ([9, 4, 6, 1, 7], 16, [0, 4]),
-
         # larger arrays
         ([1, 4, 7, 10, 13, 16], 23, [3, 4]),
         ([2, 5, 8, 11, 14, 17], 25, [3, 4]),
@@ -71,7 +71,6 @@ def run(module, check):
         ([2, 4, 6, 8, 10, 12, 14], 6, [0, 1]),
         ([10, 20, 30, 40, 50, 60], 30, [0, 1]),
         ([11, 22, 33, 44, 55, 66], 33, [0, 1]),
-
         # larger values
         ([99999, 1, 500, 2500], 100499, [0, 2]),
         ([123456, 654321, 111111], 234567, [0, 2]),
@@ -79,20 +78,9 @@ def run(module, check):
     ]
 
     for nums, target, expected in cases:
-        try:
-            result = module.twoSum(nums, target)
-
-            check(
-                f"twoSum({nums!r}, {target})",
-                (len(result), set(result)),
-                (2, set(expected)),
-            )
-
-        except Exception as e:
-            print(
-                f"test {test_number + 1} || "
-                f"twoSum({nums!r}, {target}): FAIL"
-            )
-            print(f"       Expected: {expected!r}")
-            print(f"       Got:      {type(e).__name__}: {e}")
-            raise SystemExit(1)
+        result = module.twoSum(nums, target)
+        check(
+            f"twoSum({nums!r}, {target})",
+            (len(result), set(result)),
+            (2, set(expected)),
+        )

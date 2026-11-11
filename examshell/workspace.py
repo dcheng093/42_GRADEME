@@ -1,15 +1,18 @@
-"""The rendu/ folder you write your answers in, and trace/ where old ones go."""
+"""The rendu/ folder you write your answers in, and trace/ where old ones
+go."""
 
 import re
 import shutil
 import subprocess
 import sys
 from datetime import datetime
+from pathlib import Path
 
 from . import config
+from .questions import Question
 
 
-def prepare(question):
+def prepare(question: Question) -> Path:
     """Create rendu/<question>/ with the expected files. Returns the main file.
 
     Files the subject hands out (spec.json "given", headers like ft_list.h) are
@@ -36,20 +39,24 @@ def prepare(question):
     return question.candidate
 
 
-_STUB_LINE = re.compile(r"(class \w+.*:|\s*def \w+\(.*\).*:|\s+pass|\s*\"\"\".*\"\"\"|\s*"
-                        r"|from typing import [\w, ]+)")
+_STUB_LINE = re.compile(
+    r"(class \w+.*:|\s*def \w+\(.*\).*:|\s+pass|\s+raise NotImplementedError"
+    r"|\s*\"\"\".*\"\"\"|\s*|from typing import [\w, ]+)"
+)
 
 
-def is_stub(text):
-    """True if `text` is an untouched starter written by prepare(): only class/def
-    headers and `pass` lines."""
+def is_stub(text: str) -> bool:
+    """True if `text` is an untouched starter written by prepare(): only
+    class/def headers and `pass` / `raise NotImplementedError` lines."""
     lines = text.splitlines()
-    return (any(l.lstrip().startswith(("def ", "class ")) for l in lines)
-            and all(_STUB_LINE.fullmatch(l) for l in lines))
+    return any(
+        line.lstrip().startswith(("def ", "class ")) for line in lines
+    ) and all(_STUB_LINE.fullmatch(line) for line in lines)
 
 
-def _handed_out():
-    """(name, content) of every file a subject hands out: copies of those aren't your work."""
+def _handed_out() -> set[tuple[str, bytes]]:
+    """(name, content) of every file a subject hands out: copies of those
+    aren't your work."""
     found = set()
     for folder in ("given", "handout"):
         for f in config.SUBJECTS.glob(f"*/*/{folder}/*"):
@@ -61,10 +68,14 @@ def _handed_out():
     return found
 
 
-def _has_work(path):
-    handed_out = None
+def _has_work(path: Path) -> bool:
+    handed_out: set[tuple[str, bytes]] | None = None
     for f in path.rglob("*"):
-        if not f.is_file() or f.stat().st_size == 0 or is_stub(f.read_text(errors="replace")):
+        if (
+            not f.is_file()
+            or f.stat().st_size == 0
+            or is_stub(f.read_text(errors="replace"))
+        ):
             continue
         if handed_out is None:
             handed_out = _handed_out()
@@ -73,8 +84,9 @@ def _has_work(path):
     return False
 
 
-def archive():
-    """Move rendu/ to trace/<timestamp>/ if you wrote anything, else just remove it.
+def archive() -> Path | None:
+    """Move rendu/ to trace/<timestamp>/ if you wrote anything, else just
+    remove it.
 
     Returns the trace folder, or None.
     """
@@ -90,27 +102,32 @@ def archive():
     return target
 
 
-def clean_caches():
+def clean_caches() -> None:
     for folder in (config.RENDU, config.SUBJECTS, config.ROOT / "examshell"):
         if folder.is_dir():
             for cache in folder.rglob("__pycache__"):
                 shutil.rmtree(cache, ignore_errors=True)
 
 
-def open_folder(path):
-    """Open a folder in the OS file manager. Returns False if nothing worked."""
+def open_folder(path: Path) -> bool:
+    """Open a folder in the OS file manager. Returns False if nothing
+    worked."""
     path.mkdir(parents=True, exist_ok=True)
-    candidates = []
+    candidates: list[list[str]] = []
     if sys.platform == "darwin":
         candidates.append(["open", str(path)])
     if shutil.which("wslpath") and shutil.which("explorer.exe"):
-        win = subprocess.run(["wslpath", "-w", str(path)], capture_output=True, text=True).stdout.strip()
+        win = subprocess.run(
+            ["wslpath", "-w", str(path)], capture_output=True, text=True
+        ).stdout.strip()
         candidates.append(["explorer.exe", win])
     candidates += [["xdg-open", str(path)], ["open", str(path)]]
     for cmd in candidates:
         if shutil.which(cmd[0]):
             try:
-                subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.Popen(
+                    cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
                 return True
             except OSError:
                 continue

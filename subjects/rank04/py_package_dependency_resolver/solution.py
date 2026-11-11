@@ -1,6 +1,9 @@
 def package_dependency_resolver(packages: dict[str, list[str]]) -> list[str]:
     # dependencies that exist in the input; missing ones are ignored
-    remaining = {name: {d for d in deps if d in packages} for name, deps in packages.items()}
+    remaining = {
+        name: {d for d in deps if d in packages}
+        for name, deps in packages.items()
+    }
     if any(name in deps for name, deps in remaining.items()):
         return []  # self-dependency
     order = []

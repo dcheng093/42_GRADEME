@@ -1,4 +1,4 @@
-def _push(heap, value):
+def _push(heap: list[int], value: int) -> None:
     heap.append(value)
     i = len(heap) - 1
     while i and heap[(i - 1) // 2] > heap[i]:
@@ -6,7 +6,7 @@ def _push(heap, value):
         i = (i - 1) // 2
 
 
-def _pop(heap):
+def _pop(heap: list[int]) -> int:
     top = heap[0]
     last = heap.pop()
     if heap:
@@ -25,12 +25,12 @@ def _pop(heap):
 
 
 def task_order(n: int, prereqs: list[list[int]]) -> list[int]:
-    after = [[] for _ in range(n)]
+    after: list[list[int]] = [[] for _ in range(n)]
     waiting = [0] * n  # unfinished prerequisites per task
     for task, before in prereqs:
         after[before].append(task)
         waiting[task] += 1
-    ready = []
+    ready: list[int] = []
     for task in range(n):
         if waiting[task] == 0:
             _push(ready, task)

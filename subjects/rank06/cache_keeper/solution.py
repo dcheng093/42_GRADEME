@@ -1,23 +1,25 @@
 class _Node:
     __slots__ = ("key", "value", "prev", "next")
 
-    def __init__(self, key=0, value=0):
+    def __init__(self, key: int = 0, value: int = 0) -> None:
         self.key, self.value = key, value
-        self.prev = self.next = None
+        # linked for real by _push_front; a lone node points to itself
+        self.prev: _Node = self
+        self.next: _Node = self
 
 
 class CacheKeeper:
-    def __init__(self, capacity: int):
+    def __init__(self, capacity: int) -> None:
         self.capacity = capacity
-        self.nodes = {}
+        self.nodes: dict[int, _Node] = {}
         # sentinels: head.next is the most recent, tail.prev the least recent
         self.head, self.tail = _Node(), _Node()
         self.head.next, self.tail.prev = self.tail, self.head
 
-    def _unlink(self, node):
+    def _unlink(self, node: _Node) -> None:
         node.prev.next, node.next.prev = node.next, node.prev
 
-    def _push_front(self, node):
+    def _push_front(self, node: _Node) -> None:
         node.prev, node.next = self.head, self.head.next
         self.head.next.prev = node
         self.head.next = node

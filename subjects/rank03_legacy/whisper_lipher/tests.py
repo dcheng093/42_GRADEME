@@ -1,6 +1,12 @@
-def run(module, check):
+from types import ModuleType
+from typing import Any
 
-    cases = [
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+
+    cases: list[Any] = [
         # basic cases
         ("Hello, World!", 3, "Khoor, Zruog!"),
         ("abc", 1, "bcd"),
@@ -12,7 +18,6 @@ def run(module, check):
         ("A", 1, "B"),
         ("Z", 1, "A"),
         ("abc", 0, "abc"),
-
         # zero and full rotations
         ("ABC", 0, "ABC"),
         ("abc", 26, "abc"),
@@ -24,7 +29,6 @@ def run(module, check):
         ("wrap ZAP", 52, "wrap ZAP"),
         ("Edge Case!", -26, "Edge Case!"),
         ("Edge Case!", -27, "Dcfd Bzrd!"),
-
         # uppercase and lowercase
         ("Hello", 5, "Mjqqt"),
         ("hello", 5, "mjqqt"),
@@ -36,7 +40,6 @@ def run(module, check):
         ("za", 1, "ab"),
         ("ZA", 1, "AB"),
         ("aZ", 1, "bA"),
-
         # wraparound
         ("Zz", 1, "Aa"),
         ("Aa", 25, "Zz"),
@@ -45,26 +48,18 @@ def run(module, check):
         ("ZEBRA", 1, "AFCSB"),
         ("zebra", 2, "bgdtc"),
         ("ZEBRA", 2, "BGDTC"),
-        ("abcdefghijklmnopqrstuvwxyz", 1,
-         "bcdefghijklmnopqrstuvwxyza"),
-        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1,
-         "BCDEFGHIJKLMNOPQRSTUVWXYZA"),
-
+        ("abcdefghijklmnopqrstuvwxyz", 1, "bcdefghijklmnopqrstuvwxyza"),
+        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1, "BCDEFGHIJKLMNOPQRSTUVWXYZA"),
         # large positive and negative shifts
-        ("abcdefghijklmnopqrstuvwxyz", 25,
-         "zabcdefghijklmnopqrstuvwxy"),
-        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 25,
-         "ZABCDEFGHIJKLMNOPQRSTUVWXY"),
-        ("abcdefghijklmnopqrstuvwxyz", 26,
-         "abcdefghijklmnopqrstuvwxyz"),
-        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 52,
-         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+        ("abcdefghijklmnopqrstuvwxyz", 25, "zabcdefghijklmnopqrstuvwxy"),
+        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 25, "ZABCDEFGHIJKLMNOPQRSTUVWXY"),
+        ("abcdefghijklmnopqrstuvwxyz", 26, "abcdefghijklmnopqrstuvwxyz"),
+        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 52, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
         ("Shifting Letters", 100, "Odebpejc Happano"),
         ("Same Shift", 39, "Fnzr Fuvsg"),
         ("Another Test", 14, "Obchvsf Hsgh"),
         ("qwerty", -3, "ntboqv"),
         ("QWERTY", -3, "NTBOQV"),
-
         # mixed case
         ("abcXYZ", 3, "defABC"),
         ("xyzABC", 3, "abcDEF"),
@@ -76,46 +71,32 @@ def run(module, check):
         ("ZzYyXx", -1, "YyXxWw"),
         ("Hello WORLD", 13, "Uryyb JBEYQ"),
         ("HELLO world", 13, "URYYB jbeyq"),
-
         # spaces and punctuation
-        ("The quick brown fox", 3,
-         "Wkh txlfn eurzq ira"),
-        ("The Quick Brown Fox", 3,
-         "Wkh Txlfn Eurzq Ira"),
-        ("the quick brown fox", 3,
-         "wkh txlfn eurzq ira"),
+        ("The quick brown fox", 3, "Wkh txlfn eurzq ira"),
+        ("The Quick Brown Fox", 3, "Wkh Txlfn Eurzq Ira"),
+        ("the quick brown fox", 3, "wkh txlfn eurzq ira"),
         ("Pack my box!", 13, "Cnpx zl obk!"),
-        ("Jump over 2 lazy dogs.", 7,
-         "Qbtw vcly 2 shgf kvnz."),
+        ("Jump over 2 lazy dogs.", 7, "Qbtw vcly 2 shgf kvnz."),
         ("1234567890", 10, "1234567890"),
         ("!@#$%^&*()", 7, "!@#$%^&*()"),
         ("Hello, 123!", 1, "Ifmmp, 123!"),
         ("Hello, 123!", -1, "Gdkkn, 123!"),
         ("a-b-c", 1, "b-c-d"),
-
         # symbols and separators
         ("A-B-C", 1, "B-C-D"),
         ("a_b_c", 2, "c_d_e"),
         ("A_B_C", 2, "C_D_E"),
-        ("one\ttwo\nthree", 1,
-         "pof\tuxp\nuisff"),
-        ("Hello... goodbye!!!", 19,
-         "Axeeh... zhhwurx!!!"),
-        ("Punctuation, stays!", 6,
-         "Vatizagzout, yzgey!"),
+        ("one\ttwo\nthree", 1, "pof\tuxp\nuisff"),
+        ("Hello... goodbye!!!", 19, "Axeeh... zhhwurx!!!"),
+        ("Punctuation, stays!", 6, "Vatizagzout, yzgey!"),
         ("Numbers 123", 4, "Ryqfivw 123"),
         ("42 is cool!", 5, "42 nx httq!"),
         ("Rotate 90°", 4, "Vsxexi 90°"),
-
         # full alphabet
-        ("abcdefghijklmnopqrstuvwxyz", 5,
-         "fghijklmnopqrstuvwxyzabcde"),
-        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 5,
-         "FGHIJKLMNOPQRSTUVWXYZABCDE"),
-        ("abcdefghijklmnopqrstuvwxyz", -5,
-         "vwxyzabcdefghijklmnopqrstu"),
-        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", -5,
-         "VWXYZABCDEFGHIJKLMNOPQRSTU"),
+        ("abcdefghijklmnopqrstuvwxyz", 5, "fghijklmnopqrstuvwxyzabcde"),
+        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 5, "FGHIJKLMNOPQRSTUVWXYZABCDE"),
+        ("abcdefghijklmnopqrstuvwxyz", -5, "vwxyzabcdefghijklmnopqrstu"),
+        ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", -5, "VWXYZABCDEFGHIJKLMNOPQRSTU"),
         ("abcde", 25, "zabcd"),
         ("ABCDE", 25, "ZABCD"),
         ("vwxyz", 5, "abcde"),
@@ -131,7 +112,6 @@ def run(module, check):
         ("ABC DEF", -7, "TUV WXY"),
         ("lorem ipsum", 1, "mpsfn jqtvn"),
         ("Lorem Ipsum", 1, "Mpsfn Jqtvn"),
-
         ("TEST123", 1, "UFTU123"),
         ("test123", 1, "uftu123"),
         ("AaZz", 2, "CcBb"),
@@ -139,10 +119,8 @@ def run(module, check):
         ("No spaces", 8, "Vw axikma"),
         ("No spaces", 18, "Fg khsuwk"),
         ("Mix3d CASE!", 9, "Vrg3m LJBN!"),
-        ("Wraparound zzz AAA", 1,
-         "Xsbqbspvoe aaa BBB"),
-        ("mixedCASE123!", 17,
-         "dzovuTRJV123!"),
+        ("Wraparound zzz AAA", 1, "Xsbqbspvoe aaa BBB"),
+        ("mixedCASE123!", 17, "dzovuTRJV123!"),
         ("final_test", 22, "bejwh_paop"),
     ]
 
@@ -150,5 +128,5 @@ def run(module, check):
         check(
             f"whisper_lipher({text!r}, {shift})",
             module.whisper_lipher(text, shift),
-            expected
+            expected,
         )

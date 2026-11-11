@@ -1,6 +1,12 @@
-def run(module, check):
+from types import ModuleType
+from typing import Any
 
-    cases = [
+from examshell.pytests import Check
+
+
+def run(module: ModuleType, check: Check) -> None:
+
+    cases: list[Any] = [
         # basic cases
         ("12", 1),
         ("23", 1),
@@ -11,7 +17,6 @@ def run(module, check):
         ("98", 0),
         ("21", 0),
         ("10", 0),
-
         # multiple patterns
         ("123", 2),
         ("1234", 3),
@@ -22,7 +27,6 @@ def run(module, check):
         ("1223", 2),
         ("1233", 2),
         ("112233", 2),
-
         # broken sequences
         ("13", 0),
         ("14", 0),
@@ -33,7 +37,6 @@ def run(module, check):
         ("1235", 2),
         ("1245", 2),
         ("1357", 0),
-
         # letters between digits
         ("1a2", 0),
         ("1b2", 0),
@@ -46,7 +49,6 @@ def run(module, check):
         ("12a", 1),
         ("a123", 2),
         ("123a", 2),
-
         # digits mixed with letters
         ("a1b2c3", 0),
         ("a12b34c", 2),
@@ -55,7 +57,6 @@ def run(module, check):
         ("123abc", 2),
         ("a123z", 2),
         ("x12y23z", 2),
-
         # repeated and descending digits
         ("11", 0),
         ("22", 0),
@@ -69,7 +70,6 @@ def run(module, check):
         ("9876543210", 0),
         ("54321", 0),
         ("210", 0),
-
         # special cases
         ("", 0),
         ("1", 0),
@@ -85,7 +85,6 @@ def run(module, check):
         (" 12 ", 1),
         ("1 2", 0),
         ("1\t2", 0),
-
         # longer mixed cases
         ("1234567890", 8),
         ("0987654321", 0),
@@ -97,7 +96,6 @@ def run(module, check):
         ("12x34x56", 3),
         ("12-34-56", 3),
         ("12.34.56", 3),
-
         # boundary cases
         ("89a", 1),
         ("a89", 1),
@@ -107,7 +105,6 @@ def run(module, check):
         ("6789", 3),
         ("67890", 3),
         ("78901", 3),
-
         # unicode and non-ascii characters
         ("1é2", 0),
         ("é12", 1),
@@ -120,5 +117,5 @@ def run(module, check):
         check(
             f"pattern_tracker({value!r})",
             module.pattern_tracker(value),
-            expected
+            expected,
         )

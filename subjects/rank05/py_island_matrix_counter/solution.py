@@ -14,7 +14,12 @@ def island_matrix_counter(matrix: list[list[str]]) -> int:
             while stack:
                 y, x = stack.pop()
                 for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
-                    if 0 <= ny < rows and 0 <= nx < cols and matrix[ny][nx] == "1" and (ny, nx) not in seen:
+                    if (
+                        0 <= ny < rows
+                        and 0 <= nx < cols
+                        and matrix[ny][nx] == "1"
+                        and (ny, nx) not in seen
+                    ):
                         seen.add((ny, nx))
                         stack.append((ny, nx))
     return islands

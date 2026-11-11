@@ -1,6 +1,7 @@
 """Test harness for C and C++ questions. Runs in a subprocess:
 
-    python3 -m examshell.native_harness <question_dir> <rendu_dir> [--report FILE]
+    python3 -m examshell.native_harness <question_dir> <rendu_dir> \
+        [--report FILE]
 
 What gets built and run is described by <question_dir>/spec.json. Every key is
 optional, and the defaults are the rank02 setup (reference <name>.c, optional
@@ -11,14 +12,18 @@ main.c, argv cases in cases.json, stdout compared):
       "std": "c++98",                      added as -std=…
       "flags": ["-Wall", "-Wextra", "-Werror"],
       "ref": ["ref/bigint.cpp"],           reference sources (default <name>.c)
-      "given": ["given/bag.hpp", ...],     files the subject hands out: copied to
-                                           rendu/, and always taken from here when
-                                           grading, so editing them changes nothing
+      "given": ["given/bag.hpp", ...],     files the subject hands out: copied
+                                           to rendu/, and always taken from
+                                           here when grading, so editing them
+                                           changes nothing
       "builds": [                          one binary per build (default: one)
-        {"name": "basic", "main": "mains/basic.cpp", "defines": ["BUFFER_SIZE=1"],
-         "cases": [...]}                   cases of that build (default cases.json)
+        {"name": "basic", "main": "mains/basic.cpp",
+         "defines": ["BUFFER_SIZE=1"],
+         "cases": [...]}                   cases of that build
+                                           (default cases.json)
       ],
-      "compare": ["stdout"],               stdout | stdout_unordered | exit | stderr
+      "compare": ["stdout"],               stdout | stdout_unordered | exit
+                                           | stderr
       "timeout": 3,                        seconds per run
       "leaks": false,                      valgrind: leaks + invalid accesses
       "fds": false,                        valgrind: fds still open at exit
@@ -53,9 +58,17 @@ import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import IO, Any, Iterable, NoReturn, Sequence
 
 from . import ui
 from .harness import _card, _clear_line, load_module
+
+# a JSON object from spec.json / cases.json
+Json = dict[str, Any]
+# (label, value) lines of a failure card
+Rows = list[tuple[str, object]]
+# (title, rows) of one problem found
+Problem = tuple[str, Rows]
 
 CASE_TIMEOUT = 3  # seconds per run
 VALGRIND_SLOWDOWN = 15  # valgrind runs get this many times the timeout
@@ -75,7 +88,7 @@ CRASHES = {
 class Fail(Exception):
     """A finished verdict: print `card`, exit with `code`."""
 
-    def __init__(self, card, code=1):
+    def __init__(self, card: str, code: int = 1) -> None:
         super().__init__(card)
         self.card, self.code = card, code
 
@@ -84,125 +97,168 @@ class Fail(Exception):
 class Run:
     stdout: bytes
     stderr: bytes
-    code: object  # int, or None when it timed out
+    code: int | None  # None when it timed out
 
     @property
-    def timed_out(self):
+    def timed_out(self) -> bool:
         return self.code is None
 
     @property
-    def crashed(self):
+    def crashed(self) -> bool:
         return isinstance(self.code, int) and self.code < 0
 
 
 @dataclass
 class Spec:
     qdir: Path
-    data: dict
-    expected: list = field(default_factory=list)
+    data: Json
+    expected: list[str] = field(default_factory=list)
 
     @classmethod
-    def load(cls, qdir, expected):
+    def load(cls, qdir: Path, expected: list[str]) -> "Spec":
         path = qdir / "spec.json"
         data = json.loads(path.read_text()) if path.is_file() else {}
         return cls(qdir, data, expected)
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.qdir.name
 
     @property
-    def cpp(self):
+    def cpp(self) -> bool:
         if "compiler" in self.data:
-            return self.data["compiler"] == "c++"
-        return any(f.endswith((".cpp", ".cc", ".hpp")) for f in self.expected + [s.name for s in self.ref_sources])
+            return bool(self.data["compiler"] == "c++")
+        return any(
+            f.endswith((".cpp", ".cc", ".hpp"))
+            for f in self.expected + [s.name for s in self.ref_sources]
+        )
 
     @property
-    def compiler(self):
+    def compiler(self) -> str:
         if self.cpp:
-            return shutil.which("c++") or shutil.which("g++") or shutil.which("clang++") or "c++"
-        return shutil.which("gcc") or shutil.which("cc") or shutil.which("clang") or "cc"
+            return (
+                shutil.which("c++")
+                or shutil.which("g++")
+                or shutil.which("clang++")
+                or "c++"
+            )
+        return (
+            shutil.which("gcc")
+            or shutil.which("cc")
+            or shutil.which("clang")
+            or "cc"
+        )
 
     @property
-    def compiler_label(self):
+    def compiler_label(self) -> str:
         return "c++" if self.cpp else "gcc"
 
     @property
-    def flags(self):
+    def flags(self) -> list[str]:
         flags = list(self.data.get("flags", STRICT))
         if self.data.get("std"):
             flags.append(f"-std={self.data['std']}")
         return flags
 
     @property
-    def command_label(self):
+    def command_label(self) -> str:
         return " ".join([self.compiler_label, *self.flags])
 
     @property
-    def ref_sources(self):
+    def ref_sources(self) -> list[Path]:
         refs = self.data.get("ref")
         if refs:
             return [self.qdir / r for r in refs]
         ref_dir = self.qdir / "ref"
         if ref_dir.is_dir():
-            return sorted(f for f in ref_dir.iterdir() if f.name.endswith(SOURCE_EXT))
+            return sorted(
+                f for f in ref_dir.iterdir() if f.name.endswith(SOURCE_EXT)
+            )
         return [self.qdir / f"{self.name}.c"]
 
     @property
-    def given(self):
-        """Files handed out with the subject, compiled from here (never from rendu/)."""
+    def given(self) -> list[Path]:
+        """Files handed out with the subject, compiled from here (never from
+        rendu/)."""
         if "given" in self.data:
             return [self.qdir / g for g in self.data["given"]]
         folder = self.qdir / "given"
         return sorted(folder.iterdir()) if folder.is_dir() else []
 
-    def user_files_in(self, folder):
-        """Expected file names, with patterns like *.c expanded against `folder`."""
-        names = []
+    def user_files_in(self, folder: Path) -> list[str]:
+        """Expected file names, with patterns like *.c expanded against
+        `folder`."""
+        names: list[str] = []
         for pattern in self.expected:
             if any(c in pattern for c in "*?["):
-                names += sorted(f.name for f in folder.iterdir() if f.is_file() and fnmatch.fnmatch(f.name, pattern))
+                names += sorted(
+                    f.name
+                    for f in folder.iterdir()
+                    if f.is_file() and fnmatch.fnmatch(f.name, pattern)
+                )
             else:
                 names.append(pattern)
         return names
 
-    def user_sources(self, folder):
+    def user_sources(self, folder: Path) -> list[str]:
         given = {g.name for g in self.given}
-        return [f for f in self.user_files_in(folder) if f.endswith(SOURCE_EXT) and f not in given]
+        return [
+            f
+            for f in self.user_files_in(folder)
+            if f.endswith(SOURCE_EXT) and f not in given
+        ]
 
     @property
-    def builds(self):
-        builds = self.data.get("builds")
+    def builds(self) -> list[Json]:
+        builds: list[Json] | None = self.data.get("builds")
         if builds:
             return builds
         main = "main.cpp" if (self.qdir / "main.cpp").is_file() else "main.c"
         cases_file = self.qdir / "cases.json"
-        cases = json.loads(cases_file.read_text()) if cases_file.is_file() else [[]]
-        return [{"name": "", "main": main if (self.qdir / main).is_file() else None, "cases": cases}]
+        cases = (
+            json.loads(cases_file.read_text())
+            if cases_file.is_file()
+            else [[]]
+        )
+        return [{
+            "name": "",
+            "main": main if (self.qdir / main).is_file() else None,
+            "cases": cases,
+        }]
 
     @property
-    def timeout(self):
-        return self.data.get("timeout", CASE_TIMEOUT)
+    def timeout(self) -> float:
+        timeout: float = self.data.get("timeout", CASE_TIMEOUT)
+        return timeout
 
     @property
-    def ldflags(self):
+    def ldflags(self) -> list[str]:
         return list(self.data.get("ldflags", []))
 
 
 # ── compiling ───────────────────────────────────────────────────────────────
 _DIAG = re.compile(r"^(.+?):(\d+):(?:\d+:)? (?:fatal )?error: (.+)$")
-_LINK = re.compile(r"(undefined reference to|multiple definition of) [`'‘\"]([^'’`\"]+)['’`\"]")
+_LINK = re.compile(
+    r"(undefined reference to|multiple definition of)"
+    r" [`'‘\"]([^'’`\"]+)['’`\"]"
+)
 _MAC_LINK = re.compile(r'"([^"]+)", referenced from')
 
 
-def _binary_name(key):
+# what a binary is built from: ("ref" | "user", main, defines) or
+# ("preload", source)
+BuildKey = tuple[Any, ...]
+
+
+def _binary_name(key: BuildKey) -> str:
     return f"{key[0]}_{hashlib.sha1(repr(key).encode()).hexdigest()[:10]}"
 
 
 class Builder:
-    """Compiles the reference and your files into a temp dir, once per build."""
+    """Compiles the reference and your files into a temp dir, once per
+    build."""
 
-    def __init__(self, spec, rendu, tmp):
+    def __init__(self, spec: Spec, rendu: Path, tmp: Path) -> None:
         self.spec, self.rendu, self.tmp = spec, rendu, tmp
         self.user_dir = tmp / "user"
         self.user_dir.mkdir()
@@ -217,94 +273,190 @@ class Builder:
         self.given_dir.mkdir()
         for g in spec.given:
             shutil.copy(g, self.given_dir / g.name)
-        self.cache = {}
-        self._locks = {}
+        self.cache: dict[BuildKey, Path] = {}
+        self._locks: dict[BuildKey, threading.Lock] = {}
         self._guard = threading.Lock()
 
-    def _lock(self, key):
-        """One lock per build: parallel cases needing the same binary build it once."""
+    def _lock(self, key: BuildKey) -> threading.Lock:
+        """One lock per build: parallel cases needing the same binary build it
+        once."""
         with self._guard:
             return self._locks.setdefault(key, threading.Lock())
 
-    def _given_sources(self):
-        return [str(self.given_dir / g.name) for g in self.spec.given if g.name.endswith(SOURCE_EXT)]
+    def _given_sources(self) -> list[str]:
+        return [
+            str(self.given_dir / g.name)
+            for g in self.spec.given
+            if g.name.endswith(SOURCE_EXT)
+        ]
 
-    def _main(self, main):
+    def _main(self, main: str | None) -> list[str]:
         return [str(self.spec.qdir / main)] if main else []
 
-    def _defines(self, defines):
+    def _defines(self, defines: Iterable[str] | None) -> list[str]:
         return [f"-D{d}" for d in defines or ()]
 
-    def ref(self, main=None, defines=(), out=None):
+    def ref(
+        self,
+        main: str | None = None,
+        defines: Sequence[str] = (),
+        out: str | None = None,
+    ) -> Path:
         key = ("ref", main, tuple(defines or ()))
         with self._lock(key):
             if key not in self.cache:
                 self.cache[key] = self._build_ref(key, main, defines, out)
         return self.cache[key]
 
-    def _build_ref(self, key, main, defines, out):
+    def _build_ref(
+        self,
+        key: BuildKey,
+        main: str | None,
+        defines: Sequence[str],
+        out: str | None,
+    ) -> Path:
         binary = self.tmp / (out or _binary_name(key))
         includes = {str(s.parent) for s in self.spec.ref_sources}
-        cmd = [self.spec.compiler, "-w", *[f for f in self.spec.flags if f.startswith("-std")],
-               *self._defines(defines), *[f"-I{i}" for i in sorted(includes)], f"-I{self.given_dir}",
-               "-o", str(binary), *map(str, self.spec.ref_sources), *self._given_sources(), *self._main(main),
-               *self.spec.ldflags]
-        proc = subprocess.run(cmd, cwd=self.tmp, capture_output=True, text=True, errors="replace")
+        cmd = [
+            self.spec.compiler,
+            "-w",
+            *[f for f in self.spec.flags if f.startswith("-std")],
+            *self._defines(defines),
+            *[f"-I{i}" for i in sorted(includes)],
+            f"-I{self.given_dir}",
+            "-o",
+            str(binary),
+            *map(str, self.spec.ref_sources),
+            *self._given_sources(),
+            *self._main(main),
+            *self.spec.ldflags,
+        ]
+        proc = subprocess.run(
+            cmd, cwd=self.tmp, capture_output=True, text=True, errors="replace"
+        )
         if proc.returncode:
             log = (proc.stdout + proc.stderr).splitlines()
-            raise Fail(_card("the reference solution doesn't compile (bug in this tool)",
-                             [("output", "\n".join(log[:8]))]), code=2)
+            raise Fail(
+                _card(
+                    "the reference solution doesn't compile (bug in this"
+                    " tool)",
+                    [("output", "\n".join(log[:8]))],
+                ),
+                code=2,
+            )
         return binary
 
-    def user(self, main=None, defines=(), out=None, sources=None):
+    def user(
+        self,
+        main: str | None = None,
+        defines: Sequence[str] = (),
+        out: str | None = None,
+        sources: list[str] | None = None,
+    ) -> Path:
         key = ("user", main, tuple(defines or ()))
         with self._lock(key):
             if key not in self.cache:
-                self.cache[key] = self._build_user(key, main, defines, out, sources)
+                self.cache[key] = self._build_user(
+                    key, main, defines, out, sources
+                )
         return self.cache[key]
 
-    def _build_user(self, key, main, defines, out, sources):
-        sources = self.spec.user_sources(self.user_dir) if sources is None else sources
+    def _build_user(
+        self,
+        key: BuildKey,
+        main: str | None,
+        defines: Sequence[str],
+        out: str | None,
+        sources: list[str] | None,
+    ) -> Path:
+        sources = (
+            self.spec.user_sources(self.user_dir)
+            if sources is None
+            else sources
+        )
         missing = [s for s in sources if not (self.user_dir / s).is_file()]
-        globs = [p for p in self.spec.expected if any(c in p for c in "*?[") and p.endswith(SOURCE_EXT)]
+        globs = [
+            p
+            for p in self.spec.expected
+            if any(c in p for c in "*?[") and p.endswith(SOURCE_EXT)
+        ]
         if missing or not sources:
-            rel = ", ".join(f"rendu/{self.rendu.name}/{m}" for m in (missing or globs or self.spec.expected))
+            rel = ", ".join(
+                f"rendu/{self.rendu.name}/{m}"
+                for m in missing or globs or self.spec.expected
+            )
             raise Fail(_card("file not found", [("expected", rel)]))
         binary = self.tmp / (out or _binary_name(key))
-        cmd = [self.spec.compiler, *self.spec.flags, "-g", "-fdiagnostics-color=never",
-               *self._defines(defines), f"-I{self.user_dir}", f"-I{self.given_dir}", "-o", str(binary),
-               *[str(self.user_dir / s) for s in sources], *self._given_sources(), *self._main(main),
-               *self.spec.ldflags]
-        proc = subprocess.run(cmd, cwd=self.tmp, capture_output=True, text=True, errors="replace")
+        cmd = [
+            self.spec.compiler,
+            *self.spec.flags,
+            "-g",
+            "-fdiagnostics-color=never",
+            *self._defines(defines),
+            f"-I{self.user_dir}",
+            f"-I{self.given_dir}",
+            "-o",
+            str(binary),
+            *[str(self.user_dir / s) for s in sources],
+            *self._given_sources(),
+            *self._main(main),
+            *self.spec.ldflags,
+        ]
+        proc = subprocess.run(
+            cmd, cwd=self.tmp, capture_output=True, text=True, errors="replace"
+        )
         if proc.returncode:
             raise Fail(self.compile_card(proc.stdout + proc.stderr, defines))
         return binary
 
-    def preload(self, source):
-        """Compile a test shim (e.g. a read() that returns short chunks) for LD_PRELOAD."""
+    def preload(self, source: str) -> Path:
+        """Compile a test shim (e.g. a read() that returns short chunks) for
+        LD_PRELOAD."""
         key = ("preload", source)
         with self._lock(key):
             if key not in self.cache:
                 self.cache[key] = self._build_preload(key, source)
         return self.cache[key]
 
-    def _build_preload(self, key, source):
+    def _build_preload(self, key: BuildKey, source: str) -> Path:
         lib = self.tmp / f"{_binary_name(key)}.so"
         cc = shutil.which("gcc") or shutil.which("cc") or "cc"
-        proc = subprocess.run([cc, "-shared", "-fPIC", "-o", str(lib), str(self.spec.qdir / source), "-ldl"],
-                              capture_output=True, text=True, errors="replace")
+        proc = subprocess.run(
+            [
+                cc,
+                "-shared",
+                "-fPIC",
+                "-o",
+                str(lib),
+                str(self.spec.qdir / source),
+                "-ldl",
+            ],
+            capture_output=True,
+            text=True,
+            errors="replace",
+        )
         if proc.returncode:
-            raise Fail(_card("a test helper doesn't compile (bug in this tool)",
-                             [("output", "\n".join((proc.stdout + proc.stderr).splitlines()[:8]))]), code=2)
+            raise Fail(
+                _card(
+                    "a test helper doesn't compile (bug in this tool)",
+                    [(
+                        "output",
+                        "\n".join(
+                            (proc.stdout + proc.stderr).splitlines()[:8]
+                        ),
+                    )],
+                ),
+                code=2,
+            )
         return lib
 
-    def env_for(self, build):
+    def env_for(self, build: Json) -> dict[str, str] | None:
         if not build.get("preload") or not sys.platform.startswith("linux"):
             return None
         return dict(os.environ, LD_PRELOAD=str(self.preload(build["preload"])))
 
     # ── messages ──
-    def rel(self, path):
+    def rel(self, path: str | Path) -> str:
         path = Path(path)
         try:
             resolved = path.resolve()
@@ -318,28 +470,65 @@ class Builder:
             return f"{path.name} (the test's own file)"
         return str(path)
 
-    def compile_card(self, log, defines=()):
+    def compile_card(self, log: str, defines: Sequence[str] = ()) -> str:
         title = f"doesn't compile  ({self.spec.command_label})"
         errors = [m for m in map(_DIAG.match, log.splitlines()) if m]
         if errors:
-            mine = [m for m in errors if Path(m.group(1)).resolve().parent == self.user_dir.resolve()]
+            mine = [
+                m
+                for m in errors
+                if Path(m.group(1)).resolve().parent == self.user_dir.resolve()
+            ]
             first = (mine or errors)[0]
-            path, line, msg = Path(first.group(1)), int(first.group(2)), first.group(3)
+            path, line, msg = (
+                Path(first.group(1)),
+                int(first.group(2)),
+                first.group(3),
+            )
             try:
-                code = path.read_text(errors="replace").splitlines()[line - 1].strip()
+                code = (
+                    path.read_text(errors="replace")
+                    .splitlines()[line - 1]
+                    .strip()
+                )
             except (OSError, IndexError):
                 code = ""
-            rows = [("where", f"{self.rel(path)} line {line}"), ("code", code), ("error", msg)]
+            rows: Rows = [
+                ("where", f"{self.rel(path)} line {line}"),
+                ("code", code),
+                ("error", msg),
+            ]
             if "-Werror" in msg:
                 rows.append(("hint", "warnings count as errors in the exam"))
             if "c++11" in msg or "C++11" in msg:
-                rows.append(("hint", "the exam compiles with -std=c++98: no auto, nullptr, range-for…"))
+                rows.append((
+                    "hint",
+                    (
+                        "the exam compiles with -std=c++98: no auto, nullptr,"
+                        " range-for…"
+                    ),
+                ))
             if not mine:
-                rows.append(("hint", "the test includes your header: check its names and includes"))
+                rows.append((
+                    "hint",
+                    (
+                        "the test includes your header: check its names and"
+                        " includes"
+                    ),
+                ))
             if defines:
-                rows.append(("built with", " ".join(f"-D{d}" for d in defines)))
+                rows.append(
+                    ("built with", " ".join(f"-D{d}" for d in defines))
+                )
             if len(errors) > 1:
-                rows.append(("", ui.paint(f"+{len(errors) - 1} more error{'s' * (len(errors) > 2)}", ui.MUTED)))
+                rows.append((
+                    "",
+                    ui.paint(
+                        f"+{len(errors) - 1} more"
+                        f" error{'s' * (len(errors) > 2)}",
+                        ui.MUTED,
+                    ),
+                ))
             return _card(title, rows)
 
         link = _LINK.search(log)
@@ -351,31 +540,60 @@ class Builder:
                 kind, name = "undefined reference to", mac.group(1).lstrip("_")
         if name:
             if kind == "undefined reference to":
-                hint = ("this exercise is a program: it needs a main()" if name == "main"
-                        else "declared but never defined: check the name and the signature in the subject")
+                hint = (
+                    "this exercise is a program: it needs a main()"
+                    if name == "main"
+                    else (
+                        "declared but never defined: check the name and the"
+                        " signature in the subject"
+                    )
+                )
                 return _card("link error", [("missing", name), ("hint", hint)])
-            hint = ("function exercises must not have a main(), the test brings its own" if name == "main"
-                    else "it is defined twice (in a header without inline? in two files?)")
+            hint = (
+                "function exercises must not have a main(), the test brings"
+                " its own"
+                if name == "main"
+                else (
+                    "it is defined twice (in a header without inline? in two"
+                    " files?)"
+                )
+            )
             return _card("link error", [("duplicate", name), ("hint", hint)])
 
-        lines = [l for l in log.splitlines() if l.strip()]
+        lines = [entry for entry in log.splitlines() if entry.strip()]
         return _card(title, [(self.spec.compiler_label, "\n".join(lines[:8]))])
 
 
 # ── running ─────────────────────────────────────────────────────────────────
-def execute(binary, argv=(), stdin=b"", timeout=CASE_TIMEOUT, cwd=None, env=None, prefix=()):
+def execute(
+    binary: str | Path,
+    argv: Sequence[str] = (),
+    stdin: bytes | str = b"",
+    timeout: float = CASE_TIMEOUT,
+    cwd: Path | None = None,
+    env: dict[str, str] | None = None,
+    prefix: Sequence[str] = (),
+) -> Run:
     """Run a binary. stdin may be bytes or str. Never raises on timeout.
 
-    stdin comes from a file, like `./prog < file` in the subjects (seekable)."""
+    stdin comes from a file, like `./prog < file` in the subjects (seekable).
+    """
     if isinstance(stdin, str):
         stdin = stdin.encode()
     with tempfile.TemporaryFile() as feed:
         feed.write(stdin or b"")
         feed.seek(0)
         try:
-            proc = subprocess.run([*prefix, str(binary), *argv], stdin=feed, stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE, timeout=timeout, cwd=cwd, env=env,
-                                  start_new_session=True)
+            proc = subprocess.run(
+                [*prefix, str(binary), *argv],
+                stdin=feed,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=timeout,
+                cwd=cwd,
+                env=env,
+                start_new_session=True,
+            )
         except subprocess.TimeoutExpired as err:
             return Run(err.stdout or b"", err.stderr or b"", None)
     return Run(proc.stdout, proc.stderr, proc.returncode)
@@ -384,15 +602,15 @@ def execute(binary, argv=(), stdin=b"", timeout=CASE_TIMEOUT, cwd=None, env=None
 _BARE = re.compile(r"[\w@%+=:,./-]+")
 
 
-def quote(arg):
+def quote(arg: str) -> str:
     if _BARE.fullmatch(arg):
         return arg
     return '"' + re.sub(r'([\\"$`])', r"\\\1", arg) + '"'
 
 
-def command_line(name, case):
+def command_line(name: str, case: Json) -> str:
     if case.get("show"):
-        return case["show"]
+        return str(case["show"])
     cmd = " ".join([f"./{name}", *map(quote, case.get("argv", []))])
     stdin = case.get("stdin")
     if stdin is not None:
@@ -402,20 +620,20 @@ def command_line(name, case):
     return cmd
 
 
-def signal_name(code):
+def signal_name(code: int) -> str:
     try:
         return signal.Signals(-code).name
     except ValueError:
         return f"signal {-code}"
 
 
-def _normalize(case):
+def _normalize(case: list[str] | Json) -> Json:
     if isinstance(case, list):
         return {"argv": case}
     return case
 
 
-def _prepare_cwd(tmp, case, n):
+def _prepare_cwd(tmp: Path, case: Json, n: int) -> Path | None:
     files = case.get("files")
     if not files:
         return None
@@ -427,75 +645,136 @@ def _prepare_cwd(tmp, case, n):
 
 
 # ── valgrind ────────────────────────────────────────────────────────────────
-LEAK_KINDS = {"Leak_DefinitelyLost": "definitely lost", "Leak_IndirectlyLost": "indirectly lost"}
+LEAK_KINDS = {
+    "Leak_DefinitelyLost": "definitely lost",
+    "Leak_IndirectlyLost": "indirectly lost",
+}
 MEMORY_KINDS = {
     "InvalidRead": "invalid read (reading memory you don't own)",
     "InvalidWrite": "invalid write (writing past the end? into freed memory?)",
-    "InvalidFree": "invalid free (double free? freeing something not malloc'd?)",
+    "InvalidFree": (
+        "invalid free (double free? freeing something not malloc'd?)"
+    ),
     "MismatchedFree": "mismatched free (new/delete[] mixed? malloc/delete?)",
     "UninitCondition": "a decision depends on an uninitialised value",
 }
 _FD_LINE = re.compile(r"Open (?:file descriptor|AF_\w+ socket) (\d+): ?(.*)")
 
 
-def valgrind_available():
-    return shutil.which("valgrind") is not None and sys.platform.startswith("linux")
+def valgrind_available() -> bool:
+    return shutil.which("valgrind") is not None and sys.platform.startswith(
+        "linux"
+    )
 
 
-def valgrind(binary, argv=(), stdin=b"", timeout=CASE_TIMEOUT, cwd=None, user_files=(), fds=False, env=None):
+def valgrind(
+    binary: str | Path,
+    argv: Sequence[str] = (),
+    stdin: bytes | str = b"",
+    timeout: float = CASE_TIMEOUT,
+    cwd: Path | None = None,
+    user_files: Iterable[str] = (),
+    fds: bool = False,
+    env: dict[str, str] | None = None,
+) -> list[Problem]:
     """Run under valgrind. Returns a list of (title, rows) problems."""
     with tempfile.TemporaryDirectory(prefix="examshell-vg-") as vg:
         xml, log = Path(vg) / "out.xml", Path(vg) / "out.log"
-        prefix = ["valgrind", "--leak-check=full", "--show-leak-kinds=definite,indirect",
-                  "--errors-for-leak-kinds=definite,indirect", "--num-callers=30",
-                  "--xml=yes", f"--xml-file={xml}", f"--log-file={log}"]
+        prefix = [
+            "valgrind",
+            "--leak-check=full",
+            "--show-leak-kinds=definite,indirect",
+            "--errors-for-leak-kinds=definite,indirect",
+            "--num-callers=30",
+            "--xml=yes",
+            f"--xml-file={xml}",
+            f"--log-file={log}",
+        ]
         if fds:
             prefix.append("--track-fds=yes")
-        run = execute(binary, argv, stdin, timeout * VALGRIND_SLOWDOWN, cwd, env, prefix=prefix)
+        run = execute(
+            binary,
+            argv,
+            stdin,
+            timeout * VALGRIND_SLOWDOWN,
+            cwd,
+            env,
+            prefix=prefix,
+        )
         if run.timed_out:
-            return [("timed out under valgrind", [("hint", "very slow, or an infinite loop")])]
+            return [(
+                "timed out under valgrind",
+                [("hint", "very slow, or an infinite loop")],
+            )]
         problems = _parse_valgrind_xml(xml, user_files)
         if fds:
             problems += _parse_fds(log)
         return problems
 
 
-def _frame_text(frames, user_files):
-    """'bigint.cpp line 42 (bigint::bigint)' for the first frame in your code."""
+def _frame_text(
+    frames: list[dict[str, str | None]], user_files: set[str]
+) -> str:
+    """'bigint.cpp line 42 (bigint::bigint)' for the first frame in your
+    code."""
     for fr in frames:
         if fr.get("file") in user_files:
             fn = fr.get("fn", "?")
             return f"{fr['file']} line {fr.get('line', '?')}  ({fn})"
     for fr in frames:
         if fr.get("file"):
-            return f"{fr['file']} line {fr.get('line', '?')}  ({fr.get('fn', '?')})"
-    return frames[0].get("fn", "?") if frames else "?"
+            return (
+                f"{fr['file']} line {fr.get('line', '?')} "
+                f" ({fr.get('fn', '?')})"
+            )
+    return (frames[0].get("fn") or "?") if frames else "?"
 
 
-def _parse_valgrind_xml(path, user_files):
+def _parse_valgrind_xml(
+    path: Path, user_files: Iterable[str]
+) -> list[Problem]:
     try:
         root = ET.parse(path).getroot()
     except (ET.ParseError, OSError):
         return []
-    problems = []
+    user_files = set(user_files)
+    problems: list[Problem] = []
     for err in root.iter("error"):
         kind = err.findtext("kind", "")
         frames = [{c.tag: c.text for c in fr} for fr in err.iter("frame")]
         where = _frame_text(frames, user_files)
         if kind in LEAK_KINDS:
             what = err.find("xwhat")
-            text = what.findtext("text") if what is not None else err.findtext("what", "")
+            text = (
+                what.findtext("text")
+                if what is not None
+                else err.findtext("what", "")
+            )
             leaked = what.findtext("leakedbytes") if what is not None else None
-            blocks = what.findtext("leakedblocks") if what is not None else None
-            amount = f"{leaked} bytes in {blocks} block{'s' * (blocks != '1')}" if leaked else text
-            problems.append(("memory leak", [("lost", f"{amount} ({LEAK_KINDS[kind]})"),
-                                             ("allocated", where)]))
+            blocks = (
+                what.findtext("leakedblocks") if what is not None else None
+            )
+            amount = (
+                f"{leaked} bytes in {blocks} block{'s' * (blocks != '1')}"
+                if leaked
+                else text
+            )
+            problems.append((
+                "memory leak",
+                [
+                    ("lost", f"{amount} ({LEAK_KINDS[kind]})"),
+                    ("allocated", where),
+                ],
+            ))
         elif kind in MEMORY_KINDS:
-            problems.append(("memory error", [("error", MEMORY_KINDS[kind]), ("where", where)]))
+            problems.append((
+                "memory error",
+                [("error", MEMORY_KINDS[kind]), ("where", where)],
+            ))
     return problems
 
 
-def _parse_fds(log_path):
+def _parse_fds(log_path: Path) -> list[Problem]:
     try:
         lines = log_path.read_text(errors="replace").splitlines()
     except OSError:
@@ -512,37 +791,56 @@ def _parse_fds(log_path):
             open_fds.append(f"fd {fd}: {m.group(2) or '?'}")
     if not open_fds:
         return []
-    return [("file descriptor leak", [("still open", "\n".join(open_fds)),
-                                      ("hint", "every open()/pipe()/dup() needs its close()")])]
+    return [(
+        "file descriptor leak",
+        [
+            ("still open", "\n".join(open_fds)),
+            ("hint", "every open()/pipe()/dup() needs its close()"),
+        ],
+    )]
 
 
 # ── drawing ─────────────────────────────────────────────────────────────────
-def strip(states, total):
+def strip(states: list[str], total: int) -> str:
     """●●●●✘○○○ for small counts, a bar for big ones."""
     if total > MAX_DOTS:
         ok = sum(1 for s in states if s == "ok")
-        return ui.bar(ok / total, 20, ui.OK if "fail" not in states else ui.ERR)
-    marks = {"ok": ui.paint("●", ui.OK), "fail": ui.paint("✘", ui.ERR, "bold"),
-             "run": ui.paint("◉", ui.HILITE)}
-    return "".join(marks[s] for s in states) + ui.paint("○" * (total - len(states)), ui.MUTED)
+        return ui.bar(
+            ok / total, 20, ui.OK if "fail" not in states else ui.ERR
+        )
+    marks = {
+        "ok": ui.paint("●", ui.OK),
+        "fail": ui.paint("✘", ui.ERR, "bold"),
+        "run": ui.paint("◉", ui.HILITE),
+    }
+    return "".join(marks[s] for s in states) + ui.paint(
+        "○" * (total - len(states)), ui.MUTED
+    )
 
 
-def draw(out, states, total, note=""):
+def draw(out: IO[str], states: list[str], total: int, note: str = "") -> None:
     if out.isatty():
         done = sum(1 for s in states if s == "ok")
         extra = f"  {ui.paint(note, ui.MUTED)}" if note else ""
-        out.write(f"\r  {strip(states, total)}  {ui.paint(f'{done}/{total}', ui.MUTED)}{extra}\x1b[K")
+        out.write(
+            f"\r  {strip(states, total)} "
+            f" {ui.paint(f'{done}/{total}', ui.MUTED)}{extra}\x1b[K"
+        )
         out.flush()
 
 
-def _visible(data, diff_at=None, other_len=None):
-    """cat -e style rendering: `$` marks each newline, → a tab, ^X a control char.
+def _visible(
+    data: bytes, diff_at: int | None = None, other_len: int | None = None
+) -> list[str]:
+    """cat -e style rendering: `$` marks each newline, → a tab, ^X a control
+    char.
 
     Highlights the character at `diff_at` (or a gap if the output stops there).
     Returns a list of display lines.
     """
     text = data.decode(errors="replace")
-    lines, cur = [], ""
+    lines: list[str] = []
+    cur = ""
     for i, ch in enumerate(text):
         if ch == "\n":
             shown, special = "$", True
@@ -559,32 +857,53 @@ def _visible(data, diff_at=None, other_len=None):
         if ch == "\n":
             lines.append(cur)
             cur = ""
-    if diff_at is not None and diff_at >= len(text) and other_len and other_len > len(text) and ui.COLOR:
-        cur += ui.paint(" ", ("bg", ui.ERR))  # the output stops where it should go on
+    if (
+        diff_at is not None
+        and diff_at >= len(text)
+        and other_len
+        and other_len > len(text)
+        and ui.COLOR
+    ):
+        # the output stops where it should go on
+        cur += ui.paint(" ", ("bg", ui.ERR))
     if cur or not lines:
         lines.append(cur)
     return lines
 
 
-def _window(lines, focus):
+def _window(lines: list[str], focus: int) -> str:
     """At most SHOW_LINES lines, keeping line `focus` in view."""
     start = 0 if focus < SHOW_LINES else focus - 2
     shown = lines[start:start + SHOW_LINES]
     if start:
-        shown.insert(0, ui.paint(f"… {start} line{'s' * (start > 1)} above", ui.MUTED))
+        shown.insert(
+            0, ui.paint(f"… {start} line{'s' * (start > 1)} above", ui.MUTED)
+        )
     rest = len(lines) - start - SHOW_LINES
     if rest > 0:
-        shown.append(ui.paint(f"… {rest} more line{'s' * (rest > 1)}", ui.MUTED))
+        shown.append(
+            ui.paint(f"… {rest} more line{'s' * (rest > 1)}", ui.MUTED)
+        )
     return "\n".join(shown)
 
 
-def output_rows(expected, got, labels=("expected", "got")):
-    exp_t, got_t = expected.decode(errors="replace"), got.decode(errors="replace")
-    diff = next((i for i, (a, b) in enumerate(zip(exp_t, got_t)) if a != b), min(len(exp_t), len(got_t)))
+def output_rows(
+    expected: bytes, got: bytes, labels: Sequence[str] = ("expected", "got")
+) -> Rows:
+    exp_t, got_t = expected.decode(errors="replace"), got.decode(
+        errors="replace"
+    )
+    diff = next(
+        (i for i, (a, b) in enumerate(zip(exp_t, got_t)) if a != b),
+        min(len(exp_t), len(got_t)),
+    )
     focus = exp_t.count("\n", 0, diff)
-    rows = []
-    for label, data, mark, other in ((labels[0], expected, None, None),
-                                      (labels[1], got, diff, len(exp_t))):
+    rows: Rows = []
+    sides: tuple[tuple[str, bytes, int | None, int | None], ...] = (
+        (labels[0], expected, None, None),
+        (labels[1], got, diff, len(exp_t)),
+    )
+    for label, data, mark, other in sides:
         if not data:
             rows.append((label, ui.paint("(nothing)", ui.MUTED, "italic")))
         else:
@@ -595,11 +914,13 @@ def output_rows(expected, got, labels=("expected", "got")):
 
 
 # ── comparing ───────────────────────────────────────────────────────────────
-def _sorted_lines(data):
+def _sorted_lines(data: bytes) -> bytes:
     return b"".join(sorted(data.splitlines(keepends=True)))
 
 
-def _numbers_match(expected, got, tolerance=0.0101):
+def _numbers_match(
+    expected: bytes, got: bytes, tolerance: float = 0.0101
+) -> bool:
     a, b = expected.split(), got.split()
     if len(a) != len(b):
         return False
@@ -613,29 +934,62 @@ def _numbers_match(expected, got, tolerance=0.0101):
     return True
 
 
-def compare(ref, got, modes, timeout):
+def compare(
+    ref: Run, got: Run, modes: Sequence[str], timeout: float
+) -> Problem | None:
     """None if `got` matches `ref` under `modes`, else (title, rows)."""
     if got.timed_out:
-        return (f"timed out after {timeout}s", [("hint", "infinite loop? (or waiting for input)")])
-    if got.crashed and not ref.crashed:
+        return (
+            f"timed out after {timeout}s",
+            [("hint", "infinite loop? (or waiting for input)")],
+        )
+    if got.code is not None and got.crashed and not ref.crashed:
         name = signal_name(got.code)
-        return ("your program crashed", [("signal", f"{name}: {CRASHES.get(name, 'killed')}"),
-                                         *output_rows(ref.stdout, got.stdout)])
+        return (
+            "your program crashed",
+            [
+                ("signal", f"{name}: {CRASHES.get(name, 'killed')}"),
+                *output_rows(ref.stdout, got.stdout),
+            ],
+        )
     for mode in modes:
         if mode == "stdout" and got.stdout != ref.stdout:
             return ("wrong output", output_rows(ref.stdout, got.stdout))
-        if mode == "stdout_unordered" and _sorted_lines(got.stdout) != _sorted_lines(ref.stdout):
-            return ("wrong output (line order doesn't matter here)",
-                    output_rows(_sorted_lines(ref.stdout), _sorted_lines(got.stdout))
-                    + [("note", "lines shown sorted")])
-        if mode == "stdout_numbers" and not _numbers_match(ref.stdout, got.stdout):
-            return ("wrong output (numbers may differ by 0.01)", output_rows(ref.stdout, got.stdout))
+        if mode == "stdout_unordered" and _sorted_lines(
+            got.stdout
+        ) != _sorted_lines(ref.stdout):
+            return (
+                "wrong output (line order doesn't matter here)",
+                output_rows(
+                    _sorted_lines(ref.stdout), _sorted_lines(got.stdout)
+                )
+                + [("note", "lines shown sorted")],
+            )
+        if mode == "stdout_numbers" and not _numbers_match(
+            ref.stdout, got.stdout
+        ):
+            return (
+                "wrong output (numbers may differ by 0.01)",
+                output_rows(ref.stdout, got.stdout),
+            )
         if mode == "exit" and got.code != ref.code:
-            return ("wrong exit status", [("expected", str(ref.code)), ("got", str(got.code)),
-                                          *([("output", got.stdout.decode(errors='replace')[:200])]
-                                            if got.stdout else [])])
+            return (
+                "wrong exit status",
+                [
+                    ("expected", str(ref.code)),
+                    ("got", str(got.code)),
+                    *(
+                        [("output", got.stdout.decode(errors="replace")[:200])]
+                        if got.stdout
+                        else []
+                    ),
+                ],
+            )
         if mode == "stderr" and got.stderr != ref.stderr:
-            return ("wrong error output (stderr)", output_rows(ref.stderr, got.stderr))
+            return (
+                "wrong error output (stderr)",
+                output_rows(ref.stderr, got.stderr),
+            )
     return None
 
 
@@ -644,45 +998,82 @@ class Context:
     """What a tester.py `run(ctx, check)` gets.
 
     ctx.ref(main=None, defines=())   build the reference, returns its binary
-    ctx.user(main=None, defines=())  build your files (prints the compile card on error)
-    ctx.run(binary, argv, stdin, timeout, cwd, env)  -> Run(stdout, stderr, code)
-    ctx.valgrind(binary, argv, stdin, fds=False)      -> problems (empty = clean)
+    ctx.user(main=None, defines=())  build your files (prints the compile
+                                     card on error)
+    ctx.run(binary, argv, stdin, timeout, cwd, env)
+                                     -> Run(stdout, stderr, code)
+    ctx.valgrind(binary, argv, stdin, fds=False)
+                                     -> problems (empty = clean)
     ctx.fail(title, rows)            stop with a failure card
     ctx.tmp                          a scratch directory
     ctx.warn(text)                   a yellow note under the verdict
     """
 
-    def __init__(self, spec, builder, tmp, out):
+    def __init__(
+        self, spec: Spec, builder: Builder, tmp: Path, out: IO[str]
+    ) -> None:
         self.spec, self.builder, self.tmp, self.out = spec, builder, tmp, out
-        self.warnings = []
+        self.warnings: list[str] = []
 
-    def ref(self, main=None, defines=(), out=None):
+    def ref(
+        self,
+        main: str | None = None,
+        defines: Sequence[str] = (),
+        out: str | None = None,
+    ) -> Path:
         return self.builder.ref(main, defines, out)
 
-    def user(self, main=None, defines=(), out=None, sources=None):
+    def user(
+        self,
+        main: str | None = None,
+        defines: Sequence[str] = (),
+        out: str | None = None,
+        sources: list[str] | None = None,
+    ) -> Path:
         return self.builder.user(main, defines, out, sources)
 
-    def run(self, binary, argv=(), stdin=b"", timeout=None, cwd=None, env=None):
-        return execute(binary, argv, stdin, timeout or self.spec.timeout, cwd, env)
+    def run(
+        self,
+        binary: str | Path,
+        argv: Sequence[str] = (),
+        stdin: bytes | str = b"",
+        timeout: float | None = None,
+        cwd: Path | None = None,
+        env: dict[str, str] | None = None,
+    ) -> Run:
+        return execute(
+            binary, argv, stdin, timeout or self.spec.timeout, cwd, env
+        )
 
-    def valgrind(self, binary, argv=(), stdin=b"", fds=False, cwd=None):
+    def valgrind(
+        self,
+        binary: str | Path,
+        argv: Sequence[str] = (),
+        stdin: bytes | str = b"",
+        fds: bool = False,
+        cwd: Path | None = None,
+    ) -> list[Problem]:
         if not valgrind_available():
             self.warn_no_valgrind()
             return []
-        return valgrind(binary, argv, stdin, self.spec.timeout, cwd, self.user_files, fds)
+        return valgrind(
+            binary, argv, stdin, self.spec.timeout, cwd, self.user_files, fds
+        )
 
-    def warn(self, text):
+    def warn(self, text: str) -> None:
         if text not in self.warnings:
             self.warnings.append(text)
 
-    def warn_no_valgrind(self):
+    def warn_no_valgrind(self) -> None:
         self.warn("leak check skipped: valgrind isn't installed (Linux only)")
 
     @property
-    def user_files(self):
+    def user_files(self) -> set[str]:
         return set(self.spec.user_files_in(self.builder.user_dir))
 
-    def fail(self, title, rows=()):
+    def fail(
+        self, title: str, rows: Iterable[tuple[str, object]] = ()
+    ) -> NoReturn:
         raise Fail(_card(title, list(rows)))
 
     output_rows = staticmethod(output_rows)
@@ -690,31 +1081,43 @@ class Context:
 
 
 class Checker:
-    """check(description, ok, rows=()) for tester.py: counts and draws progress."""
+    """check(description, ok, rows=()) for tester.py: counts and draws
+    progress."""
 
-    def __init__(self, out, total=None):
+    def __init__(self, out: IO[str], total: int | None = None) -> None:
         self.out, self.total, self.count = out, total, 0
-        self.states = []
+        self.states: list[str] = []
 
-    def __call__(self, description, ok, rows=()):
+    def __call__(
+        self,
+        description: str,
+        ok: object,
+        rows: Iterable[tuple[str, object]] = (),
+    ) -> None:
         self.count += 1
         if not ok:
             if self.out.isatty():
                 _clear_line(self.out)
-            raise Fail(_card(f"check {self.count} failed  ({self.count - 1} passed before it)",
-                             [("check", description), *rows]))
+            raise Fail(
+                _card(
+                    f"check {self.count} failed  ({self.count - 1} passed"
+                    " before it)",
+                    [("check", description), *rows],
+                )
+            )
         self.states.append("ok")
         draw(self.out, self.states, max(self.total or 0, self.count))
 
 
 # ── reference results cache ─────────────────────────────────────────────────
-# The reference always prints the same thing for the same case, so its results
-# are kept in .examshell/refcache/: a test then only builds and runs your code.
+# The reference always prints the same thing for the same case, so its
+# results are kept in .examshell/refcache/: a test then only builds and runs
+# your code.
 CACHE_VERSION = "1"
 CACHE_DIR = Path(__file__).resolve().parent.parent / ".examshell" / "refcache"
 
 
-def _file_digest(paths):
+def _file_digest(paths: Iterable[Path]) -> str:
     h = hashlib.sha256()
     for path in sorted(set(paths)):
         h.update(str(path.name).encode() + b"\0")
@@ -727,44 +1130,72 @@ def _file_digest(paths):
 
 
 class RefCache:
-    def __init__(self, spec):
+    def __init__(self, spec: Spec) -> None:
         self.enabled = not os.environ.get("EXAMSHELL_NO_REFCACHE")
         q = spec.qdir
         ref_dir = q / "ref"
-        inputs = list(spec.ref_sources) + list(spec.given) + list(q.glob("*.h"))
+        inputs = (
+            list(spec.ref_sources) + list(spec.given) + list(q.glob("*.h"))
+        )
         if ref_dir.is_dir():
             inputs += [f for f in ref_dir.iterdir() if f.is_file()]
-        self.base = "|".join([CACHE_VERSION, sys.platform, spec.compiler, " ".join(spec.flags),
-                              " ".join(spec.ldflags), _file_digest(inputs)])
+        self.base = "|".join([
+            CACHE_VERSION,
+            sys.platform,
+            spec.compiler,
+            " ".join(spec.flags),
+            " ".join(spec.ldflags),
+            _file_digest(inputs),
+        ])
 
-    def key(self, spec, build, case):
+    def key(self, spec: Spec, build: Json, case: Json) -> str:
         extra = [spec.qdir / build["main"]] if build.get("main") else []
         if build.get("preload"):
             extra.append(spec.qdir / build["preload"])
-        material = json.dumps({"base": self.base, "deps": _file_digest(extra),
-                               "defines": build.get("defines", []), "preload": bool(build.get("preload")),
-                               "case": {k: case.get(k) for k in ("argv", "stdin", "files", "timeout")}},
-                              sort_keys=True)
+        material = json.dumps(
+            {
+                "base": self.base,
+                "deps": _file_digest(extra),
+                "defines": build.get("defines", []),
+                "preload": bool(build.get("preload")),
+                "case": {
+                    k: case.get(k)
+                    for k in ("argv", "stdin", "files", "timeout")
+                },
+            },
+            sort_keys=True,
+        )
         return hashlib.sha256(material.encode()).hexdigest()
 
-    def get(self, key):
+    def get(self, key: str) -> Run | None:
         if not self.enabled:
             return None
         try:
-            data = json.loads((CACHE_DIR / f"{key[:2]}/{key}.json").read_text())
-            return Run(base64.b64decode(data["out"]), base64.b64decode(data["err"]), data["code"])
+            data = json.loads(
+                (CACHE_DIR / f"{key[:2]}/{key}.json").read_text()
+            )
+            return Run(
+                base64.b64decode(data["out"]),
+                base64.b64decode(data["err"]),
+                data["code"],
+            )
         except (OSError, ValueError, KeyError):
             return None
 
-    def put(self, key, run):
+    def put(self, key: str, run: Run) -> None:
         if not self.enabled or run.timed_out:
             return
         try:
             folder = CACHE_DIR / key[:2]
             folder.mkdir(parents=True, exist_ok=True)
             tmp = folder / f"{key}.{os.getpid()}.{threading.get_ident()}.tmp"
-            tmp.write_text(json.dumps({"out": base64.b64encode(run.stdout).decode(),
-                                       "err": base64.b64encode(run.stderr).decode(), "code": run.code}))
+            tmp.write_text(
+                json.dumps({
+                    "out": base64.b64encode(run.stdout).decode(),
+                    "err": base64.b64encode(run.stderr).decode(),
+                    "code": run.code,
+                })
+            )
             os.replace(tmp, folder / f"{key}.json")
         except OSError:
             pass  # a cache that can't be written just means slower tests
@@ -774,27 +1205,36 @@ class RefCache:
 CASE_WORKERS = max(2, min(6, os.cpu_count() or 2))
 
 
-def run_cases(spec, builder, tmp, out, ctx):
-    plan = []  # (build, case)
+def run_cases(
+    spec: Spec, builder: Builder, tmp: Path, out: IO[str], ctx: Context
+) -> int:
+    plan: list[tuple[Json, Json]] = []  # (build, case)
     for build in spec.builds:
         for case in build.get("cases", []):
             plan.append((build, _normalize(case)))
     total = len(plan)
     cache = RefCache(spec)
     if out.isatty():
-        out.write(f"  {ui.paint('◌', ui.ACCENT)} {ui.paint('compiling…', ui.MUTED)}")
+        out.write(
+            f"  {ui.paint('◌', ui.ACCENT)} {ui.paint('compiling…', ui.MUTED)}"
+        )
         out.flush()
     try:
-        # your builds, all at once; the first compile error (in order) is reported.
-        # The reference is only built if a case isn't cached yet.
+        # your builds, all at once; the first compile error (in order) is
+        # reported. The reference is only built if a case isn't cached yet.
         with ThreadPoolExecutor(max_workers=4) as pool:
-            jobs = [pool.submit(builder.user, b.get("main"), b.get("defines", ())) for b in spec.builds]
+            jobs = [
+                pool.submit(builder.user, b.get("main"), b.get("defines", ()))
+                for b in spec.builds
+            ]
             for job in jobs:
                 job.result()
     finally:
         _clear_line(out)
 
-    def evaluate(n, build, case):
+    def evaluate(
+        n: int, build: Json, case: Json
+    ) -> tuple[Run, Run, Path | None, dict[str, str] | None]:
         args = (build.get("main"), build.get("defines", ()))
         cwd = _prepare_cwd(tmp, case, n)
         timeout = case.get("timeout", spec.timeout)
@@ -803,44 +1243,78 @@ def run_cases(spec, builder, tmp, out, ctx):
         key = cache.key(spec, build, case)
         ref = cache.get(key)
         if ref is None:
-            ref = execute(builder.ref(*args), argv, stdin, timeout * 4, cwd, env)
+            ref = execute(
+                builder.ref(*args), argv, stdin, timeout * 4, cwd, env
+            )
             cache.put(key, ref)
         got = execute(builder.user(*args), argv, stdin, timeout, cwd, env)
         return ref, got, cwd, env
 
     serial = any(c.get("serial") for _, c in plan) or spec.data.get("serial")
     pool = ThreadPoolExecutor(max_workers=1 if serial else CASE_WORKERS)
-    futures = [pool.submit(evaluate, n, build, case) for n, (build, case) in enumerate(plan, 1)]
-    leak_candidates = []
-    states = []
+    futures = [
+        pool.submit(evaluate, n, build, case)
+        for n, (build, case) in enumerate(plan, 1)
+    ]
+    leak_candidates: list[LeakCandidate] = []
+    states: list[str] = []
     try:
-        # results are read in order: same progress and same "case N" as one by one
+        # results are read in order: same progress and same "case N" as one
+        # by one
         for n, ((build, case), future) in enumerate(zip(plan, futures), 1):
             draw(out, states + ["run"], total)
             ref, got, cwd, env = future.result()
             timeout = case.get("timeout", spec.timeout)
             if ref.timed_out:
-                raise Fail(_card("the reference solution timed out (bug in this tool)",
-                                 [("run", command_line(spec.name, case))]), code=2)
-            modes = case.get("compare", build.get("compare", spec.data.get("compare", ["stdout"])))
+                raise Fail(
+                    _card(
+                        "the reference solution timed out (bug in this tool)",
+                        [("run", command_line(spec.name, case))],
+                    ),
+                    code=2,
+                )
+            modes = case.get(
+                "compare",
+                build.get("compare", spec.data.get("compare", ["stdout"])),
+            )
             problem = compare(ref, got, modes, timeout)
             if problem:
                 _clear_line(out)
-                print(f"  {strip(states + ['fail'], total)}  {ui.paint(f'{n - 1}/{total}', ui.MUTED)}")
+                print(
+                    f"  {strip(states + ['fail'], total)} "
+                    f" {ui.paint(f'{n - 1}/{total}', ui.MUTED)}"
+                )
                 title, rows = problem
-                run_rows = [("run", command_line(spec.name, case))]
+                run_rows: Rows = [("run", command_line(spec.name, case))]
                 if build.get("name"):
                     run_rows.insert(0, ("test", build["name"]))
                 if build.get("defines"):
-                    run_rows.append(("built with", " ".join(f"-D{d}" for d in build["defines"])))
+                    run_rows.append((
+                        "built with",
+                        " ".join(f"-D{d}" for d in build["defines"]),
+                    ))
                 if case.get("hint"):
                     rows = rows + [("why", case["hint"])]
-                raise Fail(_card(f"{title}  (case {n} of {total}, {n - 1} passed before it)", run_rows + rows))
+                raise Fail(
+                    _card(
+                        f"{title}  (case {n} of {total}, {n - 1} passed"
+                        " before it)",
+                        run_rows + rows,
+                    )
+                )
             states.append("ok")
-            wants = case.get("leaks", build.get("leaks", spec.data.get("leaks", False)))
+            wants = case.get(
+                "leaks", build.get("leaks", spec.data.get("leaks", False))
+            )
             if wants:
-                leak_candidates.append((n, build, case, builder.user(build.get("main"), build.get("defines", ())),
-                                        cwd, env))
+                leak_candidates.append((
+                    n,
+                    build,
+                    case,
+                    builder.user(build.get("main"), build.get("defines", ())),
+                    cwd,
+                    env,
+                ))
     finally:
         pool.shutdown(wait=False, cancel_futures=True)
 
@@ -849,7 +1323,18 @@ def run_cases(spec, builder, tmp, out, ctx):
     return total
 
 
-def _leak_pass(spec, candidates, ctx, out):
+# (case number, build, case, your binary, cwd, env)
+LeakCandidate = tuple[
+    int, Json, Json, Path, Path | None, dict[str, str] | None
+]
+
+
+def _leak_pass(
+    spec: Spec,
+    candidates: list[LeakCandidate],
+    ctx: Context,
+    out: IO[str],
+) -> None:
     if not candidates:
         return
     if not valgrind_available():
@@ -857,24 +1342,37 @@ def _leak_pass(spec, candidates, ctx, out):
         return
     explicit = [c for c in candidates if c[2].get("leaks") is True]
     limit = spec.data.get("leak_cases", 6)
-    if os.environ.get("EXAMSHELL_LEAK_SAMPLE"):  # `make check` on the references: a lighter pass
+    # `make check` on the references: a lighter pass
+    if os.environ.get("EXAMSHELL_LEAK_SAMPLE"):
         limit = min(limit, max(1, int(os.environ["EXAMSHELL_LEAK_SAMPLE"])))
     chosen = explicit or candidates
-    if len(chosen) > limit:  # spread over the list: first, last and in between
+    # spread over the list: first, last and in between
+    if len(chosen) > limit:
         if limit == 1:
             chosen = chosen[:1]
         else:
             step = (len(chosen) - 1) / (limit - 1)
             chosen = [chosen[round(i * step)] for i in range(limit)]
     if out.isatty():
-        out.write(f"  {ui.paint('◌', ui.ACCENT)} {ui.paint(f'leak check ({len(chosen)} runs under valgrind)…', ui.MUTED)}")
+        note = f"leak check ({len(chosen)} runs under valgrind)…"
+        out.write(
+            f"  {ui.paint('◌', ui.ACCENT)} {ui.paint(note, ui.MUTED)}"
+        )
         out.flush()
     fds = spec.data.get("fds", False)
 
-    def one(item):
+    def one(item: LeakCandidate) -> tuple[LeakCandidate, list[Problem]]:
         n, build, case, binary, cwd, env = item
-        return item, valgrind(binary, case.get("argv", []), case.get("stdin", ""),
-                              case.get("timeout", spec.timeout), cwd, ctx.user_files, fds, env)
+        return item, valgrind(
+            binary,
+            case.get("argv", []),
+            case.get("stdin", ""),
+            case.get("timeout", spec.timeout),
+            cwd,
+            ctx.user_files,
+            fds,
+            env,
+        )
 
     with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
         results = list(pool.map(one, chosen))
@@ -882,29 +1380,48 @@ def _leak_pass(spec, candidates, ctx, out):
     for (n, build, case, _, _, _), problems in results:
         if problems:
             title, rows = problems[0]
-            run_rows = [("run", command_line(spec.name, case))]
+            run_rows: Rows = [("run", command_line(spec.name, case))]
             if build.get("name"):
                 run_rows.insert(0, ("test", build["name"]))
             more = len(problems) - 1
-            extra = [("", ui.paint(f"+{more} more problem{'s' * (more > 1)}", ui.MUTED))] if more else []
-            raise Fail(_card(f"{title}  (output was right, case {n})", run_rows + rows + extra))
+            extra: Rows = (
+                [(
+                    "",
+                    ui.paint(
+                        f"+{more} more problem{'s' * (more > 1)}", ui.MUTED
+                    ),
+                )]
+                if more
+                else []
+            )
+            raise Fail(
+                _card(
+                    f"{title}  (output was right, case {n})",
+                    run_rows + rows + extra,
+                )
+            )
 
 
 # ── main ────────────────────────────────────────────────────────────────────
-def expected_files(qdir):
-    match = re.search(r"^Expected files\s*:\s*(.+)$",
-                      (qdir / "sub.txt").read_text(errors="replace"), re.MULTILINE)
+def expected_files(qdir: Path) -> list[str]:
+    match = re.search(
+        r"^Expected files\s*:\s*(.+)$",
+        (qdir / "sub.txt").read_text(errors="replace"),
+        re.MULTILINE,
+    )
     if match:
-        files = [f.strip() for f in re.split(r"[,\s]+", match.group(1)) if f.strip()]
+        files = [
+            f.strip() for f in re.split(r"[,\s]+", match.group(1)) if f.strip()
+        ]
         if files:
             return files
     return [qdir.name + ".c"]
 
 
-def run(qdir, rendu, out):
+def run(qdir: Path, rendu: Path, out: IO[str]) -> tuple[int, list[str]]:
     spec = Spec.load(qdir, expected_files(qdir))
-    with tempfile.TemporaryDirectory(prefix="examshell-") as tmp:
-        tmp = Path(tmp)
+    with tempfile.TemporaryDirectory(prefix="examshell-") as tmp_name:
+        tmp = Path(tmp_name)
         builder = Builder(spec, rendu, tmp)
         ctx = Context(spec, builder, tmp, out)
         tester = qdir / "tester.py"
@@ -917,12 +1434,21 @@ def run(qdir, rendu, out):
         return run_cases(spec, builder, tmp, out, ctx), ctx.warnings
 
 
-def write_report(path, passed, total=0, warnings=()):
+def write_report(
+    path: str | None,
+    passed: bool,
+    total: int = 0,
+    warnings: Sequence[str] = (),
+) -> None:
     if path:
-        Path(path).write_text(json.dumps({"passed": passed, "total": total, "warnings": list(warnings)}))
+        Path(path).write_text(
+            json.dumps(
+                {"passed": passed, "total": total, "warnings": list(warnings)}
+            )
+        )
 
 
-def main(argv):
+def main(argv: list[str]) -> int:
     args = argv[1:]
     report = None
     if "--report" in args:
@@ -930,8 +1456,11 @@ def main(argv):
         report = args[i + 1]
         del args[i:i + 2]
     if len(args) != 2:
-        print("usage: python3 -m examshell.native_harness QUESTION_DIR RENDU_DIR [--report FILE]",
-              file=sys.stderr)
+        print(
+            "usage: python3 -m examshell.native_harness QUESTION_DIR RENDU_DIR"
+            " [--report FILE]",
+            file=sys.stderr,
+        )
         return 2
     qdir, rendu = Path(args[0]).resolve(), Path(args[1]).resolve()
     if rendu.is_file():  # older callers pass the main file
@@ -947,8 +1476,10 @@ def main(argv):
         return fail.code
     _clear_line(out)
     took = ui.paint(f"· {time.monotonic() - start:.2f}s", ui.MUTED)
-    print(f"  {ui.paint('✔', ui.OK, 'bold')} {total}/{total} checks passed  "
-          f"{strip(['ok'] * total, total)}  {took}")
+    print(
+        f"  {ui.paint('✔', ui.OK, 'bold')} {total}/{total} checks passed  "
+        f"{strip(['ok'] * total, total)}  {took}"
+    )
     for w in warnings:
         print("  " + ui.paint("⚠ " + w, ui.HILITE))
     write_report(report, True, total, warnings)

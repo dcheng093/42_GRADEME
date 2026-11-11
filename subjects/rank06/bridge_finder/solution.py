@@ -1,14 +1,21 @@
+from collections.abc import Iterator
+
+
 def bridge_finder(graph: dict[int, list[int]]) -> list[tuple[int, int]]:
     # Tarjan: an edge u-v is a bridge when nothing below v reaches above it
-    disc, low = {}, {}
-    bridges = []
+    disc: dict[int, int] = {}
+    low: dict[int, int] = {}
+    bridges: list[tuple[int, int]] = []
     timer = 0
     for root in graph:
         if root in disc:
             continue
         disc[root] = low[root] = timer
         timer += 1
-        stack = [(root, None, iter(graph.get(root, [])))]
+        # (node, its parent in the DFS tree, neighbours left to visit)
+        stack: list[tuple[int, int | None, Iterator[int]]] = [
+            (root, None, iter(graph.get(root, [])))
+        ]
         while stack:
             node, parent, neighbours = stack[-1]
             advanced = False

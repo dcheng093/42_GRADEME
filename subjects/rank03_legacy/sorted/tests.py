@@ -1,12 +1,16 @@
 import random
+from types import ModuleType
+from typing import Any
+
+from examshell.pytests import Check
 
 
-def _expected(people):
+def _expected(people: list[tuple[str, int]]) -> list[tuple[str, int]]:
     return sorted(people, key=lambda p: (p[1], p[0]))
 
 
-def run(module, check):
-    cases = [
+def run(module: ModuleType, check: Check) -> None:
+    cases: list[Any] = [
         [],
         [("Solo", 50)],
         [("B", 1), ("A", 1)],
@@ -20,10 +24,23 @@ def run(module, check):
         [("Ab", 7), ("A", 7), ("Abc", 7), ("B", 7)],
     ]
     rng = random.Random(42)
-    names = ["Ana", "Luis", "Marta", "Zoe", "Adam", "Eve", "Bob", "alice", "Lee", "Kim"]
+    names = [
+        "Ana",
+        "Luis",
+        "Marta",
+        "Zoe",
+        "Adam",
+        "Eve",
+        "Bob",
+        "alice",
+        "Lee",
+        "Kim",
+    ]
     for _ in range(60):
         size = rng.randint(2, 12)
-        cases.append([(rng.choice(names), rng.randint(0, 6)) for _ in range(size)])
+        cases.append(
+            [(rng.choice(names), rng.randint(0, 6)) for _ in range(size)]
+        )
 
     for people in cases:
         original = list(people)
@@ -32,13 +49,13 @@ def run(module, check):
         errors = []
         if result != expected:
             errors.append(
-                f"\nwrong result\n"
+                "\nwrong result\n"
                 f"       Expected: {expected!r}\n"
                 f"       Got:      {result!r}"
             )
         if people != original:
             errors.append(
-                f"\noriginal list was modified\n"
+                "\noriginal list was modified\n"
                 f"       Original: {original!r}\n"
                 f"       Got:      {people!r}"
             )
