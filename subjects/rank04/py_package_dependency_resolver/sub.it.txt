@@ -1,0 +1,26 @@
+Assignment name  : py_package_dependency_resolver
+Expected files   : py_package_dependency_resolver.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che determini un ordine di installazione valido dei pacchetti risolvendo le dipendenze. Usa l'ordinamento topologico per garantire che le dipendenze siano installate prima dei pacchetti che le richiedono.
+
+La funzione deve:
+- Ricevere un dizionario in cui le chiavi sono i nomi dei pacchetti e i valori sono liste di dipendenze
+- Restituire i pacchetti nell'ordine di installazione (prima le dipendenze)
+- Restituire una lista vuota se non esiste un ordine valido (dipendenze circolari)
+- Gestire input vuoti e catene di dipendenze isolate
+- Ignorare i riferimenti a pacchetti non presenti nel dizionario di input
+
+def package_dependency_resolver(packages: dict[str, list[str]]) -> list[str]:
+
+Esempi:
+
+package_dependency_resolver({"app": ["database"], "database": ["driver"], "driver": []})
+                                                              → ["driver", "database", "app"]
+package_dependency_resolver({"A": [], "B": ["A"], "C": ["A", "B"]})
+                                                              → ["A", "B", "C"]
+package_dependency_resolver({})                               → []
+package_dependency_resolver({"X": ["Y"], "Y": ["X"]})         → []
+package_dependency_resolver({"web": [], "api": [], "frontend": ["web"], "backend": ["api"]})
+                                                              → ["api", "web", "backend", "frontend"]

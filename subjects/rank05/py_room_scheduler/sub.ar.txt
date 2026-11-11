@@ -1,0 +1,20 @@
+Assignment name  : py_room_scheduler
+Expected files   : py_room_scheduler.py
+--------------------------------------------------------------------------------
+
+اكتب دالة تحسب الحد الأدنى لعدد قاعات الاجتماعات المطلوبة وتوزع الفترات الزمنية للاجتماعات بدون تداخل.
+
+يمثل كل اجتماع كقائمة `[start_time, end_time]`.
+
+يجب على الدالة:
+- إرجاع قاموس يحتوي على:
+  - `"total_rooms"`: عدد القاعات المطلوبة.
+  - `"schedule"`: قائمة تحتوي على الفترات المجدولة لكل قاعة.
+- إرجاع `{"total_rooms": 0, "schedule": []}` إذا كانت القائمة فارغة.
+
+def py_room_scheduler(meetings: list[list[int]]) -> dict[str, Any]:
+
+أمثلة:
+
+py_room_scheduler([[0, 30], [5, 10], [15, 20]])  → {"total_rooms": 2, "schedule": [[[0, 30]], [[5, 10], [15, 20]]]}
+py_room_scheduler([])                            → {"total_rooms": 0, "schedule": []}

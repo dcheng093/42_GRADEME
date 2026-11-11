@@ -1,0 +1,17 @@
+Assignment name  : py_palindrome_partitioner
+Expected files   : py_palindrome_partitioner.py
+--------------------------------------------------------------------------------
+
+بالنظر إلى سلسلة نصية s، أوجد الحد الأدنى لعدد مرات التقسيم المطلوبة لتجزئتها بحيث تكون كل سلسلة فرعية ناتجة متناظرة (palindrome).
+
+- أرجع الحد الأدنى لعدد مرات التقسيم (عدد صحيح)
+- السلسلة ذات الطول 1 تتطلب 0 تقسيم
+- السلسلة الفارغة تتطلب 0 تقسيم
+
+def palindrome_partitioner(s: str) -> int:
+
+أمثلة:
+
+palindrome_partitioner("aab")  → 1
+palindrome_partitioner("aba")  → 0
+palindrome_partitioner("abc")  → 2

@@ -1,0 +1,22 @@
+Assignment name  : py_list_intersection_finder
+Expected files   : py_list_intersection_finder.py
+--------------------------------------------------------------------------------
+
+Verilen tüm tamsayı listelerinde bulunan ortak elemanları bulun. Artan düzende sıralanmış benzersiz ortak elemanları döndürün.
+
+- Herhangi bir liste boşsa veya ortak eleman yoksa boş liste döndürün
+- Çıktıda benzersizliği koruyun
+
+def list_intersection_finder(lists: list[list[int]]) -> list[int]:
+
+Örnekler:
+
+list_intersection_finder([[1, 2, 3], [2, 3, 4], [2, 3, 5]])   → [2, 3]
+list_intersection_finder([[1, 2, 3, 4], [2, 4, 6, 8], [4, 8, 12]])
+                                                              → [4]
+list_intersection_finder([[1, 1, 2, 3], [1, 2, 2, 3], [1, 2, 3, 3]])
+                                                              → [1, 2, 3]
+list_intersection_finder([[1, 2, 3], [4, 5, 6]])              → []
+list_intersection_finder([])                                  → []
+list_intersection_finder([[1, 2, 3], []])                     → []
+list_intersection_finder([[5]])                               → [5]

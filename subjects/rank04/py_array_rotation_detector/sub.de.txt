@@ -1,0 +1,22 @@
+Assignment name  : py_array_rotation_detector
+Expected files   : py_array_rotation_detector.py
+Forbidden functions : collections.deque.rotate()
+--------------------------------------------------------------------------------
+
+Schreibe eine Python-Funktion, die zwei Listen (Arrays) als Parameter erhält und ermittelt, ob die zweite Liste eine Rotation der ersten Liste ist (nach links oder rechts).
+
+Eine Rotation bedeutet, dass die Elemente kreisförmig verschoben werden. Beispielsweise führt das Verschieben von [1, 2, 3] um eine Position nach rechts zu [3, 1, 2].
+
+Die Funktion muss True zurückgeben, wenn arr2 eine Rotation von arr1 ist, andernfalls False.
+Wenn die Arrays unterschiedliche Längen haben, können sie keine Rotationen voneinander sein.
+Zwei leere Arrays werden als Rotationen voneinander betrachtet.
+
+def array_rotation_detector(arr1: list, arr2: list) -> bool:
+
+Beispiele:
+
+array_rotation_detector([1, 2, 3, 4, 5], [4, 5, 1, 2, 3])  → True
+array_rotation_detector([1, 2, 3, 4, 5], [5, 1, 2, 3, 4])  → True
+array_rotation_detector([1, 2, 3], [3, 2, 1])              → False
+array_rotation_detector([1, 2], [1, 2, 3])                 → False
+array_rotation_detector([], [])                            → True

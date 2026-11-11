@@ -1,0 +1,26 @@
+Assignment name  : py_merge_sorted_lists
+Expected files   : py_merge_sorted_lists.py
+Forbidden functions : sorted(), .sort(), heapq.merge()
+--------------------------------------------------------------------------------
+
+编写一个函数，高效地将多个已排序的列表合并为一个保持升序排序的列表。
+
+该函数应该：
+- 接收已排序的整数列表组成的列表作为输入
+- 返回一个按升序排列的合并后列表
+- 在最终结果中保留所有重复元素
+- 妥善处理空列表和空输入
+- 对大规模输入保持最优的处理效率
+
+def merge_sorted_lists(lists: list[list[int]]) -> list[int]:
+
+示例:
+
+merge_sorted_lists([[1, 3, 5], [2, 4, 6]])             → [1, 2, 3, 4, 5, 6]
+merge_sorted_lists([[1, 5, 9], [2, 3, 8], [4, 6, 7]])  → [1, 2, 3, 4, 5, 6, 7, 8, 9]
+merge_sorted_lists([[5], [1, 3], [2, 4]])              → [1, 2, 3, 4, 5]
+merge_sorted_lists([[1, 1, 2], [2, 3, 3]])             → [1, 1, 2, 2, 3, 3]
+merge_sorted_lists([[], [1, 2, 3]])                    → [1, 2, 3]
+merge_sorted_lists([[]])                               → []
+merge_sorted_lists([[-5, -1, 0], [-3, 2, 4]])          → [-5, -3, -1, 0, 2, 4]
+merge_sorted_lists([[10], [10], [10]])                 → [10, 10, 10]

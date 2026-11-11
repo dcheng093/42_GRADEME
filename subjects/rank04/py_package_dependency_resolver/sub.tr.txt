@@ -1,0 +1,26 @@
+Assignment name  : py_package_dependency_resolver
+Expected files   : py_package_dependency_resolver.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+Bağımlılıkları çözerek geçerli bir paket kurulum sırası belirleyen bir fonksiyon yazın. Bağımlılıkların, onları gerektiren paketlerden önce kurulmasını sağlamak için topolojik sıralama kullanın.
+
+Fonksiyon şunları yapmalıdır:
+- Anahtarların paket adları ve değerlerin bağımlılık listeleri olduğu bir sözlük almalıdır
+- Paketleri kurulum sırasında döndürmelidir (önce bağımlılıklar)
+- Geçerli bir sıra yoksa boş liste döndürmelidir (döngüsel bağımlılıklar)
+- Boş girdileri ve izole bağımlılık zincirlerini işlemelidir
+- Girdi sözlüğünde bulunmayan paket referanslarını yoksaymalıdır
+
+def package_dependency_resolver(packages: dict[str, list[str]]) -> list[str]:
+
+Örnekler:
+
+package_dependency_resolver({"app": ["database"], "database": ["driver"], "driver": []})
+                                                              → ["driver", "database", "app"]
+package_dependency_resolver({"A": [], "B": ["A"], "C": ["A", "B"]})
+                                                              → ["A", "B", "C"]
+package_dependency_resolver({})                               → []
+package_dependency_resolver({"X": ["Y"], "Y": ["X"]})         → []
+package_dependency_resolver({"web": [], "api": [], "frontend": ["web"], "backend": ["api"]})
+                                                              → ["api", "web", "backend", "frontend"]

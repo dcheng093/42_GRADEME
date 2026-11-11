@@ -1,0 +1,17 @@
+Assignment name  : py_word_ladder
+Expected files   : py_word_ladder.py
+--------------------------------------------------------------------------------
+
+اكتب دالة تحسب طول أقصر تسلسل تحويل من كلمة البداية إلى كلمة النهاية.
+
+- تُرجع عدد الكلمات في أقصر مسار تحويل.
+- تُرجع 0 إذا لم يكن هناك تحويل ممكن.
+
+def word_ladder(start: str, end: str, sentence: list[str]) -> int:
+
+أمثلة:
+
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"])
+                                                              → 5
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log"])
+                                                              → 0

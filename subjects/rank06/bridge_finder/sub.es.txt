@@ -1,0 +1,24 @@
+Assignment name  : bridge_finder
+Expected files   : bridge_finder.py
+--------------------------------------------------------------------------------
+
+Escribe una función que encuentre todos los puentes en un grafo no dirigido. Un puente es una arista cuya eliminación aumenta el número de componentes conexas del grafo.
+
+La función debe:
+- Recibir un grafo no dirigido como lista de adyacencia;
+- Devolver todos los puentes como una lista de tuplas (u, v) donde u < v;
+- Devolver los resultados ordenados por el primer elemento y luego por el segundo elemento;
+- Manejar grafos vacíos (devolver una lista vacía);
+- Manejar grafos sin puentes (devolver una lista vacía).
+
+def bridge_finder(graph: dict[int, list[int]]) -> list[tuple[int, int]]:
+
+Ejemplos:
+
+bridge_finder({0: [1, 2], 1: [0, 2], 2: [0, 1]})              → []
+bridge_finder({0: [1], 1: [0, 2], 2: [1]})                    → [(0, 1), (1, 2)]
+bridge_finder({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: [1]})   → [(1, 3)]
+bridge_finder({})                                             → []
+bridge_finder({0: [1], 1: [0]})                               → [(0, 1)]
+bridge_finder({0: [1, 2], 1: [0, 2, 3, 4], 2: [0, 1], 3: [1, 4], 4: [1, 3]})
+                                                              → []

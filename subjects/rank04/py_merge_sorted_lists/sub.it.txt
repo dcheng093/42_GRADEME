@@ -1,0 +1,26 @@
+Assignment name  : py_merge_sorted_lists
+Expected files   : py_merge_sorted_lists.py
+Forbidden functions : sorted(), .sort(), heapq.merge()
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che unisca più liste ordinate in una sola lista ordinata in modo efficiente.
+
+La funzione deve:
+- Ricevere in input una lista di liste di interi ordinate
+- Restituire un'unica lista unita in ordine crescente
+- Mantenere tutti gli elementi duplicati nel risultato finale
+- Gestire correttamente le liste vuote e gli input vuoti
+- Mantenere un'efficienza ottimale per grandi volumi di dati
+
+def merge_sorted_lists(lists: list[list[int]]) -> list[int]:
+
+Esempi:
+
+merge_sorted_lists([[1, 3, 5], [2, 4, 6]])             → [1, 2, 3, 4, 5, 6]
+merge_sorted_lists([[1, 5, 9], [2, 3, 8], [4, 6, 7]])  → [1, 2, 3, 4, 5, 6, 7, 8, 9]
+merge_sorted_lists([[5], [1, 3], [2, 4]])              → [1, 2, 3, 4, 5]
+merge_sorted_lists([[1, 1, 2], [2, 3, 3]])             → [1, 1, 2, 2, 3, 3]
+merge_sorted_lists([[], [1, 2, 3]])                    → [1, 2, 3]
+merge_sorted_lists([[]])                               → []
+merge_sorted_lists([[-5, -1, 0], [-3, 2, 4]])          → [-5, -3, -1, 0, 2, 4]
+merge_sorted_lists([[10], [10], [10]])                 → [10, 10, 10]

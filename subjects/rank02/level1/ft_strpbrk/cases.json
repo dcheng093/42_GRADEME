@@ -1,0 +1,13 @@
+[
+  ["hello world", "ow"],
+  ["hello world", "xyz"],
+  ["hello world", "d"],
+  ["abc", "cba"],
+  ["", "abc"],
+  ["abc", ""],
+  ["", ""],
+  ["  tabs\tand spaces", "\t"],
+  ["42 exam", "0123456789"],
+  ["aaaa", "a"],
+  []
+]

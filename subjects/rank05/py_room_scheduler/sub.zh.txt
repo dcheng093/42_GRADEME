@@ -1,0 +1,20 @@
+Assignment name  : py_room_scheduler
+Expected files   : py_room_scheduler.py
+--------------------------------------------------------------------------------
+
+编写一个函数，计算无重叠安排会议时间段所需的最少会议室数量，并将会议分配到各个房间。
+
+每个会议由 `[start_time, end_time]` 列表表示。
+
+该函数应该：
+- 返回一个包含以下键的字典：
+  - `"total_rooms"`：所需会议室的整数数量。
+  - `"schedule"`：每个房间安排的会议列表。
+- 如果输入列表为空，则返回 `{"total_rooms": 0, "schedule": []}`。
+
+def py_room_scheduler(meetings: list[list[int]]) -> dict[str, Any]:
+
+示例:
+
+py_room_scheduler([[0, 30], [5, 10], [15, 20]])  → {"total_rooms": 2, "schedule": [[[0, 30]], [[5, 10], [15, 20]]]}
+py_room_scheduler([])                            → {"total_rooms": 0, "schedule": []}

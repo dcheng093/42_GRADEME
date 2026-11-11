@@ -1,0 +1,20 @@
+Assignment name  : py_array_rotation_detector
+Expected files   : py_array_rotation_detector.py
+Forbidden functions : collections.deque.rotate()
+--------------------------------------------------------------------------------
+
+判断 array2 是否为 array1 的循环旋转。旋转是指在保持元素相对顺序的同时循环移位元素。
+
+- 如果 array2 是 array1 的有效旋转，则返回 True
+- 否则或当两数组长度不同时返回 False
+- 处理空数组（两个空数组视为有效旋转）
+
+def array_rotation_detector(arr1: list, arr2: list) -> bool:
+
+示例:
+
+array_rotation_detector([1, 2, 3, 4, 5], [4, 5, 1, 2, 3])  → True
+array_rotation_detector([1, 2, 3, 4, 5], [5, 1, 2, 3, 4])  → True
+array_rotation_detector([1, 2, 3], [3, 2, 1])              → False
+array_rotation_detector([1, 2], [1, 2, 3])                 → False
+array_rotation_detector([], [])                            → True

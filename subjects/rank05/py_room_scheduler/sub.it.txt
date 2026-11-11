@@ -1,0 +1,18 @@
+Assignment name  : py_room_scheduler
+Expected files   : py_room_scheduler.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che determini il numero minimo di sale riunioni necessarie e assegni i meeting senza sovrapposizioni.
+
+Ogni riunione è una lista `[start_time, end_time]`.
+
+La funzione deve:
+- Restituire un dizionario con `"total_rooms"` (conteggio sale) e `"schedule"` (meeting assegnati per sala).
+- Restituire `{"total_rooms": 0, "schedule": []}` se la lista è vuota.
+
+def py_room_scheduler(meetings: list[list[int]]) -> dict[str, Any]:
+
+Esempi:
+
+py_room_scheduler([[0, 30], [5, 10], [15, 20]])  → {"total_rooms": 2, "schedule": [[[0, 30]], [[5, 10], [15, 20]]]}
+py_room_scheduler([])                            → {"total_rooms": 0, "schedule": []}

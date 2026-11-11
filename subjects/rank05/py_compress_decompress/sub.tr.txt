@@ -1,0 +1,23 @@
+Assignment name  : py_compress_decompress
+Expected files   : py_compress_decompress.py
+--------------------------------------------------------------------------------
+
+`compress` ve `decompress` adında iki fonksiyon yazın.
+
+`compress(s: str) -> str`:
+- Bir dize alır ve ardışık tekrarlanan karakterleri yanına sayı ekleyerek sıkıştırır.
+- Tekrarlanmayan karakterler için '1' sayısını eklemeyin.
+- Giriş boş dize ise boş dize döndürün.
+
+`decompress(s: str) -> str`:
+- Sıkıştırılmış bir dizeyi açarak orijinal haline döndürür.
+- Çok basamaklı sayıları destekler (ör. "a12" -> 12 tane 'a').
+
+def compress(s: str) -> str:
+def decompress(s: str) -> str:
+
+Örnekler:
+
+compress("aabcccccaaa")  → "a2bc5a3"
+decompress("a2bc5a3")    → "aabcccccaaa"
+compress("")             → ""

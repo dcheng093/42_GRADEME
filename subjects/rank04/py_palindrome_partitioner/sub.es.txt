@@ -1,0 +1,17 @@
+Assignment name  : py_palindrome_partitioner
+Expected files   : py_palindrome_partitioner.py
+--------------------------------------------------------------------------------
+
+Dada una cadena s, encuentra el número mínimo de cortes necesarios para particionarla de manera que cada subcadena resultante sea un palíndromo.
+
+- Devuelve el número mínimo de cortes (un entero)
+- Una cadena de longitud 1 requiere 0 cortes
+- Una cadena vacía requiere 0 cortes
+
+def palindrome_partitioner(s: str) -> int:
+
+Ejemplos:
+
+palindrome_partitioner("aab")  → 1
+palindrome_partitioner("aba")  → 0
+palindrome_partitioner("abc")  → 2

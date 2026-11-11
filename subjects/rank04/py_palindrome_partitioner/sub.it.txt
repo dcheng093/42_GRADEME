@@ -1,0 +1,17 @@
+Assignment name  : py_palindrome_partitioner
+Expected files   : py_palindrome_partitioner.py
+--------------------------------------------------------------------------------
+
+Data una stringa s, trova il numero minimo di tagli necessari per partizionarla in modo che ogni sottostringa risultante sia un palindromo.
+
+- Restituisce il numero minimo di tagli (un intero)
+- Una stringa di lunghezza 1 richiede 0 tagli
+- Una stringa vuota richiede 0 tagli
+
+def palindrome_partitioner(s: str) -> int:
+
+Esempi:
+
+palindrome_partitioner("aab")  → 1
+palindrome_partitioner("aba")  → 0
+palindrome_partitioner("abc")  → 2

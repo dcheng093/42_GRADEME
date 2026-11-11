@@ -1,0 +1,23 @@
+Assignment name  : py_compress_decompress
+Expected files   : py_compress_decompress.py
+--------------------------------------------------------------------------------
+
+Schreibe zwei Funktionen: `compress` und `decompress`.
+
+`compress(s: str) -> str`:
+- Komprimiert aufeinanderfolgende Zeichen durch Anfügen der Anzahl.
+- Bei einzelnen Zeichen die '1' weglassen.
+- Gibt bei leerem String einen leeren String zurück.
+
+`decompress(s: str) -> str`:
+- Entpackt einen komprimierten String in seine Ursprungsform.
+- Unterstützt mehrstellige Zahlen (z. B. "a12" -> 12 mal 'a').
+
+def compress(s: str) -> str:
+def decompress(s: str) -> str:
+
+Beispiele:
+
+compress("aabcccccaaa")  → "a2bc5a3"
+decompress("a2bc5a3")    → "aabcccccaaa"
+compress("")             → ""

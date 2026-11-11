@@ -1,0 +1,14 @@
+Assignment name  : py_spiral_matrix
+Expected files   : py_spiral_matrix.py
+--------------------------------------------------------------------------------
+
+Saat yönünde spiral düzenle 1'den `n^2`'ye kadar sayılarla dolu `n x n` boyutunda 2D bir matris üreten bir fonksiyon yazın.
+
+Spiral, sol üst hücreden (0, 0) başlayarak sağa, aşağıya, sola ve yukarıya doğru içeriye kıvrılarak ilerler.
+
+def generate_spiral(n: int) -> list[list[int]]:
+
+Örnekler:
+
+generate_spiral(3)  → [[1, 2, 3], [8, 9, 4], [7, 6, 5]]
+generate_spiral(1)  → [[1]]

@@ -1,0 +1,17 @@
+Assignment name  : py_word_ladder
+Expected files   : py_word_ladder.py
+--------------------------------------------------------------------------------
+
+编写一个函数，计算从起始单词到目标单词的最短转换序列长度。
+
+- 返回最短单词接龙中的单词总数。
+- 如果无法转换则返回 0。
+
+def word_ladder(start: str, end: str, sentence: list[str]) -> int:
+
+示例:
+
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"])
+                                                              → 5
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log"])
+                                                              → 0

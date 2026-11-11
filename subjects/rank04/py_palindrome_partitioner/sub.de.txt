@@ -1,0 +1,17 @@
+Assignment name  : py_palindrome_partitioner
+Expected files   : py_palindrome_partitioner.py
+--------------------------------------------------------------------------------
+
+Finde für einen gegebenen String s die minimale Anzahl an Schnitten, die nötig sind, um ihn so zu zerteilen, dass jeder resultierende Teilstring ein Palindrom ist.
+
+- Gibt die minimale Anzahl an Schnitten (Ganzzahl) zurück
+- Ein String der Länge 1 erfordert 0 Schnitte
+- Ein leerer String erfordert 0 Schnitte
+
+def palindrome_partitioner(s: str) -> int:
+
+Beispiele:
+
+palindrome_partitioner("aab")  → 1
+palindrome_partitioner("aba")  → 0
+palindrome_partitioner("abc")  → 2

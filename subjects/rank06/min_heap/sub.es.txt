@@ -1,0 +1,41 @@
+Assignment name  : min_heap
+Expected files   : min_heap.py
+Forbidden functions : heapq
+--------------------------------------------------------------------------------
+
+Implementa una clase llamada `MinHeap` que gestione un montículo binario mínimo (Min-Heap) almacenado internamente en una lista de Python.
+
+La clase debe proporcionar los siguientes métodos:
+
+1. `__init__(self)`:
+Inicializa un montículo binario mínimo vacío.
+
+2. `push(self, val: int) -> None`:
+Inserta `val` en el montículo con una complejidad temporal de O(log n) (sift up).
+
+3. `pop(self) -> int | None`:
+Elimina y devuelve el valor mínimo del montículo con una complejidad temporal de O(log n) (sift down). Devuelve `None` si el montículo está vacío.
+
+4. `peek(self) -> int | None`:
+Devuelve el valor mínimo sin extraerlo en tiempo O(1). Devuelve `None` si el montículo está vacío.
+
+5. `size(self) -> int`:
+Devuelve el número total de elementos almacenados en el montículo en tiempo O(1).
+
+Está prohibido el uso del módulo `heapq`.
+
+class MinHeap:
+    def __init__(self):
+    def push(self, val: int) -> None:
+    def pop(self) -> int | None:
+    def peek(self) -> int | None:
+    def size(self) -> int:
+
+Ejemplos:
+
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.peek()      → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop()       → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop(); h.peek()
+                                                              → 5
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.size()      → 3
+h = MinHeap(); h.pop()                                        → None

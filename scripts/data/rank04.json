@@ -1,0 +1,324 @@
+[
+ {
+  "id": 1,
+  "level": 1,
+  "difficulty": "easy",
+  "name": "py_array_rotation_detector",
+  "file": "py_array_rotation_detector.py",
+  "description": {
+   "en": "Write a Python function that takes two lists (arrays) as parameters and determines if the second list is a rotation of the first list (left or right).\n\nA rotation means that the elements are shifted circularly. For example, shifting [1, 2, 3] to the right by one position results in [3, 1, 2].\n\nThe function must return True if arr2 is a rotation of arr1, and False otherwise.\nIf the arrays have different lengths, they cannot be rotations of each other.\nTwo empty arrays are considered rotations of each other.",
+   "de": "Schreibe eine Python-Funktion, die zwei Listen (Arrays) als Parameter erhält und ermittelt, ob die zweite Liste eine Rotation der ersten Liste ist (nach links oder rechts).\n\nEine Rotation bedeutet, dass die Elemente kreisförmig verschoben werden. Beispielsweise führt das Verschieben von [1, 2, 3] um eine Position nach rechts zu [3, 1, 2].\n\nDie Funktion muss True zurückgeben, wenn arr2 eine Rotation von arr1 ist, andernfalls False.\nWenn die Arrays unterschiedliche Längen haben, können sie keine Rotationen voneinander sein.\nZwei leere Arrays werden als Rotationen voneinander betrachtet.",
+   "fr": "Écris une fonction Python qui prend deux listes (tableaux) en paramètres et détermine si la deuxième liste est une rotation de la première (à gauche ou à droite).\n\nUne rotation signifie que les éléments sont décalés de manière circulaire. Par exemple, décaler [1, 2, 3] vers la droite d'une position donne [3, 1, 2].\n\nLa fonction doit renvoyer True si arr2 est une rotation de arr1, et False sinon.\nSi les tableaux ont des longueurs différentes, ils ne peuvent pas être des rotations l'un de l'autre.\nDeux tableaux vides sont considérés comme des rotations l'un de l'autre.",
+   "es": "Escribe una función en Python que tome dos listas (matrices) como parámetros y determine si la segunda lista es una rotación de la primera (hacia la izquierda o hacia la derecha).\n\nUna rotación significa que los elementos se desplazan de forma circular. Por ejemplo, desplazar [1, 2, 3] a la derecha una posición da como resultado [3, 1, 2].\n\nLa función debe devolver True si arr2 es una rotación de arr1, y False en caso contrario.\nSi las matrices tienen longitudes diferentes, no pueden ser rotaciones entre sí.\nDos matrices vacías se consideran rotaciones entre sí.",
+   "it": "Scrivi una funzione Python che prenda due liste (array) come parametri e determini se la seconda lista è una rotazione della prima lista (a sinistra o a destra).\n\nUna rotazione significa que gli elementi vengono spostati in modo circolare. Ad esempio, spostare [1, 2, 3] a destra di una posizione produce [3, 1, 2].\n\nLa funzione deve restituire True se arr2 è una rotazione di arr1, e False altrimenti.\nSe gli array hanno lunghezze diverse, non possono essere rotazioni l'uno dell'altro.\nDue array vuoti sono considerati rotazioni l'uno dell'altro.",
+   "ru": "Напишите функцию на Python, которая принимает два списка (массива) и определяет, является ли второй список циклической ротацией первого (влево или вправо).\n\nЦиклическая ротация означает, что элементы сдвигаются по кругу. Например, сдвиг [1, 2, 3] вправо на одну позицию дает [3, 1, 2].\n\nФункция должна возвращать True, если второй список является ротацией первого, и False в противном случае.\nЕсли списки имеют разную длину, они не могут быть ротациями друг друга.\nДва пустых списка считаются ротациями друг друга.",
+   "tr": "array2'nin array1'in bir döndürmesi (rotasyonu) olup olmadığını belirleyin. Bir döndürme, göreceli sırayı koruyarak elemanları döngüsel olarak kaydırır.\n\n- array2 array1'in geçerli bir döndürmesiyse True döndürün\n- Aksi halde veya dizi uzunlukları farklıysa False döndürün\n- Boş dizileri işleyin (iki boş dizi geçerli bir döndürme sayılır)",
+   "zh": "判断 array2 是否为 array1 的循环旋转。旋转是指在保持元素相对顺序的同时循环移位元素。\n\n- 如果 array2 是 array1 的有效旋转，则返回 True\n- 否则或当两数组长度不同时返回 False\n- 处理空数组（两个空数组视为有效旋转）",
+   "ar": "حدد ما إذا كانت المصفوفة array2 تمثل تدويراً للمصفوفة array1. يؤدي التدوير إلى إزاحة العناصر دورياً مع الحفاظ على الترتيب النسبي.\n\n- أرجع True إذا كانت array2 تدويراً صحيحاً لـ array1\n- أرجع False خلاف ذلك أو إذا اختلفت أطوال المصفوفتين\n- التعامل مع المصفوفات الفارغة (تُعتبر المصفوفتان الفارغتان تدويراً صحيحاً)"
+  },
+  "signature": "def array_rotation_detector(arr1: list, arr2: list) -> bool:",
+  "examples": [
+   {
+    "input": "array_rotation_detector([1, 2, 3, 4, 5], [4, 5, 1, 2, 3])",
+    "output": "True"
+   },
+   {
+    "input": "array_rotation_detector([1, 2, 3, 4, 5], [5, 1, 2, 3, 4])",
+    "output": "True"
+   },
+   {
+    "input": "array_rotation_detector([1, 2, 3], [3, 2, 1])",
+    "output": "False"
+   },
+   {
+    "input": "array_rotation_detector([1, 2], [1, 2, 3])",
+    "output": "False"
+   },
+   {
+    "input": "array_rotation_detector([], [])",
+    "output": "True"
+   }
+  ],
+  "forbidden": [
+   "collections.deque.rotate()"
+  ]
+ },
+ {
+  "id": 2,
+  "level": 1,
+  "difficulty": "medium",
+  "name": "py_constellation_mapper",
+  "file": "py_constellation_mapper.py",
+  "description": {
+   "en": "Write a function that maps a constellation of stars onto a grid and returns the visual representation as a list of strings.\n\nThe function should:\n- Take a list of star coordinates as tuples (row, col) and grid size as integer\n- Return a list of strings representing the grid\n- Stars are represented by '*' and empty spaces by '.'\n- Grid coordinates start from (0, 0) at top-left\n- Ignore coordinates outside the grid boundaries\n- Handle duplicate coordinates (star appears only once)",
+   "de": "Schreibe eine Funktion, die eine Sternkonstellation auf ein Raster abbildet und das Ergebnis als Liste von Zeichenketten zurückgibt.\n\nDie Funktion soll:\n- Eine Liste von Sternkoordinaten als Tupel (Zeile, Spalte) und die Rastergröße als Ganzzahl entgegennehmen\n- Eine Liste von Zeichenketten zurückgeben, die das Raster darstellen\n- Sterne werden durch '*' und leere Felder durch '.' dargestellt\n- Rasterkoordinaten beginnen bei (0, 0) oben links\n- Koordinaten außerhalb der Rastergrenzen ignorieren\n- Doppelte Koordinaten behandeln (jeder Stern wird nur einmal platziert)",
+   "fr": "Écris une fonction qui projette une constellation d'étoiles sur une grille et renvoie sa représentation visuelle sous forme de liste de chaînes.\n\nLa fonction doit :\n- Prendre une liste de coordonnées d'étoiles sous forme de tuples (ligne, colonne) et la taille de la grille sous forme d'entier\n- Renvoyer une liste de chaînes représentant la grille\n- Les étoiles sont représentées par '*' et les espaces vides par '.'\n- Les coordonnées de la grille commencent à (0, 0) en haut à gauche\n- Ignorer les coordonnées en dehors des limites de la grille\n- Gérer les doublons de coordonnées (l'étoile n'apparaît qu'une seule fois)",
+   "es": "Escribe una función que proyecte una constelación de estrellas en una cuadrícula y devuelva la representación visual como una lista de cadenas.\n\nLa función debe:\n- Tomar una lista de coordenadas de estrellas como tuplas (fila, columna) y el tamaño de la cuadrícula como entero\n- Devolver una lista de cadenas que represente la cuadrícula\n- Las estrellas se representan con '*' y los espacios vacíos con '.'\n- Las coordenadas de la cuadrícula comienzan en (0, 0) en la esquina superior izquierda\n- Ignorar las coordenadas fuera de los límites de la cuadrícula\n- Manejar coordenadas duplicadas (cada estrella aparece solo una vez)",
+   "it": "Scrivi una funzione che proietti una costellazione di stelle su una griglia e restituisca la rappresentazione visiva come lista di stringhe.\n\nLa funzione deve:\n- Ricevere una lista di coordinate di stelle come tuple (riga, colonna) e la dimensione della griglia come intero\n- Restituire una lista di stringhe che rappresenta la griglia\n- Le stelle sono rappresentate da '*' e gli spazi vuoti da '.'\n- Le coordinate partono da (0, 0) in alto a sinistra\n- Ignorare le coordinate fuori dai limiti della griglia\n- Gestire coordinate duplicate (ogni stella appare una volta sola)",
+   "ru": "В этом упражнении вам нужно реализовать функцию constellation_mapper.\n\nФункция должна:\n- Принимать в качестве параметра список кортежей, каждый из которых состоит из int(строка) и int(колонка).\n- Возвращать список строк (list[str]), представляющий сетку размера size * size, состоящую из символов \".\" и \"*\" на основе координат, переданных в переменной stars.\n- Игнорировать координаты, выходящие за границы сетки.\n- Игнорировать дублирующиеся координаты.",
+   "tr": "Bir yıldız takımyıldızını ızgara üzerine yerleştiren ve görsel temsilini dizeler listesi olarak döndüren bir fonksiyon yazın.\n\nFonksiyon şunları yapmalıdır:\n- Demetler (satır, sütun) halinde yıldız koordinatları listesini ve tamsayı olarak ızgara boyutunu almalıdır\n- Izgarayı temsil eden dizeler listesi döndürmelidir\n- Yıldızlar '*' ve boşluklar '.' ile temsil edilir\n- Izgara koordinatları sol üstte (0, 0) noktasından başlar\n- Izgara sınırları dışındaki koordinatları yoksaymalıdır\n- Yinelenen koordinatları işlemelidir (yıldız yalnızca bir kez görünür)",
+   "zh": "编写一个函数，将星系坐标映射到网格上，并以字符串列表形式返回其可视化网格表示。\n\n该函数应该：\n- 接收星系坐标元组列表 (行, 列) 以及整数表示的网格大小\n- 返回代表网格的字符串列表\n- 星星用 '*' 表示，空格用 '.' 表示\n- 网格坐标从左上角的 (0, 0) 开始\n- 忽略超出网格边界的坐标\n- 处理重复的坐标（每个星星仅出现一次）",
+   "ar": "اكتب دالة ترسم كوكبة من النجوم على شبكة وتُرجع التمثيل المرئي كقائمة من السلاسل النصية.\n\nيجب على الدالة:\n- أخذ قائمة بإحداثيات النجوم كأزواج (صف، عمود) وحجم الشبكة كعدد صحيح\n- إرجاع قائمة سلاسل نصية تمثل الشبكة\n- تمثيل النجوم بالرمز '*' والأماكن الفارغة بالرمز '.'\n- تبدأ إحداثيات الشبكة من (0، 0) في الزاوية العلوية اليسرى\n- تجاهل الإحداثيات الخارجة عن حدود الشبكة\n- التعامل مع الإحداثيات المكررة (يظهر النجم مرة واحدة فقط)"
+  },
+  "signature": "def constellation_mapper(stars: list[tuple[int, int]], dim: int) -> list[str]:",
+  "examples": [
+   {
+    "input": "constellation_mapper([(0, 0), (1, 1), (2, 2)], 3)",
+    "output": "['*..', '.*.', '..*']"
+   },
+   {
+    "input": "constellation_mapper([(1, 1), (0, 1), (2, 1), (1, 0), (1, 2)], 3)",
+    "output": "['.*.', '***', '.*.']"
+   },
+   {
+    "input": "constellation_mapper([], 2)",
+    "output": "['..', '..']"
+   },
+   {
+    "input": "constellation_mapper([(0, 0), (0, 0), (1, 1)], 2)",
+    "output": "['*.', '.*']"
+   },
+   {
+    "input": "constellation_mapper([(0, 0), (5, 5)], 3)",
+    "output": "['*..', '...', '...']"
+   },
+   {
+    "input": "constellation_mapper([(1, 0), (1, 1), (1, 2)], 3)",
+    "output": "['...', '***', '...']"
+   }
+  ]
+ },
+ {
+  "id": 3,
+  "level": 2,
+  "difficulty": "easy",
+  "name": "py_list_intersection_finder",
+  "file": "py_list_intersection_finder.py",
+  "description": {
+   "en": "Write a function that finds the intersection of multiple sorted lists.\nReturn a new list containing elements that appear in ALL input lists, in sorted order.\n\nThe function should:\n- Return elements that appear in ALL lists\n- Result should be sorted in ascending order\n- Remove duplicates from the result\n- Handle empty input or empty lists gracefully\n- If any list is empty, the intersection is empty",
+   "de": "Schreibe eine Funktion, die die Schnittmenge mehrerer sortierter Listen findet. Gibt eine neue Liste zurück, die die Elemente enthält, die in ALLEN Eingabelisten vorkommen, in sortierter Reihenfolge.\n\nDie Funktion sollte:\n- Elemente zurückgeben, die in ALLEN Listen vorkommen\n- Das Ergebnis sollte in aufsteigender Reihenfolge sortiert sein\n- Duplikate aus dem Ergebnis entfernen\n- Leere Eingaben oder leere Listen ordnungsgemäß behandeln\n- Wenn eine Liste leer ist, ist die Schnittmenge leer",
+   "fr": "Écris une fonction qui trouve l'intersection de plusieurs listes triées. Renvoyez une nouvelle liste contenant les éléments qui apparaissent dans TOUTES les listes d'entrée, dans l'ordre trié.\n\nLa fonction doit :\n- Renvoyer les éléments qui apparaissent dans TOUTES les listes\n- Le résultat doit être trié par ordre croissant\n- Supprimer les doublons du résultat\n- Gérer proprement les entrées vides ou les listes vides\n- Si une liste est vide, l'intersection est vide",
+   "es": "Escribe una función que encuentre la intersección de varias listas ordenadas. Devuelve una nueva lista que contenga los elementos que aparecen en TODAS las listas de entrada, en orden ordenado.\n\nLa función debe:\n- Devolver los elementos que aparecen en TODAS las listas\n- El resultado debe estar ordenado en orden ascendente\n- Eliminar duplicados del resultado\n- Manejar adecuadamente las entradas vacías o listas vacías\n- Si alguna lista está vacía, la intersección está vacía",
+   "it": "Scrivi una funzione che trovi l'intersezione di più liste ordinate. Restituisci una nuova lista contenente gli elementi che appaiono in TUTTE le liste di input, in ordine ordinato.\n\nLa funzione deve:\n- Restituire gli elementi che appaiono in TUTTE le liste\n- Il risultato deve essere ordinato in ordine crescente\n- Rimuovere i duplicati dal risultato\n- Gestire correttamente gli input vuoti o le liste vuote\n- Se una qualsiasi lista è vuota, l'intersezione è vuota",
+   "ru": "Напишите функцию, которая находит пересечение нескольких отсортированных списков. Возвращайте новый список, содержащий элементы, которые присутствуют во ВСЕХ входных списках, в отсортированном порядке.\n\nФункция должна:\n- Возвращать элементы, присутствующие во ВСЕХ списках\n- Результат должен быть отсортирован по возрастанию\n- Удалять дубликаты из результата\n- Корректно обрабатывать пустой ввод или пустые списки\n- Если какой-либо список пуст, пересечение считается пустым",
+   "tr": "Verilen tüm tamsayı listelerinde bulunan ortak elemanları bulun. Artan düzende sıralanmış benzersiz ortak elemanları döndürün.\n\n- Herhangi bir liste boşsa veya ortak eleman yoksa boş liste döndürün\n- Çıktıda benzersizliği koruyun",
+   "zh": "找出存在于所有给定整数列表中的公共元素。返回按升序排序的唯一公共元素。\n\n- 如果任何列表为空或不存在公共元素，则返回空列表\n- 确保输出中元素的唯一性",
+   "ar": "ابحث عن العناصر المشتركة الموجودة في جميع قوائم الأعداد الصحيحة المعطاة. أرجع العناصر المشتركة الفريدة مرتبة تصاعدياً.\n\n- أرجع قائمة فارغة إذا كانت أي قائمة فارغة أو في حال عدم وجود عناصر مشتركة\n- الحفاظ على تفرد العناصر وعدم التكرار في المخرجات"
+  },
+  "signature": "def list_intersection_finder(lists: list[list[int]]) -> list[int]:",
+  "examples": [
+   {
+    "input": "list_intersection_finder([[1, 2, 3], [2, 3, 4], [2, 3, 5]])",
+    "output": "[2, 3]"
+   },
+   {
+    "input": "list_intersection_finder([[1, 2, 3, 4], [2, 4, 6, 8], [4, 8, 12]])",
+    "output": "[4]"
+   },
+   {
+    "input": "list_intersection_finder([[1, 1, 2, 3], [1, 2, 2, 3], [1, 2, 3, 3]])",
+    "output": "[1, 2, 3]"
+   },
+   {
+    "input": "list_intersection_finder([[1, 2, 3], [4, 5, 6]])",
+    "output": "[]"
+   },
+   {
+    "input": "list_intersection_finder([])",
+    "output": "[]"
+   },
+   {
+    "input": "list_intersection_finder([[1, 2, 3], []])",
+    "output": "[]"
+   },
+   {
+    "input": "list_intersection_finder([[5]])",
+    "output": "[5]"
+   }
+  ]
+ },
+ {
+  "id": 4,
+  "level": 2,
+  "difficulty": "medium",
+  "name": "py_merge_sorted_lists",
+  "file": "py_merge_sorted_lists.py",
+  "description": {
+   "en": "Write a function that merges multiple sorted lists into one sorted list while maintaining the sort order efficiently.\n\nThe function should:\n- Take a list of sorted integer lists as input\n- Return a single merged list in ascending order\n- Preserve all duplicate elements in the final result\n- Handle empty lists and empty input gracefully\n- Maintain optimal efficiency for large inputs\n\nRules:\n- All input lists are guaranteed to be sorted in ascending order\n- Empty lists should be ignored during merging\n- Return empty list if no valid input is provided\n- Preserve duplicates across different lists\n- Handle negative numbers correctly\n\nEdge cases to handle:\n- Empty input list: return empty list\n- Lists containing only empty lists: return empty list\n- Single list input: return copy of that list\n- All duplicate elements: preserve all instances\n- Negative numbers: handle correctly in sort order",
+   "de": "Schreibe eine Funktion, die mehrere sortierte Listen effizient zu einer einzigen aufsteigend sortierten Liste zusammenführt.\n\nDie Funktion soll:\n- Eine Liste von sortierten Integer-Listen entgegennehmen\n- Eine einzelne zusammengeführte Liste in aufsteigender Reihenfolge zurückgeben\n- Alle doppelten Elemente im Endergebnis beibehalten\n- Leere Listen und leere Eingaben sauber behandeln\n- Optimale Effizienz bei großen Eingabemengen aufweisen",
+   "fr": "Écris une fonction qui fusionne plusieurs listes triées en une seule liste triée de manière efficace.\n\nLa fonction doit :\n- Prendre en entrée une liste de listes d'entiers triées\n- Renvoyer une seule liste fusionnée par ordre croissant\n- Conserver tous les doublons dans le résultat final\n- Gérer correctement les listes vides et les entrées vides\n- Maintenir une efficacité optimale pour les grands volumes de données",
+   "es": "Escribe una función que fusione múltiples listas ordenadas en una sola lista ordenada de forma eficiente.\n\nLa función debe:\n- Tomar como entrada una lista de listas de enteros ordenadas\n- Devolver una única lista fusionada en orden ascendente\n- Conservar todos los elementos duplicados en el resultado final\n- Manejar listas vacías y entradas vacías de forma adecuada\n- Mantener una eficiencia óptima para entradas grandes",
+   "it": "Scrivi una funzione che unisca più liste ordinate in una sola lista ordinata in modo efficiente.\n\nLa funzione deve:\n- Ricevere in input una lista di liste di interi ordinate\n- Restituire un'unica lista unita in ordine crescente\n- Mantenere tutti gli elementi duplicati nel risultato finale\n- Gestire correttamente le liste vuote e gli input vuoti\n- Mantenere un'efficienza ottimale per grandi volumi di dati",
+   "ru": "Вам дан список отсортированных подсписков целых чисел в произвольном порядке.\nОбъедините все подсписки в один отсортированный по возрастанию список и верните его.\n\nОграничения:\n- Внешний список может быть пустым -> вернуть []\n- Могут существовать пустые подсписки, которые следует игнорировать.\n- Значения могут повторяться (сохраняйте дубликаты).\n- Каждый подсписок уже отсортирован по отдельности.",
+   "tr": "Birden çok sıralı listeyi sıralama düzenini verimli şekilde koruyarak tek bir sıralı listede birleştiren bir fonksiyon yazın.\n\nFonksiyon şunları yapmalıdır:\n- Sıralı tamsayı listelerinden oluşan bir listeyi girdi olarak almalıdır\n- Artan düzende tek bir birleştirilmiş liste döndürmelidir\n- Sonuçta tüm yinelenen elemanları korumalıdır\n- Boş listeleri ve boş girdileri sorunsuz şekilde işlemelidir\n- Büyük girdiler için optimum verimlilik sağlamalıdır",
+   "zh": "编写一个函数，高效地将多个已排序的列表合并为一个保持升序排序的列表。\n\n该函数应该：\n- 接收已排序的整数列表组成的列表作为输入\n- 返回一个按升序排列的合并后列表\n- 在最终结果中保留所有重复元素\n- 妥善处理空列表和空输入\n- 对大规模输入保持最优的处理效率",
+   "ar": "اكتب دالة تدمج قوائم متعددة مرتبة في قائمة واحدة مرتبة بكفاءة عالية.\n\nيجب على الدالة:\n- أخذ قائمة من قوائم الأعداد الصحيحة المرتبة كمدخل\n- إرجاع قائمة مدمجة واحدة بترتيب تصاعدي\n- الحفاظ على جميع العناصر المكررة في النتيجة النهائية\n- التعامل بسلاسة مع القوائم الفارغة والمدخلات الفارغة\n- الحفاظ على الكفاءة المثالية للمدخلات الكبيرة"
+  },
+  "signature": "def merge_sorted_lists(lists: list[list[int]]) -> list[int]:",
+  "examples": [
+   {
+    "input": "merge_sorted_lists([[1, 3, 5], [2, 4, 6]])",
+    "output": "[1, 2, 3, 4, 5, 6]"
+   },
+   {
+    "input": "merge_sorted_lists([[1, 5, 9], [2, 3, 8], [4, 6, 7]])",
+    "output": "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+   },
+   {
+    "input": "merge_sorted_lists([[5], [1, 3], [2, 4]])",
+    "output": "[1, 2, 3, 4, 5]"
+   },
+   {
+    "input": "merge_sorted_lists([[1, 1, 2], [2, 3, 3]])",
+    "output": "[1, 1, 2, 2, 3, 3]"
+   },
+   {
+    "input": "merge_sorted_lists([[], [1, 2, 3]])",
+    "output": "[1, 2, 3]"
+   },
+   {
+    "input": "merge_sorted_lists([[]])",
+    "output": "[]"
+   },
+   {
+    "input": "merge_sorted_lists([[-5, -1, 0], [-3, 2, 4]])",
+    "output": "[-5, -3, -1, 0, 2, 4]"
+   },
+   {
+    "input": "merge_sorted_lists([[10], [10], [10]])",
+    "output": "[10, 10, 10]"
+   }
+  ],
+  "forbidden": [
+   "sorted()",
+   ".sort()",
+   "heapq.merge()"
+  ]
+ },
+ {
+  "id": 5,
+  "level": 3,
+  "difficulty": "hard",
+  "name": "py_palindrome_partitioner",
+  "file": "py_palindrome_partitioner.py",
+  "description": {
+   "en": "Given a string `s`, find the minimum number of cuts needed to partition it such that every resulting substring is a palindrome.\n\nA cut divides the string between two characters. With `c` cuts, the string is split into `c + 1` substrings. We want the minimum number of cuts `c` such that all parts are palindromes.\n\nReturn this minimum number of cuts (an integer).\n\nConstraints:\n- An empty string or a string of length 1 is already a palindrome -> 0 cuts.\n- If the entire string is already a palindrome -> 0 cuts.\n- In the worst case (all characters are distinct), the result is len(s) - 1 cuts.",
+   "de": "Finde für einen gegebenen String s die minimale Anzahl an Schnitten, die nötig sind, um ihn so zu zerteilen, dass jeder resultierende Teilstring ein Palindrom ist.\n\n- Gibt die minimale Anzahl an Schnitten (Ganzzahl) zurück\n- Ein String der Länge 1 erfordert 0 Schnitte\n- Ein leerer String erfordert 0 Schnitte",
+   "fr": "Étant donné une chaîne s, trouve le nombre minimum de découpes nécessaires pour la partitionner de manière à ce que chaque sous-chaîne résultante soit un palindrome.\n\n- Renvoie le nombre minimum de découpes (un entier)\n- Une chaîne de longueur 1 nécessite 0 découpe\n- Une chaîne vide nécessite 0 découpe",
+   "es": "Dada una cadena s, encuentra el número mínimo de cortes necesarios para particionarla de manera que cada subcadena resultante sea un palíndromo.\n\n- Devuelve el número mínimo de cortes (un entero)\n- Una cadena de longitud 1 requiere 0 cortes\n- Una cadena vacía requiere 0 cortes",
+   "it": "Data una stringa s, trova il numero minimo di tagli necessari per partizionarla in modo che ogni sottostringa risultante sia un palindromo.\n\n- Restituisce il numero minimo di tagli (un intero)\n- Una stringa di lunghezza 1 richiede 0 tagli\n- Una stringa vuota richiede 0 tagli",
+   "ru": "Дана строка s. Найдите минимальное количество разрезов, необходимых для разделения строки так, чтобы каждая полученная подстрока была палиндромом.\n\nРазрез делит строку между двумя символами. При c разрезах строка делится на c + 1 подстроку. Требуется найти минимальное количество разрезов c, при котором все части являются палиндромами.\n\nВерните это минимальное количество разрезов (целое число).\n\nОграничения:\n- Пустая строка или строка длиной 1 уже является палиндромом -> 0 разрезов.\n- Если вся строка уже является палиндромом -> 0 разрезов.\n- В худшем случае (все символы различны) результат равен len(s) - 1 разрезов.",
+   "tr": "Verilen bir s dizesi için, ortaya çıkan her alt dizenin bir palindrom olacağı şekilde bölmek için gereken minimum kesme sayısını bulun.\n\n- Minimum kesme sayısını döndürün (tamsayı)\n- 1 uzunluğundaki dize 0 kesme gerektirir\n- Boş dize 0 kesme gerektirir",
+   "zh": "给定一个字符串 s，找出将其分割所需的最小切割次数，使分割出的每个子串都是回文串。\n\n- 返回最小切割次数（整数）\n- 长度为 1 的字符串需要 0 次切割\n- 空字符串需要 0 次切割",
+   "ar": "بالنظر إلى سلسلة نصية s، أوجد الحد الأدنى لعدد مرات التقسيم المطلوبة لتجزئتها بحيث تكون كل سلسلة فرعية ناتجة متناظرة (palindrome).\n\n- أرجع الحد الأدنى لعدد مرات التقسيم (عدد صحيح)\n- السلسلة ذات الطول 1 تتطلب 0 تقسيم\n- السلسلة الفارغة تتطلب 0 تقسيم"
+  },
+  "signature": "def palindrome_partitioner(s: str) -> int:",
+  "examples": [
+   {
+    "input": "palindrome_partitioner(\"aab\")",
+    "output": "1"
+   },
+   {
+    "input": "palindrome_partitioner(\"aba\")",
+    "output": "0"
+   },
+   {
+    "input": "palindrome_partitioner(\"abc\")",
+    "output": "2"
+   }
+  ]
+ },
+ {
+  "id": 6,
+  "level": 3,
+  "difficulty": "hard",
+  "name": "py_package_dependency_resolver",
+  "file": "py_package_dependency_resolver.py",
+  "description": {
+   "en": "Write a function that determines a valid package installation order by resolving dependencies. Use topological sorting to ensure dependencies are installed before the packages that require them.\n\nThe function should:\n- Take a dictionary where keys are package names and values are lists of dependencies\n- Return packages in installation order (dependencies first)\n- Return empty list if no valid order exists (circular dependencies)\n- Handle empty input and isolated dependency chains\n- Ignore references to packages not in the input dictionary\n\nAlgorithm requirements:\n- Use topological sorting (e.g., Kahn's algorithm)\n- Process packages with no remaining dependencies first\n- Ensure deterministic output when multiple valid orders exist\n\nEdge cases to handle:\n- Empty input: return empty list\n- Packages with no dependencies: include in output first\n- Multiple independent chains: process all chains\n- Circular dependencies: return empty list\n- Non-existent dependencies: ignore missing packages\n- Self-dependencies: return empty list\n\nNotes:\n- For deterministic output, process packages alphabetically when choices exist\n- A package cannot be installed until all its dependencies are installed\n- If any circular dependency exists, no valid installation order is possible",
+   "de": "Schreibe eine Funktion, die eine gültige Installationsreihenfolge für Softwarepakete durch Auflösung von Abhängigkeiten ermittelt. Verwende topologisches Sortieren, um sicherzustellen, dass Abhängigkeiten vor den abhängigen Paketen installiert werden.\n\nDie Funktion soll:\n- Ein Dictionary entgegennehmen, dessen Schlüssel Paketnamen und Werte Listen von Abhängigkeiten sind\n- Pakete in Installationsreihenfolge (Abhängigkeiten zuerst) zurückgeben\n- Eine leere Liste zurückgeben, falls keine gültige Reihenfolge existiert (zyklische Abhängigkeiten)\n- Leere Eingaben und isolierte Abhängigkeitsketten behandeln\n- Referenzen auf Pakete ignorieren, die nicht im Eingabe-Dictionary vorhanden sind",
+   "fr": "Écris une fonction qui détermine un ordre d'installation valide des paquets en résolvant les dépendances. Utilise le tri topologique pour t'assurer que les dépendances sont installées avant les paquets qui les requièrent.\n\nLa fonction doit :\n- Prendre un dictionnaire dont les clés sont les noms de paquets et les valeurs des listes de dépendances\n- Renvoyer les paquets dans l'ordre d'installation (les dépendances en premier)\n- Renvoyer une liste vide si aucun ordre valide n'existe (dépendances circulaires)\n- Gérer les entrées vides et les chaînes de dépendances isolées\n- Ignorer les références à des paquets absents du dictionnaire d'entrée",
+   "es": "Escribe una función que determine un orden de instalación de paquetes válido resolviendo dependencias. Usa ordenamiento topológico para garantizar que las dependencias se instalen antes de los paquetes que las requieren.\n\nLa función debe:\n- Tomar un diccionario donde las claves son nombres de paquetes y los valores son listas de dependencias\n- Devolver los paquetes en orden de instalación (dependencias primero)\n- Devolver una lista vacía si no existe un orden válido (dependencias circulares)\n- Manejar entradas vacías y cadenas de dependencias aisladas\n- Ignorar referencias a paquetes que no están en el diccionario de entrada",
+   "it": "Scrivi una funzione che determini un ordine di installazione valido dei pacchetti risolvendo le dipendenze. Usa l'ordinamento topologico per garantire che le dipendenze siano installate prima dei pacchetti che le richiedono.\n\nLa funzione deve:\n- Ricevere un dizionario in cui le chiavi sono i nomi dei pacchetti e i valori sono liste di dipendenze\n- Restituire i pacchetti nell'ordine di installazione (prima le dipendenze)\n- Restituire una lista vuota se non esiste un ordine valido (dipendenze circolari)\n- Gestire input vuoti e catene di dipendenze isolate\n- Ignorare i riferimenti a pacchetti non presenti nel dizionario di input",
+   "ru": "Напишите функцию, которая определяет валидный порядок установки пакетов путем разрешения зависимостей. Используйте топологическую сортировку, чтобы зависимости устанавливались перед пакетами, которые их требуют.\n\nФункция должна:\n- Принимать словарь, где ключи - названия пакетов, а значения - списки их зависимостей.\n- Возвращать пакеты в порядке установки (зависимости первыми).\n- Возвращать пустой список ([]), если валидного порядка не существует (например, при циклических или авто-зависимостях).\n- Корректно обрабатывать пустой ввод и изолированные цепочки зависимостей.\n- Игнорировать ссылки на пакеты, которых нет среди ключей входного словаря.\n- Гарантировать, что пакет не может быть установлен, пока не установлены все его зависимости.\n\nДетали алгоритма и крайние случаи:\n- Топологическая сортировка: Используйте алгоритм топологической сортировки (например, алгоритм Кана).\n- Приоритет зависимостей: Сначала обрабатывайте пакеты, у которых больше не осталось неразрешенных зависимостей.\n- Детерминированный вывод: Если одновременно могут быть обработаны несколько пакетов (есть выбор), обрабатывайте их в алфавитном порядке для обеспечения детерминированности.\n- Пустой ввод: Возвращайте пустой список.\n- Несколько независимых цепочек: Обрабатывайте все цепочки, соблюдая алфавитный порядок.\n- Отсутствующие зависимости: Игнорируйте отсутствующие пакеты (относитесь к ним так, будто их нет в списке требований).",
+   "tr": "Bağımlılıkları çözerek geçerli bir paket kurulum sırası belirleyen bir fonksiyon yazın. Bağımlılıkların, onları gerektiren paketlerden önce kurulmasını sağlamak için topolojik sıralama kullanın.\n\nFonksiyon şunları yapmalıdır:\n- Anahtarların paket adları ve değerlerin bağımlılık listeleri olduğu bir sözlük almalıdır\n- Paketleri kurulum sırasında döndürmelidir (önce bağımlılıklar)\n- Geçerli bir sıra yoksa boş liste döndürmelidir (döngüsel bağımlılıklar)\n- Boş girdileri ve izole bağımlılık zincirlerini işlemelidir\n- Girdi sözlüğünde bulunmayan paket referanslarını yoksaymalıdır",
+   "zh": "编写一个函数，通过解析依赖关系来确定有效的软件包安装顺序。使用拓扑排序确保依赖项先于需要它们的软件包安装。\n\n该函数应该：\n- 接收一个字典，其中键是包名称，值是依赖项列表\n- 按安装顺序返回包（先安装依赖项）\n- 如果不存在有效顺序（存在循环依赖），则返回空列表\n- 处理空输入和孤立的依赖链\n- 忽略输入字典中未包含的包引用",
+   "ar": "اكتب دالة تحدد ترتيباً صحيحاً لتثبيت الحزم البرمجية عن طريق حل التبعيات. استخدم الترتيب الطوبولوجي لضمان تثبيت التبعيات قبل الحزم التي تتطلبها.\n\nيجب على الدالة:\n- أخذ قاموس مفاتيحه أسماء الحزم وقيمه قوائم التبعيات\n- إرجاع الحزم بترتيب التثبيت (التبعيات أولاً)\n- إرجاع قائمة فارغة إذا لم يكن هناك ترتيب صالح (تبعيات دائرية)\n- التعامل مع المدخلات الفارغة وسلاسل التبعيات المنعزلة\n- تجاهل الإشارات إلى الحزم غير الموجودة في القاموس المدخل"
+  },
+  "signature": "def package_dependency_resolver(packages: dict[str, list[str]]) -> list[str]:",
+  "examples": [
+   {
+    "input": "package_dependency_resolver({\"app\": [\"database\"], \"database\": [\"driver\"], \"driver\": []})",
+    "output": "[\"driver\", \"database\", \"app\"]"
+   },
+   {
+    "input": "package_dependency_resolver({\"A\": [], \"B\": [\"A\"], \"C\": [\"A\", \"B\"]})",
+    "output": "[\"A\", \"B\", \"C\"]"
+   },
+   {
+    "input": "package_dependency_resolver({})",
+    "output": "[]"
+   },
+   {
+    "input": "package_dependency_resolver({\"X\": [\"Y\"], \"Y\": [\"X\"]})",
+    "output": "[]"
+   },
+   {
+    "input": "package_dependency_resolver({\"web\": [], \"api\": [], \"frontend\": [\"web\"], \"backend\": [\"api\"]})",
+    "output": "[\"api\", \"web\", \"backend\", \"frontend\"]"
+   }
+  ],
+  "forbidden": [
+   "graphlib.TopologicalSorter"
+  ]
+ },
+ {
+  "id": 7,
+  "level": 4,
+  "difficulty": "hard",
+  "name": "py_sliding_window_maximum",
+  "file": "py_sliding_window_maximum.py",
+  "description": {
+   "en": "Write a function that finds the maximum element in each sliding window of size k in an array. Return a list of maximums for each window position.\n\nThe function should:\n- Slide a window of size k through the array\n- Find the maximum element in each window position\n- Return a list of maximum values\n- Handle edge cases (empty array, k <= 0, k > array length)\n- Return empty list for invalid inputs",
+   "de": "Schreibe eine Funktion, die das maximale Element in jedem gleitenden Fenster der Größe k in einem Array ermittelt. Gibt eine Liste der Maxima für jede Fensterposition zurück.\n\nDie Funktion soll:\n- Ein Fenster der Größe k über das Array verschieben\n- Das maximale Element in jeder Fensterposition finden\n- Eine Liste von Maximalwerten zurückgeben\n- Randfälle behandeln (leeres Array, k <= 0, k > Array-Länge)\n- Eine leere Liste bei ungültigen Eingaben zurückgeben",
+   "fr": "Écris une fonction qui trouve l'élément maximal dans chaque fenêtre glissante de taille k dans un tableau. Renvoyez une liste des maximums pour chaque position de la fenêtre.\n\nLa fonction doit :\n- Faire glisser une fenêtre de taille k à travers le tableau\n- Trouver l'élément maximal dans chaque position de la fenêtre\n- Renvoyer une liste des valeurs maximales\n- Gérer les cas limites (tableau vide, k <= 0, k > longueur du tableau)\n- Renvoyer une liste vide pour les entrées invalides",
+   "es": "Escribe una función que encuentre el elemento máximo en cada ventana deslizante de tamaño k en un arreglo. Devuelve una lista de los máximos para cada posición de ventana.\n\nLa función debe:\n- Deslizar una ventana de tamaño k a través del arreglo\n- Encontrar el elemento máximo en cada posición de la ventana\n- Devolver una lista de valores máximos\n- Manejar casos límite (arreglo vacío, k <= 0, k > longitud del arreglo)\n- Devolver una lista vacía para entradas no válidas",
+   "it": "Scrivi una funzione che trovi l'elemento massimo in ciascuna finestra scorrevole di dimensione k in un array. Restituisce una lista dei massimi per ciascuna posizione della finestra.\n\nLa funzione deve:\n- Far scorrere una finestra di dimensione k attraverso l'array\n- Trovare l'elemento massimo in ogni posizione della finestra\n- Restituire una lista di valori massimi\n- Gestire i casi limite (array vuoto, k <= 0, k > lunghezza dell'array)\n- Restituire una lista vuota per input non validi",
+   "ru": "Дан список целых чисел nums и целое число k. Представьте «окно» размера k, скользящее слева направо по одной позиции за раз.\n\nДля каждого положения окна найдите максимальное значение внутри него.\nВерните список всех этих максимальных значений в порядке появления окон.\n\nОграничения:\n- 1 <= k <= len(nums) в обычных случаях.\n- Если список nums пуст или k <= 0, верните [].\n- Количество окон (и максимумов) равно: len(nums) - k + 1.",
+   "tr": "Bir dizideki her k boyutundaki kayan penceredeki maksimum elemanı bulan bir fonksiyon yazın. Her pencere konumu için maksimumların listesini döndürün.\n\nFonksiyon şunları yapmalıdır:\n- Dizi boyunca k boyutunda bir pencere kaydırmalıdır\n- Her pencere konumundaki maksimum elemanı bulmalıdır\n- Maksimum değerlerin listesini döndürmelidir\n- Uç durumları işlemelidir (boş dizi, k <= 0, k > dizi uzunluğu)\n- Geçersiz girdiler için boş liste döndürmelidir",
+   "zh": "编写一个函数，找出数组中每个大小为 k 的滑动窗口中的最大元素。返回每个窗口位置的最大值列表。\n\n该函数应该：\n- 在数组中滑动大小为 k 的窗口\n- 找到每个窗口位置的最大元素\n- 返回最大值列表\n- 处理边界情况（空数组、k <= 0、k > 数组长度）\n- 对无效输入返回空列表",
+   "ar": "اكتب دالة تبحث عن العنصر الأكبر في كل نافذة منزلقة بحجم k في مصفوفة. تُرجع قائمة بالقيم القصوى لكل موضع نافذة.\n\nيجب على الدالة:\n- تمرير نافذة بحجم k عبر المصفوفة\n- العثور على العنصر الأكبر في كل موضع للنافذة\n- إرجاع قائمة بالقيم القصوى\n- التعامل مع الحالات الخاصة (مصفوفة فارغة، k <= 0، k > طول المصفوفة)\n- إرجاع قائمة فارغة للمدخلات غير الصالحة"
+  },
+  "signature": "def sliding_window_maximum(nums: list[int], k: int) -> list[int]:",
+  "examples": [
+   {
+    "input": "sliding_window_maximum([1, 3, -1, -3, 5, 3, 6, 7], 3)",
+    "output": "[3, 3, 5, 5, 6, 7]"
+   },
+   {
+    "input": "sliding_window_maximum([1, 2, 3, 4, 5], 2)",
+    "output": "[2, 3, 4, 5]"
+   },
+   {
+    "input": "sliding_window_maximum([5, 4, 3, 2, 1], 1)",
+    "output": "[5, 4, 3, 2, 1]"
+   },
+   {
+    "input": "sliding_window_maximum([1, 2, 3], 3)",
+    "output": "[3]"
+   },
+   {
+    "input": "sliding_window_maximum([1, 2, 3], 4)",
+    "output": "[]"
+   },
+   {
+    "input": "sliding_window_maximum([], 2)",
+    "output": "[]"
+   },
+   {
+    "input": "sliding_window_maximum([1, 2, 3], 0)",
+    "output": "[]"
+   }
+  ]
+ }
+]

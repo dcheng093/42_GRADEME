@@ -1,0 +1,18 @@
+Assignment name  : py_graph_cycle_detector
+Expected files   : py_graph_cycle_detector.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+اكتب دالة تحدد ما إذا كان الرسم البياني الموجّه يحتوي على دورة واحدة على الأقل.
+
+تأخذ الدالة قاموساً يمثل قائمة المجاورة.
+- تُرجع True إذا كان الرسم البياني يحتوي على دورة.
+- تُرجع False إذا كان الرسم البياني لا دورياً أو فارغاً.
+
+def py_graph_cycle_detector(graph: dict[int, list[int]]) -> bool:
+
+أمثلة:
+
+py_graph_cycle_detector({0: [1], 1: [2], 2: [0]})  → True
+py_graph_cycle_detector({0: [1], 1: [2], 2: []})   → False
+py_graph_cycle_detector({})                        → False

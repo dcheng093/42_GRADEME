@@ -1,0 +1,38 @@
+Assignment name  : union_find_system
+Expected files   : union_find_system.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Klasse namens `UnionFind`, die eine Disjoint-Set-Union-Datenstruktur (DSU) mit Pfadkompression und Union-by-Rank implementiert.
+
+Die Klasse muss folgende Methoden bereitstellen:
+
+1. `__init__(self, n: int)`:
+Initialisiert `n` Elemente (von 0 bis n - 1), wobei jedes Element anfangs seiner eigenen disjunkten Menge angehört (Elternelement ist es selbst, Rang ist 0).
+
+2. `find(self, x: int) -> int`:
+Ermittelt und gibt den Repräsentanten (die Wurzel) der Menge zurück, die das Element `x` enthält. Implementiert Pfadkompression, sodass alle durchlaufenen Knoten direkt auf die Wurzel verweisen.
+
+3. `union(self, x: int, y: int) -> bool`:
+Vereinigt die Menge von `x` mit der Menge von `y` mittels Union-by-Rank (der Baum mit kleinerem Rang wird an die Wurzel des größeren Rangs gehängt; bei gleichem Rang wird der Rang der neuen Wurzel inkrementiert).
+Gibt `True` zurück, wenn `x` und `y` in verschiedenen Mengen lagen und vereinigt wurden.
+Gibt `False` zurück, wenn `x` und `y` bereits in derselben Menge lagen.
+
+4. `connected(self, x: int, y: int) -> bool`:
+Gibt `True` zurück, wenn `x` und `y` derselben Menge angehören, andernfalls `False`.
+
+class UnionFind:
+    def __init__(self, n: int):
+    def find(self, x: int) -> int:
+    def union(self, x: int, y: int) -> bool:
+    def connected(self, x: int, y: int) -> bool:
+
+Beispiele:
+
+uf = UnionFind(5); uf.connected(0, 1)                         → False
+uf = UnionFind(5); uf.union(0, 1)                             → True
+uf = UnionFind(5); uf.union(0, 1); uf.connected(0, 1)         → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(1, 2); uf.connected(0, 2)
+                                                              → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(0, 1)             → False
+uf = UnionFind(3); uf.union(0, 1); uf.union(1, 2); uf.find(0) == uf.find(2)
+                                                              → True

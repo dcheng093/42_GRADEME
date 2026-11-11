@@ -1,0 +1,29 @@
+Assignment name  : trie_autocomplete
+Expected files   : trie_autocomplete.py
+--------------------------------------------------------------------------------
+
+编写一个函数，利用前缀树（Trie）数据结构实现一个自动补全系统。
+该函数应将单词列表插入前缀树，并找出所有以给定前缀开头的单词。
+
+该函数应该：
+- 根据单词列表构建一棵前缀树（Trie）。
+- 返回以给定前缀开头的所有不重复单词。
+- 按字母顺序（字典序）返回结果。
+- 处理空前缀情况（按字典序返回所有不重复单词）。
+- 如果未找到任何匹配项，返回空列表。
+- 区分大小写。
+- 输入中重复出现的单词在输出中只应出现一次。
+
+def trie_autocomplete(words: list[str], prefix: str) -> list[str]:
+
+示例:
+
+trie_autocomplete(["apple", "app", "apricot", "banana"], "app")
+                                                              → ["app", "apple"]
+trie_autocomplete(["apple", "app", "apricot", "banana"], "ban")
+                                                              → ["banana"]
+trie_autocomplete(["hello", "world", "help", "heap"], "he")   → ["heap", "hello", "help"]
+trie_autocomplete(["test"], "xyz")                            → []
+trie_autocomplete(["cat", "car", "card", "care"], "car")      → ["car", "card", "care"]
+trie_autocomplete([], "test")                                 → []
+trie_autocomplete(["a", "ab", "abc"], "")                     → ["a", "ab", "abc"]

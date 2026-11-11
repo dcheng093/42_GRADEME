@@ -1,0 +1,38 @@
+Assignment name  : union_find_system
+Expected files   : union_find_system.py
+--------------------------------------------------------------------------------
+
+Scrivi una classe denominata `UnionFind` che implementi una struttura dati per insiemi disgiunti (DSU) con compressione dei percorsi e unione per rango.
+
+La classe deve fornire i seguenti metodi:
+
+1. `__init__(self, n: int)`:
+Inizializza `n` elementi (da 0 a n - 1), dove ciascun elemento appartiene inizialmente al proprio insieme separato (il genitore è l'elemento stesso e il rango è 0).
+
+2. `find(self, x: int) -> int`:
+Trova e restituisce il rappresentante (la radice) dell'insieme contenente l'elemento `x`. Implementa la compressione del percorso in modo che ciascun nodo attraversato punti direttamente alla radice.
+
+3. `union(self, x: int, y: int) -> bool`:
+Unisce l'insieme contenente `x` con l'insieme contenente `y` utilizzando l'unione per rango (collegando l'albero di rango inferiore sotto la radice dell'albero di rango superiore; se i ranghi sono uguali, incrementa il rango della radice risultante).
+Restituisce `True` se `x` e `y` appartenevano a insiemi diversi e sono stati uniti.
+Restituisce `False` se `x` e `y` appartenevano già allo stesso insieme.
+
+4. `connected(self, x: int, y: int) -> bool`:
+Restituisce `True` se `x` e `y` appartengono allo stesso insieme, e `False` altrimenti.
+
+class UnionFind:
+    def __init__(self, n: int):
+    def find(self, x: int) -> int:
+    def union(self, x: int, y: int) -> bool:
+    def connected(self, x: int, y: int) -> bool:
+
+Esempi:
+
+uf = UnionFind(5); uf.connected(0, 1)                         → False
+uf = UnionFind(5); uf.union(0, 1)                             → True
+uf = UnionFind(5); uf.union(0, 1); uf.connected(0, 1)         → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(1, 2); uf.connected(0, 2)
+                                                              → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(0, 1)             → False
+uf = UnionFind(3); uf.union(0, 1); uf.union(1, 2); uf.find(0) == uf.find(2)
+                                                              → True

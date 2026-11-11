@@ -1,0 +1,29 @@
+Assignment name  : trie_autocomplete
+Expected files   : trie_autocomplete.py
+--------------------------------------------------------------------------------
+
+اكتب دالة تطبق نظام الإكمال التلقائي (Autocomplete) باستخدام هيكل بيانات شجرة البادئات (Trie).
+يجب على الدالة إدراج قائمة من الكلمات في الشجرة والبحث عن جميع الكلمات التي تبدأ ببادئة محددة.
+
+يجب على الدالة:
+- بناء شجرة بادئات (Trie) من قائمة الكلمات.
+- إرجاع جميع الكلمات الفريدة التي تبدأ بالبادئة المعطاة.
+- إرجاع النتائج مرتبة أبجدياً.
+- معالجة البادئة الفارغة بإرجاع جميع الكلمات الفريدة مرتبة.
+- إرجاع قائمة فارغة إذا لم يتم العثور على أي تطابقات.
+- أن تكون حساسة لحالة الأحرف (Case-sensitive).
+- ضمان ظهور الكلمات المكررة في المدخلات مرة واحدة فقط في المخرجات.
+
+def trie_autocomplete(words: list[str], prefix: str) -> list[str]:
+
+أمثلة:
+
+trie_autocomplete(["apple", "app", "apricot", "banana"], "app")
+                                                              → ["app", "apple"]
+trie_autocomplete(["apple", "app", "apricot", "banana"], "ban")
+                                                              → ["banana"]
+trie_autocomplete(["hello", "world", "help", "heap"], "he")   → ["heap", "hello", "help"]
+trie_autocomplete(["test"], "xyz")                            → []
+trie_autocomplete(["cat", "car", "card", "care"], "car")      → ["car", "card", "care"]
+trie_autocomplete([], "test")                                 → []
+trie_autocomplete(["a", "ab", "abc"], "")                     → ["a", "ab", "abc"]

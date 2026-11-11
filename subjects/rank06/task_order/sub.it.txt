@@ -1,0 +1,22 @@
+Assignment name  : task_order
+Expected files   : task_order.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+Ci sono `n` attività numerate da `0` a `n - 1`. Vengono forniti un intero `n` e un elenco di coppie di dipendenze `prereqs`, dove ciascuna coppia `[a, b]` indica che l'attività `b` deve essere completata prima di poter iniziare l'attività `a`.
+
+Scrivi una funzione `task_order` che restituisca un ordine valido con cui completare tutte le attività.
+
+Requisiti:
+- Quando più attività non hanno prerequisiti rimanenti e possono essere selezionate contemporaneamente, scegli sempre l'attività con l'indice minore (ordine lessicografico).
+- Se è impossibile completare tutte le attività a causa di una dipendenza ciclica, restituisci un elenco vuoto `[]`.
+- Non è consentito l'uso di `graphlib.TopologicalSorter`.
+
+def task_order(n: int, prereqs: list[list[int]]) -> list[int]:
+
+Esempi:
+
+task_order(2, [[1, 0]])                          → [0, 1]
+task_order(4, [[1, 0], [2, 0], [3, 1], [3, 2]])  → [0, 1, 2, 3]
+task_order(2, [[0, 1], [1, 0]])                  → []
+task_order(3, [])                                → [0, 1, 2]

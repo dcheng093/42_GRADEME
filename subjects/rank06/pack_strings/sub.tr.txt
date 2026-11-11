@@ -1,0 +1,27 @@
+Assignment name  : pack_strings
+Expected files   : pack_strings.py
+Forbidden functions : json, pickle, eval
+--------------------------------------------------------------------------------
+
+Bir dizge listesini serileştirmek ve seriden çıkarmak için iki fonksiyon yazın:
+
+1. `pack(strs: list[str]) -> str`:
+Bir dizge listesini tek bir dizgeye kodlar.
+
+2. `unpack(s: str) -> list[str]`:
+Biçimlendirilmiş dizgeyi çözerek orijinal dizge listesine dönüştürür.
+
+Tüm geçerli dizge listeleri için `unpack(pack(strs)) == strs` sağlanmalıdır.
+Dizgeler herhangi bir karakter içerebilir (rakamlar, `#` veya `:` gibi ayırıcılar, boşluklar, semboller ve yeni satır karakterleri) ve boş olabilir.
+Boş bir liste `[]` ile tek bir boş dizge içeren `[""]` listesi birbirinden ayırt edilmeli ve doğru şekilde geri yüklenmelidir.
+`json`, `pickle` veya `eval` kullanımı yasaktır.
+
+def pack(strs: list[str]) -> str:
+def unpack(s: str) -> list[str]:
+
+Örnekler:
+
+unpack(pack(["hello", "world"]))             → ["hello", "world"]
+unpack(pack([]))                             → []
+unpack(pack([""]))                           → [""]
+unpack(pack(["42", "exam#net", "level:6"]))  → ["42", "exam#net", "level:6"]

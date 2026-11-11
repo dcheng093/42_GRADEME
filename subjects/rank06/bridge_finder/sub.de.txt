@@ -1,0 +1,24 @@
+Assignment name  : bridge_finder
+Expected files   : bridge_finder.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die alle Brücken (Bridges) in einem ungerichteten Graphen findet. Eine Brücke ist eine Kante, deren Entfernen die Anzahl der Zusammenhangskomponenten im Graphen erhöht.
+
+Die Funktion soll:
+- Einen ungerichteten Graphen als Adjazenzliste entgegennehmen;
+- Alle Brücken als Liste von Tupeln (u, v) zurückgeben, wobei u < v gilt;
+- Die Ergebnisse aufsteigend nach dem ersten Element und anschließend nach dem zweiten Element sortiert zurückgeben;
+- Leere Graphen behandeln (leere Liste zurückgeben);
+- Graphen ohne Brücken behandeln (leere Liste zurückgeben).
+
+def bridge_finder(graph: dict[int, list[int]]) -> list[tuple[int, int]]:
+
+Beispiele:
+
+bridge_finder({0: [1, 2], 1: [0, 2], 2: [0, 1]})              → []
+bridge_finder({0: [1], 1: [0, 2], 2: [1]})                    → [(0, 1), (1, 2)]
+bridge_finder({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: [1]})   → [(1, 3)]
+bridge_finder({})                                             → []
+bridge_finder({0: [1], 1: [0]})                               → [(0, 1)]
+bridge_finder({0: [1, 2], 1: [0, 2, 3, 4], 2: [0, 1], 3: [1, 4], 4: [1, 3]})
+                                                              → []

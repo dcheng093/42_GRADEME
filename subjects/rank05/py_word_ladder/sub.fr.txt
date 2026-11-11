@@ -1,0 +1,17 @@
+Assignment name  : py_word_ladder
+Expected files   : py_word_ladder.py
+--------------------------------------------------------------------------------
+
+Écris une fonction qui calcule la longueur de la séquence de transformation la plus courte d'un mot de départ à un mot de fin.
+
+- Renvoie le nombre de mots dans l'échelle la plus courte.
+- Renvoie 0 si aucune transformation n'est possible.
+
+def word_ladder(start: str, end: str, sentence: list[str]) -> int:
+
+Exemples:
+
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"])
+                                                              → 5
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log"])
+                                                              → 0

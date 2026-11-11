@@ -1,0 +1,26 @@
+Assignment name  : py_package_dependency_resolver
+Expected files   : py_package_dependency_resolver.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die eine gültige Installationsreihenfolge für Softwarepakete durch Auflösung von Abhängigkeiten ermittelt. Verwende topologisches Sortieren, um sicherzustellen, dass Abhängigkeiten vor den abhängigen Paketen installiert werden.
+
+Die Funktion soll:
+- Ein Dictionary entgegennehmen, dessen Schlüssel Paketnamen und Werte Listen von Abhängigkeiten sind
+- Pakete in Installationsreihenfolge (Abhängigkeiten zuerst) zurückgeben
+- Eine leere Liste zurückgeben, falls keine gültige Reihenfolge existiert (zyklische Abhängigkeiten)
+- Leere Eingaben und isolierte Abhängigkeitsketten behandeln
+- Referenzen auf Pakete ignorieren, die nicht im Eingabe-Dictionary vorhanden sind
+
+def package_dependency_resolver(packages: dict[str, list[str]]) -> list[str]:
+
+Beispiele:
+
+package_dependency_resolver({"app": ["database"], "database": ["driver"], "driver": []})
+                                                              → ["driver", "database", "app"]
+package_dependency_resolver({"A": [], "B": ["A"], "C": ["A", "B"]})
+                                                              → ["A", "B", "C"]
+package_dependency_resolver({})                               → []
+package_dependency_resolver({"X": ["Y"], "Y": ["X"]})         → []
+package_dependency_resolver({"web": [], "api": [], "frontend": ["web"], "backend": ["api"]})
+                                                              → ["api", "web", "backend", "frontend"]

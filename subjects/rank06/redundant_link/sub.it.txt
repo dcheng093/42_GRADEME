@@ -1,0 +1,20 @@
+Assignment name  : redundant_link
+Expected files   : redundant_link.py
+--------------------------------------------------------------------------------
+
+Un albero è un grafo non orientato connesso privo di cicli.
+
+Viene fornito un grafo non orientato che inizialmente era un albero con `n` nodi etichettati da `1` a `n`, al quale è stato aggiunto un arco supplementare. Di conseguenza, il grafo contiene esattamente un ciclo.
+
+Il grafo è rappresentato da una lista `edges` di lunghezza `n`, dove `edges[i] = [u, v]` indica un arco tra i vertici `u` e `v`.
+
+Scrivi una funzione `redundant_link` che restituisca un arco che può essere rimosso affinché il grafo torni ad essere un albero di `n` nodi.
+Se sono presenti più archi idonei, restituisci quello che compare per ultimo nella lista `edges`.
+
+def redundant_link(edges: list[list[int]]) -> list[int]:
+
+Esempi:
+
+redundant_link([[1, 2], [1, 3], [2, 3]])                  → [2, 3]
+redundant_link([[1, 2], [2, 3], [3, 4], [1, 4], [1, 5]])  → [1, 4]
+redundant_link([[1, 4], [3, 4], [1, 3], [1, 2], [4, 5]])  → [1, 3]

@@ -1,0 +1,18 @@
+Assignment name  : py_room_scheduler
+Expected files   : py_room_scheduler.py
+--------------------------------------------------------------------------------
+
+Écris une fonction qui détermine le nombre minimal de salles de réunion nécessaires et attribue les créneaux sans chevauchement.
+
+Chaque réunion est une liste `[start_time, end_time]`.
+
+La fonction doit :
+- Renvoyer un dictionnaire avec `"total_rooms"` (nombre de salles) et `"schedule"` (créneaux attribués par salle).
+- Renvoyer `{"total_rooms": 0, "schedule": []}` si la liste est vide.
+
+def py_room_scheduler(meetings: list[list[int]]) -> dict[str, Any]:
+
+Exemples:
+
+py_room_scheduler([[0, 30], [5, 10], [15, 20]])  → {"total_rooms": 2, "schedule": [[[0, 30]], [[5, 10], [15, 20]]]}
+py_room_scheduler([])                            → {"total_rooms": 0, "schedule": []}

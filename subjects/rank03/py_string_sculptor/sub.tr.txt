@@ -5,14 +5,14 @@ Expected files   : py_string_sculptor.py
 Yalnızca alfabetik karakterlerin büyük/küçük harf durumunu değiştirerek bir dizeyi dönüştüren bir fonksiyon yazın.
 Alfabetik olmayan karakterler değişmeden kalır ve değişim indeksinde sayılmaz.
 İlk alfabetik karakter küçük, ikincisi büyük olmalıdır, vb.
-Boşluklar değişimi sıfırlar (bir boşluktan sonraki ilk harf yine küçük harfle başlar).
 
 def string_sculptor(text: str) -> str:
 
 Örnekler:
 
 string_sculptor("hello")        → "hElLo"
-string_sculptor("Hello World")  → "hElLo wOrLd"
+string_sculptor("Hello World")  → "hElLo WoRlD"
+string_sculptor("   hello   ")  → "   hElLo   "
 string_sculptor("abc123def")    → "aBc123DeF"
 string_sculptor("Python3.9!")   → "pYtHoN3.9!"
 string_sculptor("")             → ""

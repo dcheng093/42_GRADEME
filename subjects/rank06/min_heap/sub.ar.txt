@@ -1,0 +1,41 @@
+Assignment name  : min_heap
+Expected files   : min_heap.py
+Forbidden functions : heapq
+--------------------------------------------------------------------------------
+
+اكتب فئة باسم `MinHeap` تطبق كومة ثنائية صغرى (Binary Min-Heap) مخزنة داخل قائمة بايثون.
+
+يجب أن توفر الفئة الدوال التالية:
+
+1. `__init__(self)`:
+تهيئة كومة صغرى ثنائية فارغة.
+
+2. `push(self, val: int) -> None`:
+إدراج `val` في الكومة بتعقيد زمني قدره O(log n) (sift up).
+
+3. `pop(self) -> int | None`:
+إزالة وإرجاع أصغر قيمة من الكومة بتعقيد زمني قدره O(log n) (sift down). تُرجع `None` إذا كانت الكومة فارغة.
+
+4. `peek(self) -> int | None`:
+إرجاع أصغر قيمة دون إزالتها بتعقيد زمني قدره O(1). تُرجع `None` إذا كانت الكومة فارغة.
+
+5. `size(self) -> int`:
+إرجاع إجمالي عدد العناصر المخزنة حالياً في الكومة في وقت O(1).
+
+يمنع استخدام وحدة `heapq` المدمجة.
+
+class MinHeap:
+    def __init__(self):
+    def push(self, val: int) -> None:
+    def pop(self) -> int | None:
+    def peek(self) -> int | None:
+    def size(self) -> int:
+
+أمثلة:
+
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.peek()      → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop()       → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop(); h.peek()
+                                                              → 5
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.size()      → 3
+h = MinHeap(); h.pop()                                        → None

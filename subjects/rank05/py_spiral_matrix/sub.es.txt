@@ -1,0 +1,14 @@
+Assignment name  : py_spiral_matrix
+Expected files   : py_spiral_matrix.py
+--------------------------------------------------------------------------------
+
+Escribe una función que genere una matriz 2D de `n x n` rellena con números del 1 al `n^2` en orden espiral en el sentido de las agujas del reloj.
+
+La espiral comienza en la casilla superior izquierda (0, 0) moviéndose a la derecha, abajo, izquierda y arriba.
+
+def generate_spiral(n: int) -> list[list[int]]:
+
+Ejemplos:
+
+generate_spiral(3)  → [[1, 2, 3], [8, 9, 4], [7, 6, 5]]
+generate_spiral(1)  → [[1]]

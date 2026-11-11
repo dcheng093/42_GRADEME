@@ -1,0 +1,23 @@
+Assignment name  : py_compress_decompress
+Expected files   : py_compress_decompress.py
+--------------------------------------------------------------------------------
+
+اكتب دالتين: `compress` و `decompress`.
+
+`compress(s: str) -> str`:
+- تضغط الحروف المتتالية المكررة عن طريق إرفاق عدد مرات تكرارها بعد الحرف.
+- في حال تكرار الحرف مرة واحدة فقط، احذف الرقم '1'.
+- إذا كانت السلسلة المدخلة فارغة، تُرجع سلسلة فارغة.
+
+`decompress(s: str) -> str`:
+- تفك ضغط السلسلة المضغوطة وتعيدها إلى شكلها الأصلي.
+- تدعم الأعداد المكونة من عدة خانات (مثال: "a12" -> 12 حرف 'a').
+
+def compress(s: str) -> str:
+def decompress(s: str) -> str:
+
+أمثلة:
+
+compress("aabcccccaaa")  → "a2bc5a3"
+decompress("a2bc5a3")    → "aabcccccaaa"
+compress("")             → ""

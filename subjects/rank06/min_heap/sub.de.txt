@@ -1,0 +1,41 @@
+Assignment name  : min_heap
+Expected files   : min_heap.py
+Forbidden functions : heapq
+--------------------------------------------------------------------------------
+
+Implementiere eine Klasse namens `MinHeap`, die einen binären Minimum-Heap auf Basis einer Python-Liste darstellt.
+
+Die Klasse muss folgende Methoden bereitstellen:
+
+1. `__init__(self)`:
+Initialisiert einen leeren binären Min-Heap.
+
+2. `push(self, val: int) -> None`:
+Fügt `val` in den Heap in O(log n) Zeitkomplexität ein (Sift-Up).
+
+3. `pop(self) -> int | None`:
+Entfernt und liefert den kleinsten Wert aus dem Heap in O(log n) Zeitkomplexität (Sift-Down). Gibt `None` zurück, wenn der Heap leer ist.
+
+4. `peek(self) -> int | None`:
+Gibt den kleinsten Wert zurück, ohne ihn zu entfernen, in O(1) Zeitkomplexität. Gibt `None` zurück, wenn der Heap leer ist.
+
+5. `size(self) -> int`:
+Gibt die Gesamtzahl der Elemente im Heap in O(1) Zeitkomplexität zurück.
+
+Die Verwendung des Moduls `heapq` ist nicht gestattet.
+
+class MinHeap:
+    def __init__(self):
+    def push(self, val: int) -> None:
+    def pop(self) -> int | None:
+    def peek(self) -> int | None:
+    def size(self) -> int:
+
+Beispiele:
+
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.peek()      → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop()       → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop(); h.peek()
+                                                              → 5
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.size()      → 3
+h = MinHeap(); h.pop()                                        → None

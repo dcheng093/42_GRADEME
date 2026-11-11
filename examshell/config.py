@@ -73,7 +73,7 @@ RANKS = {
                 "ft_strcspn", "ft_strdup", "ft_strrev", "inter", "is_power_of_2",
                 "last_word", "max", "print_bits", "reverse_bits", "snake_to_camel",
                 "swap_bits", "union", "wdmatch",
-            )),
+            ), extras=("ft_strpbrk", "ft_strspn")),  # on 42exam.net, rarely seen in exams
             Level("advanced", folder="level2", pool=(
                 "add_prime_sum", "epur_str", "expand_str", "ft_atoi_base",
                 "ft_list_size", "ft_range", "ft_rrange", "hidenp", "lcm",
@@ -87,7 +87,7 @@ RANKS = {
             )),
         ),
     ),
-    # Current pool (14 subjects, 6 levels), imported by scripts/import_rank03.py
+    # Python ranks 03-06: pools from 42exam.net (scripts/data/), built by scripts/import_python.py
     "rank03": Rank(
         key="rank03",
         title="Rank 03",
@@ -100,6 +100,40 @@ RANKS = {
             Level("medium", pool=("py_anagram", "py_shadow_merge", "py_string_permutation_checker")),
             Level("hard", pool=("py_string_sculptor", "py_twist_sequence")),
             Level("hard", pool=("py_whisper_cipher",)),
+        ),
+    ),
+    "rank04": Rank(
+        key="rank04",
+        title="Rank 04",
+        language="python",
+        time_limit=3 * 60 * 60,
+        levels=(
+            Level("arrays", pool=("py_array_rotation_detector", "py_constellation_mapper")),
+            Level("sorted lists", pool=("py_list_intersection_finder", "py_merge_sorted_lists")),
+            Level("dp & graphs", pool=("py_palindrome_partitioner", "py_package_dependency_resolver")),
+            Level("sliding window", pool=("py_sliding_window_maximum",)),
+        ),
+    ),
+    "rank05": Rank(
+        key="rank05",
+        title="Rank 05",
+        language="python",
+        time_limit=3 * 60 * 60,
+        levels=(
+            Level("strings & matrices", pool=("py_compress_decompress", "py_spiral_matrix", "py_room_scheduler")),
+            Level("graphs & grids", pool=("py_graph_cycle_detector", "py_island_matrix_counter")),
+            Level("search", pool=("py_prism_detector", "py_word_ladder")),
+        ),
+    ),
+    "rank06": Rank(
+        key="rank06",
+        title="Rank 06",
+        language="python",
+        time_limit=3 * 60 * 60,
+        levels=(
+            Level("data structures", pool=("prefix_dictionary", "pack_strings", "task_order",
+                                           "redundant_link", "trie_autocomplete")),
+            Level("advanced structures", pool=("union_find_system", "cache_keeper", "min_heap", "bridge_finder")),
         ),
     ),
     # The Python pool before the 42exam.net one (2025 beta): practice only

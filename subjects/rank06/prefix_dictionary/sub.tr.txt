@@ -1,0 +1,36 @@
+Assignment name  : prefix_dictionary
+Expected files   : prefix_dictionary.py
+--------------------------------------------------------------------------------
+
+Bir önek ağacını (Trie) temsil eden `PrefixDictionary` adında bir sınıf yazın.
+
+Sınıf aşağıdaki metotları içermelidir:
+
+1. `__init__(self)`:
+Boş bir önek sözlüğü başlatır.
+
+2. `insert(self, word: str) -> None`:
+`word` dizgesini önek sözlüğüne ekler.
+
+3. `search(self, word: str) -> bool`:
+`word` dizgesi sözlüğe tam olarak eklenmişse `True`, aksi halde `False` döndürür.
+
+4. `starts_with(self, prefix: str) -> bool`:
+Daha önce eklenmiş herhangi bir kelime verilen `prefix` ile başlıyorsa `True`, aksi halde `False` döndürür.
+
+Tüm girdiler yalnızca küçük harflerden (`'a'` - `'z'`) oluşur.
+
+class PrefixDictionary:
+    def __init__(self):
+    def insert(self, word: str) -> None:
+    def search(self, word: str) -> bool:
+    def starts_with(self, prefix: str) -> bool:
+
+Örnekler:
+
+d = PrefixDictionary(); d.insert("apple"); d.search("apple")  → True
+d = PrefixDictionary(); d.insert("apple"); d.search("app")    → False
+d = PrefixDictionary(); d.insert("apple"); d.starts_with("app")
+                                                              → True
+d = PrefixDictionary(); d.insert("apple"); d.insert("app"); d.search("app")
+                                                              → True

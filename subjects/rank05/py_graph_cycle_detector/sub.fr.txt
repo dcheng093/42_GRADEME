@@ -1,0 +1,18 @@
+Assignment name  : py_graph_cycle_detector
+Expected files   : py_graph_cycle_detector.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+Écris une fonction qui détermine si un graphe orienté contient au moins un cycle.
+
+La fonction prend un dictionnaire représentant une liste d'adjacence.
+- Renvoie True si le graphe contient un cycle.
+- Renvoie False si le graphe est acyclique ou vide.
+
+def py_graph_cycle_detector(graph: dict[int, list[int]]) -> bool:
+
+Exemples:
+
+py_graph_cycle_detector({0: [1], 1: [2], 2: [0]})  → True
+py_graph_cycle_detector({0: [1], 1: [2], 2: []})   → False
+py_graph_cycle_detector({})                        → False

@@ -1,0 +1,15 @@
+Assignment name  : py_prism_detector
+Expected files   : py_prism_detector.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die nach einem Zielwort in einem 2D-Zeichenraster in allen 8 Richtungen sucht.
+
+- Gibt eine Liste von Tupeln `(x, y, richtungscode)` zurück.
+- Gibt `[]` zurück, wenn das Raster oder Wort leer ist.
+
+def prism_detector(grid: list[str], pattern: str):
+
+Beispiele:
+
+prism_detector(["CAT", "A..", "T.."], "CAT")  → [(0, 0, "H"), (0, 0, "V")]
+prism_detector([], "CAT")                     → []

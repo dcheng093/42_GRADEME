@@ -1,0 +1,14 @@
+Assignment name  : py_spiral_matrix
+Expected files   : py_spiral_matrix.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che generi una matrice 2D `n x n` riempita con numeri da 1 a `n^2` in ordine a spirale oraria.
+
+La spirale inizia dalla cella in alto a sinistra (0, 0) muovendosi verso destra, basso, sinistra e alto.
+
+def generate_spiral(n: int) -> list[list[int]]:
+
+Esempi:
+
+generate_spiral(3)  → [[1, 2, 3], [8, 9, 4], [7, 6, 5]]
+generate_spiral(1)  → [[1]]

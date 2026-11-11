@@ -1,0 +1,17 @@
+Assignment name  : py_word_ladder
+Expected files   : py_word_ladder.py
+--------------------------------------------------------------------------------
+
+Başlangıç kelimesinden hedef kelimeye en kısa dönüştürme dizisinin uzunluğunu hesaplayan fonksiyon yazın.
+
+- En kısa merdivendeki kelime sayısını döndürür.
+- Dönüştürme mümkün değilse 0 döndürür.
+
+def word_ladder(start: str, end: str, sentence: list[str]) -> int:
+
+Örnekler:
+
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"])
+                                                              → 5
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log"])
+                                                              → 0

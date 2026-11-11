@@ -1,0 +1,18 @@
+Assignment name  : py_graph_cycle_detector
+Expected files   : py_graph_cycle_detector.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che determini se un grafo diretto contiene almeno un ciclo.
+
+La funzione prende un dizionario che representa una lista di adiacenza.
+- Restituisce True se il grafo contiene un ciclo.
+- Restituisce False se il grafo è aciclico o vuoto.
+
+def py_graph_cycle_detector(graph: dict[int, list[int]]) -> bool:
+
+Esempi:
+
+py_graph_cycle_detector({0: [1], 1: [2], 2: [0]})  → True
+py_graph_cycle_detector({0: [1], 1: [2], 2: []})   → False
+py_graph_cycle_detector({})                        → False

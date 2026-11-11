@@ -1,0 +1,38 @@
+Assignment name  : union_find_system
+Expected files   : union_find_system.py
+--------------------------------------------------------------------------------
+
+Escribe una clase llamada `UnionFind` que implemente una estructura de datos de conjuntos disjuntos (DSU) con compresión de caminos y unión por rango.
+
+La clase debe implementar los siguientes métodos:
+
+1. `__init__(self, n: int)`:
+Inicializa `n` elementos (de 0 a n - 1), donde cada elemento pertenece inicialmente a su propio conjunto separado (su padre es él mismo y su rango es 0).
+
+2. `find(self, x: int) -> int`:
+Encuentra y devuelve el representante (raíz) del conjunto que contiene el elemento `x`. Implementa compresión de caminos para que cada nodo recorrido apunte directamente a la raíz.
+
+3. `union(self, x: int, y: int) -> bool`:
+Une el conjunto que contiene a `x` con el conjunto que contiene a `y` mediante unión por rango (adjuntando el árbol de menor rango bajo la raíz de mayor rango; si los rangos son iguales, incrementa el rango de la nueva raíz).
+Devuelve `True` si `x` e `y` estaban en conjuntos distintos y se unieron con éxito.
+Devuelve `False` si `x` e `y` ya pertenecían al mismo conjunto.
+
+4. `connected(self, x: int, y: int) -> bool`:
+Devuelve `True` si `x` e `y` pertenecen al mismo conjunto, y `False` en caso contrario.
+
+class UnionFind:
+    def __init__(self, n: int):
+    def find(self, x: int) -> int:
+    def union(self, x: int, y: int) -> bool:
+    def connected(self, x: int, y: int) -> bool:
+
+Ejemplos:
+
+uf = UnionFind(5); uf.connected(0, 1)                         → False
+uf = UnionFind(5); uf.union(0, 1)                             → True
+uf = UnionFind(5); uf.union(0, 1); uf.connected(0, 1)         → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(1, 2); uf.connected(0, 2)
+                                                              → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(0, 1)             → False
+uf = UnionFind(3); uf.union(0, 1); uf.union(1, 2); uf.find(0) == uf.find(2)
+                                                              → True

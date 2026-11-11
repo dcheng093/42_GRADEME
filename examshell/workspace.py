@@ -29,7 +29,8 @@ def prepare(question):
     return question.candidate
 
 
-_STUB_LINE = re.compile(r"(class \w+.*:|\s*def \w+\(.*\).*:|\s+pass|\s*\"\"\".*\"\"\"|\s*)")
+_STUB_LINE = re.compile(r"(class \w+.*:|\s*def \w+\(.*\).*:|\s+pass|\s*\"\"\".*\"\"\"|\s*"
+                        r"|from typing import [\w, ]+)")
 
 
 def is_stub(text):

@@ -1,0 +1,23 @@
+Assignment name  : py_compress_decompress
+Expected files   : py_compress_decompress.py
+--------------------------------------------------------------------------------
+
+Scrivi due funzioni: `compress` e `decompress`.
+
+`compress(s: str) -> str`:
+- Comprime i caratteri consecutivi ripetuti aggiungendo il conteggio.
+- Ometti il numero '1' se il carattere compare una sola volta.
+- Restituisce una stringa vuota se l'input è vuoto.
+
+`decompress(s: str) -> str`:
+- Decomprime una stringa compressa nella sua forma originale.
+- Gestisce conteggi a più cifre (es. "a12" -> 12 'a').
+
+def compress(s: str) -> str:
+def decompress(s: str) -> str:
+
+Esempi:
+
+compress("aabcccccaaa")  → "a2bc5a3"
+decompress("a2bc5a3")    → "aabcccccaaa"
+compress("")             → ""

@@ -1,0 +1,17 @@
+Assignment name  : py_word_ladder
+Expected files   : py_word_ladder.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die die Länge der kürzesten Transformationssequenz von einem Startwort zu einem Zielwort berechnet.
+
+- Gibt die Anzahl der Wörter im kürzesten Pfad zurück.
+- Gibt 0 zurück, wenn keine Transformation möglich ist.
+
+def word_ladder(start: str, end: str, sentence: list[str]) -> int:
+
+Beispiele:
+
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"])
+                                                              → 5
+word_ladder("hit", "cog", ["hot", "dot", "dog", "lot", "log"])
+                                                              → 0

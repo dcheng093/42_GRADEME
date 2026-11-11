@@ -1,0 +1,27 @@
+Assignment name  : pack_strings
+Expected files   : pack_strings.py
+Forbidden functions : json, pickle, eval
+--------------------------------------------------------------------------------
+
+Scrivi due funzioni per serializzare e deserializzare un elenco di stringhe:
+
+1. `pack(strs: list[str]) -> str`:
+Codifica un elenco di stringhe in una singola stringa.
+
+2. `unpack(s: str) -> list[str]`:
+Decodifica la stringa formattata ripristinando l'elenco di stringhe originale.
+
+Per ogni elenco di stringhe, `unpack(pack(strs))` deve risultare uguale a `strs`.
+Le stringhe possono contenere qualsiasi carattere (cifre, delimitatori come `#` o `:`, spazi, simboli e ritorni a capo) e possono essere vuote.
+Un elenco vuoto `[]` e un elenco contenente una singola stringa vuota `[""]` devono essere distinti e ricostruiti correttamente.
+Non è consentito l'uso di `json`, `pickle` o `eval`.
+
+def pack(strs: list[str]) -> str:
+def unpack(s: str) -> list[str]:
+
+Esempi:
+
+unpack(pack(["hello", "world"]))             → ["hello", "world"]
+unpack(pack([]))                             → []
+unpack(pack([""]))                           → [""]
+unpack(pack(["42", "exam#net", "level:6"]))  → ["42", "exam#net", "level:6"]

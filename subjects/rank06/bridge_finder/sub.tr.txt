@@ -1,0 +1,24 @@
+Assignment name  : bridge_finder
+Expected files   : bridge_finder.py
+--------------------------------------------------------------------------------
+
+Yönsüz bir graftaki tüm köprüleri (bridges) bulan bir fonksiyon yazın. Köprü, kaldırılması durumunda graftaki bağlı bileşen (connected components) sayısını artıran bir kenardır.
+
+Fonksiyon şunları yapmalıdır:
+- Yönsüz bir grafı komşuluk listesi (adjacency list) olarak almalıdır;
+- Tüm köprüleri u < v olacak şekilde (u, v) demetlerinden (tuple) oluşan bir liste olarak döndürmelidir;
+- Sonuçları önce birinci elemana, ardından ikinci elemana göre sıralanmış olarak döndürmelidir;
+- Boş grafları doğru şekilde işlemelidir (boş liste döndürmelidir);
+- Köprüsü olmayan grafları doğru şekilde işlemelidir (boş liste döndürmelidir).
+
+def bridge_finder(graph: dict[int, list[int]]) -> list[tuple[int, int]]:
+
+Örnekler:
+
+bridge_finder({0: [1, 2], 1: [0, 2], 2: [0, 1]})              → []
+bridge_finder({0: [1], 1: [0, 2], 2: [1]})                    → [(0, 1), (1, 2)]
+bridge_finder({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: [1]})   → [(1, 3)]
+bridge_finder({})                                             → []
+bridge_finder({0: [1], 1: [0]})                               → [(0, 1)]
+bridge_finder({0: [1, 2], 1: [0, 2, 3, 4], 2: [0, 1], 3: [1, 4], 4: [1, 3]})
+                                                              → []

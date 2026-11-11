@@ -1,0 +1,41 @@
+Assignment name  : min_heap
+Expected files   : min_heap.py
+Forbidden functions : heapq
+--------------------------------------------------------------------------------
+
+编写一个名为 `MinHeap` 的类，在 Python 列表中实现二叉最小堆（Min-Heap）。
+
+该类必须提供以下方法：
+
+1. `__init__(self)`：
+初始化一个空的二叉最小堆。
+
+2. `push(self, val: int) -> None`：
+以 O(log n) 时间复杂度将 `val` 插入堆中（上浮调整 sift up）。
+
+3. `pop(self) -> int | None`：
+以 O(log n) 时间复杂度移除并返回堆中的最小值（下沉调整 sift down）。如果堆为空，则返回 `None`。
+
+4. `peek(self) -> int | None`：
+以 O(1) 时间复杂度返回最小值而不移除。如果堆为空，则返回 `None`。
+
+5. `size(self) -> int`：
+以 O(1) 时间复杂度返回堆中当前存储的元素总数。
+
+禁止使用内置的 `heapq` 模块。
+
+class MinHeap:
+    def __init__(self):
+    def push(self, val: int) -> None:
+    def pop(self) -> int | None:
+    def peek(self) -> int | None:
+    def size(self) -> int:
+
+示例:
+
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.peek()      → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop()       → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop(); h.peek()
+                                                              → 5
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.size()      → 3
+h = MinHeap(); h.pop()                                        → None

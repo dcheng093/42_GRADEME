@@ -1,0 +1,35 @@
+Assignment name  : cache_keeper
+Expected files   : cache_keeper.py
+Forbidden functions : collections.OrderedDict
+--------------------------------------------------------------------------------
+
+编写一个名为 `CacheKeeper` 的类，实现具有固定容量的最近最少使用（LRU）缓存。
+
+该类必须提供以下方法：
+
+1. `__init__(self, capacity: int)`：
+使用正整数容量 `capacity` 初始化 LRU 缓存。
+
+2. `get(self, key: int) -> int`：
+如果键 `key` 存在于缓存中，返回其对应的值；否则返回 `-1`。成功的 `get` 操作会将该键标记为最近使用。
+
+3. `put(self, key: int, value: int) -> None`：
+插入或更新键值对。插入或更新后的键成为最近使用的键。如果键的数量超过 `capacity`，则淘汰最近最少使用的键。
+
+各项操作应达到平均 O(1) 的时间复杂度。
+禁止使用 `collections.OrderedDict`。
+
+class CacheKeeper:
+    def __init__(self, capacity: int):
+    def get(self, key: int) -> int:
+    def put(self, key: int, value: int) -> None:
+
+示例:
+
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1)        → 1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.put(3, 3); c.get(1)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(2)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(1)
+                                                              → 1

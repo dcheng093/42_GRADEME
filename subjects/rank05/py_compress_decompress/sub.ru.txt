@@ -1,0 +1,23 @@
+Assignment name  : py_compress_decompress
+Expected files   : py_compress_decompress.py
+--------------------------------------------------------------------------------
+
+Напишите две функции: `compress` и `decompress`.
+
+`compress(s: str) -> str`:
+- Сжимает последовательно повторяющиеся символы, добавляя их количество после символа.
+- Если символ встречается подряд только один раз, цифра '1' опускается.
+- Если входная строка пуста, возвращает пустую строку.
+
+`decompress(s: str) -> str`:
+- Распаковывает сжатую строку в исходную форму.
+- Поддерживает многозначные числа (например, "a12" -> 12 букв 'a').
+
+def compress(s: str) -> str:
+def decompress(s: str) -> str:
+
+Примеры:
+
+compress("aabcccccaaa")  → "a2bc5a3"
+decompress("a2bc5a3")    → "aabcccccaaa"
+compress("")             → ""

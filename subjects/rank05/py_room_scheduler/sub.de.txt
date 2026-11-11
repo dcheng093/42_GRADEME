@@ -1,0 +1,18 @@
+Assignment name  : py_room_scheduler
+Expected files   : py_room_scheduler.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die die minimale Anzahl an Besprechungsräumen ermittelt und Besprechungen ohne Überlappungen zuweist.
+
+Jedes Meeting ist eine Liste `[start_time, end_time]`.
+
+Die Funktion soll:
+- Ein Dictionary mit `"total_rooms"` (Anzahl) und `"schedule"` (Liste der Räume mit Meetings) zurückgeben.
+- Bei leerer Liste `{"total_rooms": 0, "schedule": []}` zurückgeben.
+
+def py_room_scheduler(meetings: list[list[int]]) -> dict[str, Any]:
+
+Beispiele:
+
+py_room_scheduler([[0, 30], [5, 10], [15, 20]])  → {"total_rooms": 2, "schedule": [[[0, 30]], [[5, 10], [15, 20]]]}
+py_room_scheduler([])                            → {"total_rooms": 0, "schedule": []}

@@ -1,0 +1,18 @@
+Assignment name  : py_graph_cycle_detector
+Expected files   : py_graph_cycle_detector.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+Yönlü bir grafın en az bir döngü içerip içermediğini belirleyen bir fonksiyon yazın.
+
+Fonksiyon, komşuluk listesi sözlüğünü alır.
+- Döngü varsa True döndürür.
+- Graf döngüsüzse veya boşsa False döndürür.
+
+def py_graph_cycle_detector(graph: dict[int, list[int]]) -> bool:
+
+Örnekler:
+
+py_graph_cycle_detector({0: [1], 1: [2], 2: [0]})  → True
+py_graph_cycle_detector({0: [1], 1: [2], 2: []})   → False
+py_graph_cycle_detector({})                        → False

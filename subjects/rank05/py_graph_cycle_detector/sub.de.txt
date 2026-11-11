@@ -1,0 +1,18 @@
+Assignment name  : py_graph_cycle_detector
+Expected files   : py_graph_cycle_detector.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die bestimmt, ob ein gerichteter Graph mindestens einen Zyklus enthält.
+
+Die Funktion erhält ein Dictionary als Adjazenzliste.
+- Gibt True zurück, wenn ein Zyklus existiert.
+- Gibt False zurück, wenn der Graph azyklisch oder leer ist.
+
+def py_graph_cycle_detector(graph: dict[int, list[int]]) -> bool:
+
+Beispiele:
+
+py_graph_cycle_detector({0: [1], 1: [2], 2: [0]})  → True
+py_graph_cycle_detector({0: [1], 1: [2], 2: []})   → False
+py_graph_cycle_detector({})                        → False

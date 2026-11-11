@@ -107,18 +107,32 @@ def find_forbidden(source, forbidden):
             return f"{base}.{node.attr}" if base else "." + node.attr
         return None
 
+    imported_modules = {v.split(".")[0] for v in aliases.values()}
+
     def match(name):
         for original in forbidden:
             target = original[:-2] if original.endswith("()") else original
             if target.startswith("."):
                 if name.endswith(target):
                     return original
-            elif name in (target, f"builtins.{target}"):
+            elif name in (target, f"builtins.{target}") or name.startswith(target + "."):
+                return original
+            # module.Class.method (collections.deque.rotate): any .method once module is imported
+            parts = target.split(".")
+            if len(parts) >= 3 and parts[0] in imported_modules and name.endswith("." + parts[-1]):
                 return original
         return None
 
     found = []
     for node in ast.walk(tree):
+        # `import heapq` / `from heapq import x` when the whole module is forbidden
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            modules = [a.name for a in node.names] if isinstance(node, ast.Import) else [node.module or ""]
+            for mod in modules:
+                for original in forbidden:
+                    target = original[:-2] if original.endswith("()") else original
+                    if "." not in target and mod.split(".")[0] == target and (original, node.lineno) not in found:
+                        found.append((original, node.lineno))
         # calls, plus bare references like `key=sorted` or `f = list.sort`
         target = node.func if isinstance(node, ast.Call) else node
         if isinstance(target, (ast.Name, ast.Attribute)):
@@ -228,6 +242,11 @@ def _describe_crash(error, candidate, question, module, passed):
     if isinstance(error, SystemExit):
         return _card("your code called exit()", [("after", f"{passed} passing checks")])
     rows = [("error", f"{type(error).__name__}: {error}"), ("after", f"{passed} passing checks")]
+    during = getattr(sys.modules.get("examshell.pytests"), "current", None)
+    if during:
+        rows.insert(0, ("during", during))
+    if isinstance(error, RecursionError):
+        rows.append(("hint", "too deep: recursion on a big input? try a loop with your own stack"))
     frame = _crash_location(error, candidate)
     if frame:
         rows.insert(1, ("where", f"{rel} line {frame.lineno}"))

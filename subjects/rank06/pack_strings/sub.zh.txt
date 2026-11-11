@@ -1,0 +1,27 @@
+Assignment name  : pack_strings
+Expected files   : pack_strings.py
+Forbidden functions : json, pickle, eval
+--------------------------------------------------------------------------------
+
+编写两个函数来序列化和反序列化字符串列表：
+
+1. `pack(strs: list[str]) -> str`：
+将一个字符串列表编码为一个单一字符串。
+
+2. `unpack(s: str) -> list[str]`：
+将该字符串解码回原始的字符串列表。
+
+对于任意字符串列表，`unpack(pack(strs))` 必须严格等于 `strs`。
+字符串可能包含任何字符（包括数字、`#` 或 `:` 等分隔符、空格、特殊符号和换行符），并且可能为空。
+空列表 `[]` 和仅包含一个空字符串的列表 `[""]` 属于不同输入，必须能够被准确区分与还原。
+禁止使用 `json`、`pickle` 或 `eval`。
+
+def pack(strs: list[str]) -> str:
+def unpack(s: str) -> list[str]:
+
+示例:
+
+unpack(pack(["hello", "world"]))             → ["hello", "world"]
+unpack(pack([]))                             → []
+unpack(pack([""]))                           → [""]
+unpack(pack(["42", "exam#net", "level:6"]))  → ["42", "exam#net", "level:6"]

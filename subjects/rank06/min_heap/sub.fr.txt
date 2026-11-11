@@ -1,0 +1,41 @@
+Assignment name  : min_heap
+Expected files   : min_heap.py
+Forbidden functions : heapq
+--------------------------------------------------------------------------------
+
+Implémente une classe nommée `MinHeap` représentant un tas binaire minimum (Min-Heap) stocké dans une liste Python.
+
+La classe doit fournir les méthodes suivantes :
+
+1. `__init__(self)` :
+Initialise un tas binaire minimum vide.
+
+2. `push(self, val: int) -> None` :
+Insère `val` dans le tas avec une complexité temporelle en O(log n) (sift up).
+
+3. `pop(self) -> int | None` :
+Extrait et renvoie la valeur minimale du tas avec une complexité temporelle en O(log n) (sift down). Renvoie `None` si le tas est vide.
+
+4. `peek(self) -> int | None` :
+Renvoie la valeur minimale sans la retirer avec une complexité temporelle en O(1). Renvoie `None` si le tas est vide.
+
+5. `size(self) -> int` :
+Renvoie le nombre total d'éléments présents dans le tas en temps O(1).
+
+L'utilisation du module `heapq` est interdite.
+
+class MinHeap:
+    def __init__(self):
+    def push(self, val: int) -> None:
+    def pop(self) -> int | None:
+    def peek(self) -> int | None:
+    def size(self) -> int:
+
+Exemples:
+
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.peek()      → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop()       → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop(); h.peek()
+                                                              → 5
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.size()      → 3
+h = MinHeap(); h.pop()                                        → None

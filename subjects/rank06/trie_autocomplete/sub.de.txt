@@ -1,0 +1,29 @@
+Assignment name  : trie_autocomplete
+Expected files   : trie_autocomplete.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die ein Autovervollständigungssystem mithilfe einer Trie-Datenstruktur (Präfixbaum) implementiert.
+Die Funktion soll eine Liste von Wörtern in den Trie einfügen und alle Wörter finden, die mit einem bestimmten Präfix beginnen.
+
+Die Funktion soll:
+- Einen Trie aus der Wortliste aufbauen.
+- Alle eindeutigen Wörter zurückgeben, die mit dem angegebenen Präfix beginnen.
+- Die Ergebnisse in alphabetischer Reihenfolge zurückgeben.
+- Ein leeres Präfix behandeln, indem alle eindeutigen Wörter sortiert zurückgegeben werden.
+- Eine leere Liste zurückgeben, falls keine Treffer gefunden werden.
+- Groß- und Kleinschreibung beachten (case-sensitive).
+- Sicherstellen, dass Duplikate in der Eingabe im Ergebnis nur einmal vorkommen.
+
+def trie_autocomplete(words: list[str], prefix: str) -> list[str]:
+
+Beispiele:
+
+trie_autocomplete(["apple", "app", "apricot", "banana"], "app")
+                                                              → ["app", "apple"]
+trie_autocomplete(["apple", "app", "apricot", "banana"], "ban")
+                                                              → ["banana"]
+trie_autocomplete(["hello", "world", "help", "heap"], "he")   → ["heap", "hello", "help"]
+trie_autocomplete(["test"], "xyz")                            → []
+trie_autocomplete(["cat", "car", "card", "care"], "car")      → ["car", "card", "care"]
+trie_autocomplete([], "test")                                 → []
+trie_autocomplete(["a", "ab", "abc"], "")                     → ["a", "ab", "abc"]

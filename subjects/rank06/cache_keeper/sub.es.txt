@@ -1,0 +1,35 @@
+Assignment name  : cache_keeper
+Expected files   : cache_keeper.py
+Forbidden functions : collections.OrderedDict
+--------------------------------------------------------------------------------
+
+Implementa una clase llamada `CacheKeeper` que funcione como una memoria caché LRU (Least Recently Used) con capacidad fija.
+
+La clase debe proporcionar los siguientes métodos:
+
+1. `__init__(self, capacity: int)`:
+Inicializa la caché LRU con una capacidad positiva `capacity`.
+
+2. `get(self, key: int) -> int`:
+Devuelve el valor correspondiente a `key` si la clave existe en la caché, o `-1` si no existe. Un acceso exitoso marca la clave como la usada más recientemente.
+
+3. `put(self, key: int, value: int) -> None`:
+Inserta o actualiza la clave con el valor `value`. La clave insertada o actualizada pasa a ser la usada más recientemente. Si el número de claves supera `capacity`, desaloja la clave menos usada recientemente.
+
+Las operaciones deben aspirar a una complejidad temporal promedio de O(1).
+Está prohibido el uso de `collections.OrderedDict`.
+
+class CacheKeeper:
+    def __init__(self, capacity: int):
+    def get(self, key: int) -> int:
+    def put(self, key: int, value: int) -> None:
+
+Ejemplos:
+
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1)        → 1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.put(3, 3); c.get(1)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(2)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(1)
+                                                              → 1

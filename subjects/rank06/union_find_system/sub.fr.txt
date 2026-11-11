@@ -1,0 +1,38 @@
+Assignment name  : union_find_system
+Expected files   : union_find_system.py
+--------------------------------------------------------------------------------
+
+Écris une classe nommée `UnionFind` qui implémente une structure de données d'ensembles disjoints (DSU) avec compression de chemin et union par rang.
+
+La classe doit fournir les méthodes suivantes :
+
+1. `__init__(self, n: int)` :
+Initialise `n` éléments (de 0 à n - 1), où chaque élément appartient initialement à son propre ensemble (chaque élément est son propre parent et son rang vaut 0).
+
+2. `find(self, x: int) -> int` :
+Trouve et renvoie le représentant (la racine) de l'ensemble contenant l'élément `x`. Implémente la compression de chemin pour que chaque nœud traversé pointe directement vers la racine.
+
+3. `union(self, x: int, y: int) -> bool` :
+Fusionne l'ensemble contenant `x` avec celui contenant `y` en utilisant l'union par rang (l'arbre de plus petit rang est rattaché sous la racine de plus grand rang ; si les rangs sont égaux, le rang de la nouvelle racine est incrémenté).
+Renvoie `True` si `x` et `y` étaient dans des ensembles différents et ont été fusionnés.
+Renvoie `False` si `x` et `y` étaient déjà dans le même ensemble.
+
+4. `connected(self, x: int, y: int) -> bool` :
+Renvoie `True` si `x` et `y` appartiennent au même ensemble, et `False` sinon.
+
+class UnionFind:
+    def __init__(self, n: int):
+    def find(self, x: int) -> int:
+    def union(self, x: int, y: int) -> bool:
+    def connected(self, x: int, y: int) -> bool:
+
+Exemples:
+
+uf = UnionFind(5); uf.connected(0, 1)                         → False
+uf = UnionFind(5); uf.union(0, 1)                             → True
+uf = UnionFind(5); uf.union(0, 1); uf.connected(0, 1)         → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(1, 2); uf.connected(0, 2)
+                                                              → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(0, 1)             → False
+uf = UnionFind(3); uf.union(0, 1); uf.union(1, 2); uf.find(0) == uf.find(2)
+                                                              → True

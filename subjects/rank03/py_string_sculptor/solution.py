@@ -3,10 +3,7 @@ def string_sculptor(text: str) -> str:
     uppercase_next = False
 
     for char in text:
-        if char == " ":
-            result.append(char)
-            uppercase_next = False
-        elif char.isalpha():
+        if char.isalpha():
             result.append(char.upper() if uppercase_next else char.lower())
             uppercase_next = not uppercase_next
         else:

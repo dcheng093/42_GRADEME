@@ -1,0 +1,29 @@
+Assignment name  : trie_autocomplete
+Expected files   : trie_autocomplete.py
+--------------------------------------------------------------------------------
+
+Напишите функцию, реализующую систему автодополнения (autocomplete) с использованием префиксного дерева (Trie).
+Функция должна добавлять список слов в дерево и находить все слова, начинающиеся с заданного префикса.
+
+Функция должна:
+- Построить префиксное дерево (Trie) из переданного списка слов.
+- Возвращать все уникальные слова, начинающиеся с указанного префикса.
+- Возвращать результаты в алфавитном порядке.
+- Корректно обрабатывать пустой префикс, возвращая все уникальные слова в отсортированном виде.
+- Возвращать пустой список, если совпадений не найдено.
+- Учитывать регистр символов (case-sensitive).
+- Гарантировать, что повторяющиеся слова из входных данных встречаются в выводе только один раз.
+
+def trie_autocomplete(words: list[str], prefix: str) -> list[str]:
+
+Примеры:
+
+trie_autocomplete(["apple", "app", "apricot", "banana"], "app")
+                                                              → ["app", "apple"]
+trie_autocomplete(["apple", "app", "apricot", "banana"], "ban")
+                                                              → ["banana"]
+trie_autocomplete(["hello", "world", "help", "heap"], "he")   → ["heap", "hello", "help"]
+trie_autocomplete(["test"], "xyz")                            → []
+trie_autocomplete(["cat", "car", "card", "care"], "car")      → ["car", "card", "care"]
+trie_autocomplete([], "test")                                 → []
+trie_autocomplete(["a", "ab", "abc"], "")                     → ["a", "ab", "abc"]

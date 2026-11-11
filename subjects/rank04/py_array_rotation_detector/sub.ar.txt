@@ -1,0 +1,20 @@
+Assignment name  : py_array_rotation_detector
+Expected files   : py_array_rotation_detector.py
+Forbidden functions : collections.deque.rotate()
+--------------------------------------------------------------------------------
+
+حدد ما إذا كانت المصفوفة array2 تمثل تدويراً للمصفوفة array1. يؤدي التدوير إلى إزاحة العناصر دورياً مع الحفاظ على الترتيب النسبي.
+
+- أرجع True إذا كانت array2 تدويراً صحيحاً لـ array1
+- أرجع False خلاف ذلك أو إذا اختلفت أطوال المصفوفتين
+- التعامل مع المصفوفات الفارغة (تُعتبر المصفوفتان الفارغتان تدويراً صحيحاً)
+
+def array_rotation_detector(arr1: list, arr2: list) -> bool:
+
+أمثلة:
+
+array_rotation_detector([1, 2, 3, 4, 5], [4, 5, 1, 2, 3])  → True
+array_rotation_detector([1, 2, 3, 4, 5], [5, 1, 2, 3, 4])  → True
+array_rotation_detector([1, 2, 3], [3, 2, 1])              → False
+array_rotation_detector([1, 2], [1, 2, 3])                 → False
+array_rotation_detector([], [])                            → True

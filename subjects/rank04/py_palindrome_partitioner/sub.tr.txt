@@ -1,0 +1,17 @@
+Assignment name  : py_palindrome_partitioner
+Expected files   : py_palindrome_partitioner.py
+--------------------------------------------------------------------------------
+
+Verilen bir s dizesi için, ortaya çıkan her alt dizenin bir palindrom olacağı şekilde bölmek için gereken minimum kesme sayısını bulun.
+
+- Minimum kesme sayısını döndürün (tamsayı)
+- 1 uzunluğundaki dize 0 kesme gerektirir
+- Boş dize 0 kesme gerektirir
+
+def palindrome_partitioner(s: str) -> int:
+
+Örnekler:
+
+palindrome_partitioner("aab")  → 1
+palindrome_partitioner("aba")  → 0
+palindrome_partitioner("abc")  → 2

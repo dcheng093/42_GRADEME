@@ -1,0 +1,18 @@
+Assignment name  : py_room_scheduler
+Expected files   : py_room_scheduler.py
+--------------------------------------------------------------------------------
+
+Toplantı zaman aralıklarını çakışmasız zamanlamak için gereken minimum oda sayısını belirleyen ve toplantıları odalara atayan bir fonksiyon yazın.
+
+Her toplantı `[başlangıç, bitiş]` listesi olarak temsil edilir.
+
+Fonksiyon şunları yapmalıdır:
+- `"total_rooms"` (gerekli oda sayısı) ve `"schedule"` (oda bazında toplantı listesi) içeren bir sözlük döndürmelidir.
+- Liste boşsa `{"total_rooms": 0, "schedule": []}` döndürmelidir.
+
+def py_room_scheduler(meetings: list[list[int]]) -> dict[str, Any]:
+
+Örnekler:
+
+py_room_scheduler([[0, 30], [5, 10], [15, 20]])  → {"total_rooms": 2, "schedule": [[[0, 30]], [[5, 10], [15, 20]]]}
+py_room_scheduler([])                            → {"total_rooms": 0, "schedule": []}

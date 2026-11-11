@@ -1,0 +1,38 @@
+Assignment name  : union_find_system
+Expected files   : union_find_system.py
+--------------------------------------------------------------------------------
+
+اكتب فئة باسم `UnionFind` تطبق هيكل بيانات المجموعات المنفصلة (Disjoint Set Union - DSU) مع تحسيني ضغط المسار (Path Compression) والدمج حسب الرتبة (Union by Rank).
+
+يجب أن توفر الفئة الدوال التالية:
+
+1. `__init__(self, n: int)`:
+تهيئة `n` من العناصر (من 0 إلى n - 1)، حيث ينتمي كل عنصر في البداية إلى مجموعته المستقلة الخاصة (العنصر هو الأصل لنفسه ورتبته 0).
+
+2. `find(self, x: int) -> int`:
+تحديد وإرجاع الممثل (الجذر) للمجموعة التي تحتوي على العنصر `x`. تقوم بتطبيق ضغط المسار بحيث تشير جميع العقد في المسار مباشرة إلى الجذر.
+
+3. `union(self, x: int, y: int) -> bool`:
+دمج المجموعة التي تحتوي على `x` مع المجموعة التي تحتوي على `y` باستخدام استراتيجية الدمج حسب الرتبة (ربط الشجرة ذات الرتبة الأصغر تحت جذر الشجرة ذات الرتبة الأكبر؛ وإذا تساوت الرتبتان، تتم زيادة رتبة الجذر الجديد بمقدار 1).
+تُرجع `True` إذا كان `x` و `y` في مجموعتين مختلفتين وتم دمجهما بنجاح.
+تُرجع `False` إذا كان `x` و `y` ينتميان بالفعل إلى نفس المجموعة.
+
+4. `connected(self, x: int, y: int) -> bool`:
+تُرجع `True` إذا كان `x` و `y` ينتميان إلى نفس المجموعة، و `False` خلاف ذلك.
+
+class UnionFind:
+    def __init__(self, n: int):
+    def find(self, x: int) -> int:
+    def union(self, x: int, y: int) -> bool:
+    def connected(self, x: int, y: int) -> bool:
+
+أمثلة:
+
+uf = UnionFind(5); uf.connected(0, 1)                         → False
+uf = UnionFind(5); uf.union(0, 1)                             → True
+uf = UnionFind(5); uf.union(0, 1); uf.connected(0, 1)         → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(1, 2); uf.connected(0, 2)
+                                                              → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(0, 1)             → False
+uf = UnionFind(3); uf.union(0, 1); uf.union(1, 2); uf.find(0) == uf.find(2)
+                                                              → True

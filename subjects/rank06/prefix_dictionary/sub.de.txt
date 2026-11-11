@@ -1,0 +1,36 @@
+Assignment name  : prefix_dictionary
+Expected files   : prefix_dictionary.py
+--------------------------------------------------------------------------------
+
+Implementiere eine Klasse namens `PrefixDictionary`, die einen Präfixbaum (Trie) darstellt.
+
+Die Klasse muss folgende Methoden bereitstellen:
+
+1. `__init__(self)`:
+Initialisiert ein leeres Präfix-Wörterbuch.
+
+2. `insert(self, word: str) -> None`:
+Fügt die Zeichenkette `word` in das Präfix-Wörterbuch ein.
+
+3. `search(self, word: str) -> bool`:
+Gibt `True` zurück, wenn genau diese Zeichenkette `word` im Präfix-Wörterbuch vorhanden ist, andernfalls `False`.
+
+4. `starts_with(self, prefix: str) -> bool`:
+Gibt `True` zurück, wenn mindestens ein zuvor eingefügtes Wort mit dem angegebenen `prefix` beginnt, andernfalls `False`.
+
+Alle Eingaben bestehen ausschließlich aus Kleinbuchstaben (`'a'` - `'z'`).
+
+class PrefixDictionary:
+    def __init__(self):
+    def insert(self, word: str) -> None:
+    def search(self, word: str) -> bool:
+    def starts_with(self, prefix: str) -> bool:
+
+Beispiele:
+
+d = PrefixDictionary(); d.insert("apple"); d.search("apple")  → True
+d = PrefixDictionary(); d.insert("apple"); d.search("app")    → False
+d = PrefixDictionary(); d.insert("apple"); d.starts_with("app")
+                                                              → True
+d = PrefixDictionary(); d.insert("apple"); d.insert("app"); d.search("app")
+                                                              → True

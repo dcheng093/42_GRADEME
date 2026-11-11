@@ -1,0 +1,22 @@
+Assignment name  : py_list_intersection_finder
+Expected files   : py_list_intersection_finder.py
+--------------------------------------------------------------------------------
+
+找出存在于所有给定整数列表中的公共元素。返回按升序排序的唯一公共元素。
+
+- 如果任何列表为空或不存在公共元素，则返回空列表
+- 确保输出中元素的唯一性
+
+def list_intersection_finder(lists: list[list[int]]) -> list[int]:
+
+示例:
+
+list_intersection_finder([[1, 2, 3], [2, 3, 4], [2, 3, 5]])   → [2, 3]
+list_intersection_finder([[1, 2, 3, 4], [2, 4, 6, 8], [4, 8, 12]])
+                                                              → [4]
+list_intersection_finder([[1, 1, 2, 3], [1, 2, 2, 3], [1, 2, 3, 3]])
+                                                              → [1, 2, 3]
+list_intersection_finder([[1, 2, 3], [4, 5, 6]])              → []
+list_intersection_finder([])                                  → []
+list_intersection_finder([[1, 2, 3], []])                     → []
+list_intersection_finder([[5]])                               → [5]

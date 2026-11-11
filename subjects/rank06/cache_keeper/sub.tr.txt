@@ -1,0 +1,35 @@
+Assignment name  : cache_keeper
+Expected files   : cache_keeper.py
+Forbidden functions : collections.OrderedDict
+--------------------------------------------------------------------------------
+
+Sabit kapasiteye sahip bir En Son Kullanılan (Least Recently Used - LRU) önbelleği uygulayan `CacheKeeper` adında bir sınıf yazın.
+
+Sınıf aşağıdaki metotları içermelidir:
+
+1. `__init__(self, capacity: int)`:
+LRU önbelleğini pozitif bir `capacity` değeriyle başlatır.
+
+2. `get(self, key: int) -> int`:
+Anahtar önbellekte mevcutsa değerini, mevcut değilse `-1` döndürür. Başarılı bir `get` işlemi, erişilen anahtarı en son kullanılan olarak işaretler.
+
+3. `put(self, key: int, value: int) -> None`:
+Anahtar ve değeri ekler veya günceller. Eklenen veya güncellenen anahtar en son kullanılan hale gelir. Anahtar sayısı `capacity` sınırını aşarsa, en uzun süredir kullanılmayan anahtar önbellekten çıkarılır.
+
+İşlemler ortalama O(1) zaman karmaşıklığında çalışmalıdır.
+`collections.OrderedDict` kullanımı yasaktır.
+
+class CacheKeeper:
+    def __init__(self, capacity: int):
+    def get(self, key: int) -> int:
+    def put(self, key: int, value: int) -> None:
+
+Örnekler:
+
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1)        → 1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.put(3, 3); c.get(1)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(2)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(1)
+                                                              → 1

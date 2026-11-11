@@ -1,0 +1,18 @@
+Assignment name  : py_room_scheduler
+Expected files   : py_room_scheduler.py
+--------------------------------------------------------------------------------
+
+Escribe una función que determine el número mínimo de salas de reuniones necesarias y asigne las reuniones sin solapamientos.
+
+Cada reunión es una lista `[start_time, end_time]`.
+
+La función debe:
+- Devolver un diccionario con `"total_rooms"` (número de salas) y `"schedule"` (reuniones asignadas por sala).
+- Devolver `{"total_rooms": 0, "schedule": []}` si la lista está vacía.
+
+def py_room_scheduler(meetings: list[list[int]]) -> dict[str, Any]:
+
+Ejemplos:
+
+py_room_scheduler([[0, 30], [5, 10], [15, 20]])  → {"total_rooms": 2, "schedule": [[[0, 30]], [[5, 10], [15, 20]]]}
+py_room_scheduler([])                            → {"total_rooms": 0, "schedule": []}

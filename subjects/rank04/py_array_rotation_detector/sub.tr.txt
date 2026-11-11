@@ -1,0 +1,20 @@
+Assignment name  : py_array_rotation_detector
+Expected files   : py_array_rotation_detector.py
+Forbidden functions : collections.deque.rotate()
+--------------------------------------------------------------------------------
+
+array2'nin array1'in bir döndürmesi (rotasyonu) olup olmadığını belirleyin. Bir döndürme, göreceli sırayı koruyarak elemanları döngüsel olarak kaydırır.
+
+- array2 array1'in geçerli bir döndürmesiyse True döndürün
+- Aksi halde veya dizi uzunlukları farklıysa False döndürün
+- Boş dizileri işleyin (iki boş dizi geçerli bir döndürme sayılır)
+
+def array_rotation_detector(arr1: list, arr2: list) -> bool:
+
+Örnekler:
+
+array_rotation_detector([1, 2, 3, 4, 5], [4, 5, 1, 2, 3])  → True
+array_rotation_detector([1, 2, 3, 4, 5], [5, 1, 2, 3, 4])  → True
+array_rotation_detector([1, 2, 3], [3, 2, 1])              → False
+array_rotation_detector([1, 2], [1, 2, 3])                 → False
+array_rotation_detector([], [])                            → True

@@ -1,0 +1,14 @@
+Assignment name  : py_spiral_matrix
+Expected files   : py_spiral_matrix.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die eine `n x n` 2D-Matrix generiert, die im Uhrzeigersinn spiralförmig mit Zahlen von 1 bis `n^2` gefüllt ist.
+
+Die Spirale beginnt in der oberen linken Zelle (0, 0) und verläuft nach rechts, unten, links und oben nach innen.
+
+def generate_spiral(n: int) -> list[list[int]]:
+
+Beispiele:
+
+generate_spiral(3)  → [[1, 2, 3], [8, 9, 4], [7, 6, 5]]
+generate_spiral(1)  → [[1]]

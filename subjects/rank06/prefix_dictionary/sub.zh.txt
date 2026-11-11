@@ -1,0 +1,36 @@
+Assignment name  : prefix_dictionary
+Expected files   : prefix_dictionary.py
+--------------------------------------------------------------------------------
+
+编写一个名为 `PrefixDictionary` 的类，实现前缀树（Trie）。
+
+该类必须提供以下方法：
+
+1. `__init__(self)`：
+初始化一个空的前缀字典。
+
+2. `insert(self, word: str) -> None`：
+将字符串 `word` 插入到前缀字典中。
+
+3. `search(self, word: str) -> bool`：
+如果前缀字典中存在完全匹配的字符串 `word`，返回 `True`；否则返回 `False`。
+
+4. `starts_with(self, prefix: str) -> bool`：
+如果前缀字典中存在以给定前缀 `prefix` 开头的字符串，返回 `True`；否则返回 `False`。
+
+所有输入字符串仅包含小写英文字母（`'a'` - `'z'`）。
+
+class PrefixDictionary:
+    def __init__(self):
+    def insert(self, word: str) -> None:
+    def search(self, word: str) -> bool:
+    def starts_with(self, prefix: str) -> bool:
+
+示例:
+
+d = PrefixDictionary(); d.insert("apple"); d.search("apple")  → True
+d = PrefixDictionary(); d.insert("apple"); d.search("app")    → False
+d = PrefixDictionary(); d.insert("apple"); d.starts_with("app")
+                                                              → True
+d = PrefixDictionary(); d.insert("apple"); d.insert("app"); d.search("app")
+                                                              → True

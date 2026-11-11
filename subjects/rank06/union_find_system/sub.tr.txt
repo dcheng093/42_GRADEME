@@ -1,0 +1,38 @@
+Assignment name  : union_find_system
+Expected files   : union_find_system.py
+--------------------------------------------------------------------------------
+
+Yol sıkıştırması (path compression) ve derecesine göre birleştirme (union by rank) optimizasyonlarına sahip bir Ayrık Küme (Disjoint Set Union / DSU) veri yapısı uygulayan `UnionFind` adında bir sınıf yazın.
+
+Sınıf aşağıdaki metotları içermelidir:
+
+1. `__init__(self, n: int)`:
+Her elemanın başlangıçta kendi bağımsız kümesinde yer aldığı (ebeveyn kendisidir ve derece 0'dır) `n` adet elemanı (0 ile n - 1 arası) başlatır.
+
+2. `find(self, x: int) -> int`:
+`x` elemanını içeren kümenin temsilcisini (kökünü) bulur ve döndürür. Gezilen tüm düğümlerin doğrudan kökü göstermesini sağlayan yol sıkıştırma tekniğini uygular.
+
+3. `union(self, x: int, y: int) -> bool`:
+`x` ve `y` elemanlarını içeren kümeleri derecesine göre birleştirme (küçük dereceli ağacı büyük dereceli ağacın köküne bağlama; dereceler eşitse yeni kökün derecesini 1 artırma) yöntemiyle birleştirir.
+`x` ve `y` farklı kümelerdeyse ve başarıyla birleştirildiyse `True` döndürür.
+`x` ve `y` zaten aynı kümedeyse `False` döndürür.
+
+4. `connected(self, x: int, y: int) -> bool`:
+`x` ve `y` aynı kümeye aitse `True`, aksi halde `False` döndürür.
+
+class UnionFind:
+    def __init__(self, n: int):
+    def find(self, x: int) -> int:
+    def union(self, x: int, y: int) -> bool:
+    def connected(self, x: int, y: int) -> bool:
+
+Örnekler:
+
+uf = UnionFind(5); uf.connected(0, 1)                         → False
+uf = UnionFind(5); uf.union(0, 1)                             → True
+uf = UnionFind(5); uf.union(0, 1); uf.connected(0, 1)         → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(1, 2); uf.connected(0, 2)
+                                                              → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(0, 1)             → False
+uf = UnionFind(3); uf.union(0, 1); uf.union(1, 2); uf.find(0) == uf.find(2)
+                                                              → True

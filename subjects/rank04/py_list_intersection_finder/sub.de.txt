@@ -1,0 +1,26 @@
+Assignment name  : py_list_intersection_finder
+Expected files   : py_list_intersection_finder.py
+--------------------------------------------------------------------------------
+
+Schreibe eine Funktion, die die Schnittmenge mehrerer sortierter Listen findet. Gibt eine neue Liste zurück, die die Elemente enthält, die in ALLEN Eingabelisten vorkommen, in sortierter Reihenfolge.
+
+Die Funktion sollte:
+- Elemente zurückgeben, die in ALLEN Listen vorkommen
+- Das Ergebnis sollte in aufsteigender Reihenfolge sortiert sein
+- Duplikate aus dem Ergebnis entfernen
+- Leere Eingaben oder leere Listen ordnungsgemäß behandeln
+- Wenn eine Liste leer ist, ist die Schnittmenge leer
+
+def list_intersection_finder(lists: list[list[int]]) -> list[int]:
+
+Beispiele:
+
+list_intersection_finder([[1, 2, 3], [2, 3, 4], [2, 3, 5]])   → [2, 3]
+list_intersection_finder([[1, 2, 3, 4], [2, 4, 6, 8], [4, 8, 12]])
+                                                              → [4]
+list_intersection_finder([[1, 1, 2, 3], [1, 2, 2, 3], [1, 2, 3, 3]])
+                                                              → [1, 2, 3]
+list_intersection_finder([[1, 2, 3], [4, 5, 6]])              → []
+list_intersection_finder([])                                  → []
+list_intersection_finder([[1, 2, 3], []])                     → []
+list_intersection_finder([[5]])                               → [5]

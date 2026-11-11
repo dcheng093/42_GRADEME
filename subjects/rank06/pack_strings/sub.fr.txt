@@ -1,0 +1,27 @@
+Assignment name  : pack_strings
+Expected files   : pack_strings.py
+Forbidden functions : json, pickle, eval
+--------------------------------------------------------------------------------
+
+Écris deux fonctions pour sérialiser et désérialiser une liste de chaînes de caractères :
+
+1. `pack(strs: list[str]) -> str` :
+Encode une liste de chaînes en une seule chaîne de caractères.
+
+2. `unpack(s: str) -> list[str]` :
+Décode la chaîne formatée pour retrouver la liste d'origine.
+
+Pour toute liste de chaînes, l'expression `unpack(pack(strs))` doit être égale à `strs`.
+Les chaînes peuvent contenir n'importe quels caractères (chiffres, séparateurs comme `#` ou `:`, espaces, symboles et retours à la ligne) et peuvent être vides.
+Une liste vide `[]` et une liste contenant une unique chaîne vide `[""]` doivent être distinguées et restituées correctement.
+L'utilisation de `json`, `pickle` ou `eval` est interdite.
+
+def pack(strs: list[str]) -> str:
+def unpack(s: str) -> list[str]:
+
+Exemples:
+
+unpack(pack(["hello", "world"]))             → ["hello", "world"]
+unpack(pack([]))                             → []
+unpack(pack([""]))                           → [""]
+unpack(pack(["42", "exam#net", "level:6"]))  → ["42", "exam#net", "level:6"]

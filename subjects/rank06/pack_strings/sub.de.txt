@@ -1,0 +1,27 @@
+Assignment name  : pack_strings
+Expected files   : pack_strings.py
+Forbidden functions : json, pickle, eval
+--------------------------------------------------------------------------------
+
+Schreibe zwei Funktionen zur Serialisierung und Deserialisierung einer Liste von Zeichenketten:
+
+1. `pack(strs: list[str]) -> str`:
+Codiert eine Liste von Zeichenketten in eine einzelne Zeichenkette.
+
+2. `unpack(s: str) -> list[str]`:
+Decodiert die formatierte Zeichenkette wieder in die ursprüngliche Liste von Zeichenketten.
+
+Für jede Liste von Zeichenketten muss `unpack(pack(strs)) == strs` gelten.
+Die Zeichenketten können beliebige Zeichen enthalten (Ziffern, Trennzeichen wie `#` oder `:`, Leerzeichen, Symbole und Zeilenumbrüche) und können leer sein.
+Eine leere Liste `[]` und eine Liste mit einem einzelnen leeren String `[""]` müssen unterschieden und korrekt wiederhergestellt werden.
+Die Verwendung von `json`, `pickle` oder `eval` ist nicht gestattet.
+
+def pack(strs: list[str]) -> str:
+def unpack(s: str) -> list[str]:
+
+Beispiele:
+
+unpack(pack(["hello", "world"]))             → ["hello", "world"]
+unpack(pack([]))                             → []
+unpack(pack([""]))                           → [""]
+unpack(pack(["42", "exam#net", "level:6"]))  → ["42", "exam#net", "level:6"]

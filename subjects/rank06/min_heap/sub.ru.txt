@@ -1,0 +1,41 @@
+Assignment name  : min_heap
+Expected files   : min_heap.py
+Forbidden functions : heapq
+--------------------------------------------------------------------------------
+
+Реализуйте класс с именем `MinHeap`, представляющий двоичную кучу на минимум (Min-Heap), хранящуюся в обычном списке Python.
+
+Класс должен содержать следующие методы:
+
+1. `__init__(self)`:
+Инициализирует пустую двоичную min-кучу.
+
+2. `push(self, val: int) -> None`:
+Вставляет значение `val` в кучу за время O(log n) (просеивание вверх).
+
+3. `pop(self) -> int | None`:
+Извлекает и возвращает минимальный элемент кучи за время O(log n) (просеивание вниз). Возвращает `None`, если куча пуста.
+
+4. `peek(self) -> int | None`:
+Возвращает минимальный элемент без его удаления за время O(1). Возвращает `None`, если куча пуста.
+
+5. `size(self) -> int`:
+Возвращает общее количество элементов в куче за время O(1).
+
+Запрещено использовать модуль `heapq`.
+
+class MinHeap:
+    def __init__(self):
+    def push(self, val: int) -> None:
+    def pop(self) -> int | None:
+    def peek(self) -> int | None:
+    def size(self) -> int:
+
+Примеры:
+
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.peek()      → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop()       → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop(); h.peek()
+                                                              → 5
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.size()      → 3
+h = MinHeap(); h.pop()                                        → None

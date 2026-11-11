@@ -1,0 +1,22 @@
+Assignment name  : py_array_rotation_detector
+Expected files   : py_array_rotation_detector.py
+Forbidden functions : collections.deque.rotate()
+--------------------------------------------------------------------------------
+
+Напишите функцию на Python, которая принимает два списка (массива) и определяет, является ли второй список циклической ротацией первого (влево или вправо).
+
+Циклическая ротация означает, что элементы сдвигаются по кругу. Например, сдвиг [1, 2, 3] вправо на одну позицию дает [3, 1, 2].
+
+Функция должна возвращать True, если второй список является ротацией первого, и False в противном случае.
+Если списки имеют разную длину, они не могут быть ротациями друг друга.
+Два пустых списка считаются ротациями друг друга.
+
+def array_rotation_detector(arr1: list, arr2: list) -> bool:
+
+Примеры:
+
+array_rotation_detector([1, 2, 3, 4, 5], [4, 5, 1, 2, 3])  → True
+array_rotation_detector([1, 2, 3, 4, 5], [5, 1, 2, 3, 4])  → True
+array_rotation_detector([1, 2, 3], [3, 2, 1])              → False
+array_rotation_detector([1, 2], [1, 2, 3])                 → False
+array_rotation_detector([], [])                            → True

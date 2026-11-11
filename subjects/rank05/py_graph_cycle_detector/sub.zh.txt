@@ -1,0 +1,18 @@
+Assignment name  : py_graph_cycle_detector
+Expected files   : py_graph_cycle_detector.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+编写一个函数，判断有向图中是否包含至少一个环。
+
+函数接收一个表示邻接表的字典。
+- 如果包含环则返回 True。
+- 如果无环或为空则返回 False。
+
+def py_graph_cycle_detector(graph: dict[int, list[int]]) -> bool:
+
+示例:
+
+py_graph_cycle_detector({0: [1], 1: [2], 2: [0]})  → True
+py_graph_cycle_detector({0: [1], 1: [2], 2: []})   → False
+py_graph_cycle_detector({})                        → False

@@ -1,0 +1,220 @@
+[
+ {
+  "id": 1,
+  "level": 1,
+  "difficulty": "easy",
+  "name": "py_compress_decompress",
+  "file": "py_compress_decompress.py",
+  "description": {
+   "en": "Write two functions: `compress` and `decompress`.\n\n`compress(s: str) -> str`:\n- Takes a string and compresses consecutive repeated characters by appending the count after the character.\n- If a character appears only once consecutively, omit the number '1'.\n- If the input string is empty, return an empty string.\n\n`decompress(s: str) -> str`:\n- Takes a compressed string and expands it back to its uncompressed form.\n- Handles multi-digit counts (e.g., \"a12\" -> 12 'a's).\n- If no count follows a character, it counts as 1.",
+   "de": "Schreibe zwei Funktionen: `compress` und `decompress`.\n\n`compress(s: str) -> str`:\n- Komprimiert aufeinanderfolgende Zeichen durch Anfügen der Anzahl.\n- Bei einzelnen Zeichen die '1' weglassen.\n- Gibt bei leerem String einen leeren String zurück.\n\n`decompress(s: str) -> str`:\n- Entpackt einen komprimierten String in seine Ursprungsform.\n- Unterstützt mehrstellige Zahlen (z. B. \"a12\" -> 12 mal 'a').",
+   "fr": "Écris deux fonctions : `compress` et `decompress`.\n\n`compress(s: str) -> str` :\n- Compresse les caractères consécutifs répétés en ajoutant leur nombre après le caractère.\n- Omets le nombre '1' pour un caractère unique.\n- Renvoie une chaîne vide si l'entrée est vide.\n\n`decompress(s: str) -> str` :\n- Décompresse une chaîne compressée vers sa forme initiale.\n- Gère les nombres à plusieurs chiffres (ex. \"a12\" -> 12 'a').",
+   "es": "Escribe dos funciones: `compress` y `decompress`.\n\n`compress(s: str) -> str`:\n- Comprime caracteres consecutivos repetidos añadiendo el recuento.\n- Omite el número '1' si el carácter aparece una sola vez.\n- Devuelve una cadena vacía si la entrada está vacía.\n\n`decompress(s: str) -> str`:\n- Descomprime una cadena comprimida a su forma original.\n- Admite recuentos de varios dígitos (ej. \"a12\" -> 12 'a').",
+   "it": "Scrivi due funzioni: `compress` e `decompress`.\n\n`compress(s: str) -> str`:\n- Comprime i caratteri consecutivi ripetuti aggiungendo il conteggio.\n- Ometti il numero '1' se il carattere compare una sola volta.\n- Restituisce una stringa vuota se l'input è vuoto.\n\n`decompress(s: str) -> str`:\n- Decomprime una stringa compressa nella sua forma originale.\n- Gestisce conteggi a più cifre (es. \"a12\" -> 12 'a').",
+   "ru": "Напишите две функции: `compress` и `decompress`.\n\n`compress(s: str) -> str`:\n- Сжимает последовательно повторяющиеся символы, добавляя их количество после символа.\n- Если символ встречается подряд только один раз, цифра '1' опускается.\n- Если входная строка пуста, возвращает пустую строку.\n\n`decompress(s: str) -> str`:\n- Распаковывает сжатую строку в исходную форму.\n- Поддерживает многозначные числа (например, \"a12\" -> 12 букв 'a').",
+   "tr": "`compress` ve `decompress` adında iki fonksiyon yazın.\n\n`compress(s: str) -> str`:\n- Bir dize alır ve ardışık tekrarlanan karakterleri yanına sayı ekleyerek sıkıştırır.\n- Tekrarlanmayan karakterler için '1' sayısını eklemeyin.\n- Giriş boş dize ise boş dize döndürün.\n\n`decompress(s: str) -> str`:\n- Sıkıştırılmış bir dizeyi açarak orijinal haline döndürür.\n- Çok basamaklı sayıları destekler (ör. \"a12\" -> 12 tane 'a').",
+   "zh": "编写两个函数：`compress` 和 `decompress`。\n\n`compress(s: str) -> str`：\n- 接收一个字符串，通过在连续重复字符后附加出现次数来进行压缩。\n- 如果字符仅连续出现一次，则省略数字 '1'。\n- 如果输入字符串为空，则返回空字符串。\n\n`decompress(s: str) -> str`：\n- 接收压缩后的字符串并解压还原为原始形式。\n- 支持多位数计数（例如 \"a12\" -> 12个 'a'）。",
+   "ar": "اكتب دالتين: `compress` و `decompress`.\n\n`compress(s: str) -> str`:\n- تضغط الحروف المتتالية المكررة عن طريق إرفاق عدد مرات تكرارها بعد الحرف.\n- في حال تكرار الحرف مرة واحدة فقط، احذف الرقم '1'.\n- إذا كانت السلسلة المدخلة فارغة، تُرجع سلسلة فارغة.\n\n`decompress(s: str) -> str`:\n- تفك ضغط السلسلة المضغوطة وتعيدها إلى شكلها الأصلي.\n- تدعم الأعداد المكونة من عدة خانات (مثال: \"a12\" -> 12 حرف 'a')."
+  },
+  "signature": "def compress(s: str) -> str:",
+  "examples": [
+   {
+    "input": "compress(\"aabcccccaaa\")",
+    "output": "\"a2bc5a3\""
+   },
+   {
+    "input": "decompress(\"a2bc5a3\")",
+    "output": "\"aabcccccaaa\""
+   },
+   {
+    "input": "compress(\"\")",
+    "output": "\"\""
+   }
+  ]
+ },
+ {
+  "id": 2,
+  "level": 1,
+  "difficulty": "medium",
+  "name": "py_spiral_matrix",
+  "file": "py_spiral_matrix.py",
+  "description": {
+   "en": "Write a function that generates an `n x n` 2D matrix filled with numbers from 1 to `n^2` in clockwise spiral order.\n\nThe spiral starts at the top-left cell (0, 0) moving right, then down, then left, then up, continuing inwards.",
+   "de": "Schreibe eine Funktion, die eine `n x n` 2D-Matrix generiert, die im Uhrzeigersinn spiralförmig mit Zahlen von 1 bis `n^2` gefüllt ist.\n\nDie Spirale beginnt in der oberen linken Zelle (0, 0) und verläuft nach rechts, unten, links und oben nach innen.",
+   "fr": "Écris une fonction qui génère une matrice 2D `n x n` remplie de nombres de 1 à `n^2` dans l'ordre d'une spirale dans le sens des aiguilles d'une montre.\n\nLa spirale commence dans la case en haut à gauche (0, 0) vers la droite, puis vers le bas, la gauche et le haut.",
+   "es": "Escribe una función que genere una matriz 2D de `n x n` rellena con números del 1 al `n^2` en orden espiral en el sentido de las agujas del reloj.\n\nLa espiral comienza en la casilla superior izquierda (0, 0) moviéndose a la derecha, abajo, izquierda y arriba.",
+   "it": "Scrivi una funzione che generi una matrice 2D `n x n` riempita con numeri da 1 a `n^2` in ordine a spirale oraria.\n\nLa spirale inizia dalla cella in alto a sinistra (0, 0) muovendosi verso destra, basso, sinistra e alto.",
+   "ru": "Напишите функцию, которая генерирует двумерную матрицу `n x n`, заполненную числами от 1 до `n^2` по часовой стрелке по спирали.\n\nСпираль начинается в левой верхней ячейке (0, 0) и движется вправо, вниз, влево и вверх вовнутрь.",
+   "tr": "Saat yönünde spiral düzenle 1'den `n^2`'ye kadar sayılarla dolu `n x n` boyutunda 2D bir matris üreten bir fonksiyon yazın.\n\nSpiral, sol üst hücreden (0, 0) başlayarak sağa, aşağıya, sola ve yukarıya doğru içeriye kıvrılarak ilerler.",
+   "zh": "编写一个函数，生成一个 `n x n` 的二维矩阵，按照顺时针螺旋顺序填入从 1 到 `n^2` 的数字。\n\n螺旋从左上角单元格 (0, 0) 开始，向右、向下、向左、向上延伸，并不断向内螺旋。",
+   "ar": "اكتب دالة تُنشئ مصفوفة ثنائية الأبعاد بحجم `n x n` مملوءة بالأرقام من 1 إلى `n^2` بترتيب حلزوني باتجاه عقارب الساعة.\n\nيبدأ الحلزون من الخلية العلوية اليسرى (0, 0) ممتداً باتجاه اليمين، ثم الأسفل، ثم اليسار، ثم الأعلى نحو الداخل."
+  },
+  "signature": "def generate_spiral(n: int) -> list[list[int]]:",
+  "examples": [
+   {
+    "input": "generate_spiral(3)",
+    "output": "[[1, 2, 3], [8, 9, 4], [7, 6, 5]]"
+   },
+   {
+    "input": "generate_spiral(1)",
+    "output": "[[1]]"
+   }
+  ]
+ },
+ {
+  "id": 3,
+  "level": 2,
+  "difficulty": "medium",
+  "name": "py_graph_cycle_detector",
+  "file": "py_graph_cycle_detector.py",
+  "description": {
+   "en": "Write a function that determines whether a directed graph contains at least one cycle.\n\nThe function takes a dictionary representing an adjacency list where keys are integer node IDs and values are lists of integer neighbor node IDs.\n\nThe function should:\n- Return True if the directed graph contains a cycle.\n- Return False if the graph is acyclic or if the input graph dictionary is empty.\n- Correctly handle graphs with multiple disconnected components.",
+   "de": "Schreibe eine Funktion, die bestimmt, ob ein gerichteter Graph mindestens einen Zyklus enthält.\n\nDie Funktion erhält ein Dictionary als Adjazenzliste.\n- Gibt True zurück, wenn ein Zyklus existiert.\n- Gibt False zurück, wenn der Graph azyklisch oder leer ist.",
+   "fr": "Écris une fonction qui détermine si un graphe orienté contient au moins un cycle.\n\nLa fonction prend un dictionnaire représentant une liste d'adjacence.\n- Renvoie True si le graphe contient un cycle.\n- Renvoie False si le graphe est acyclique ou vide.",
+   "es": "Escribe una función que determine si un grafo dirigido contiene al menos un ciclo.\n\nLa función toma un diccionario que representa una lista de adyacencia.\n- Devuelve True si el grafo contiene un ciclo.\n- Devuelve False si el grafo es acíclico o está vacío.",
+   "it": "Scrivi una funzione che determini se un grafo diretto contiene almeno un ciclo.\n\nLa funzione prende un dizionario che representa una lista di adiacenza.\n- Restituisce True se il grafo contiene un ciclo.\n- Restituisce False se il grafo è aciclico o vuoto.",
+   "ru": "Напишите функцию, которая определяет, содержит ли ориентированный граф хотя бы один цикл.\n\nФункция принимает словарь, представляющий список смежности.\n- Возвращает True, если граф содержит цикл.\n- Возвращает False, если граф ацикличен или пуст.",
+   "tr": "Yönlü bir grafın en az bir döngü içerip içermediğini belirleyen bir fonksiyon yazın.\n\nFonksiyon, komşuluk listesi sözlüğünü alır.\n- Döngü varsa True döndürür.\n- Graf döngüsüzse veya boşsa False döndürür.",
+   "zh": "编写一个函数，判断有向图中是否包含至少一个环。\n\n函数接收一个表示邻接表的字典。\n- 如果包含环则返回 True。\n- 如果无环或为空则返回 False。",
+   "ar": "اكتب دالة تحدد ما إذا كان الرسم البياني الموجّه يحتوي على دورة واحدة على الأقل.\n\nتأخذ الدالة قاموساً يمثل قائمة المجاورة.\n- تُرجع True إذا كان الرسم البياني يحتوي على دورة.\n- تُرجع False إذا كان الرسم البياني لا دورياً أو فارغاً."
+  },
+  "signature": "def py_graph_cycle_detector(graph: dict[int, list[int]]) -> bool:",
+  "examples": [
+   {
+    "input": "py_graph_cycle_detector({0: [1], 1: [2], 2: [0]})",
+    "output": "True"
+   },
+   {
+    "input": "py_graph_cycle_detector({0: [1], 1: [2], 2: []})",
+    "output": "False"
+   },
+   {
+    "input": "py_graph_cycle_detector({})",
+    "output": "False"
+   }
+  ],
+  "forbidden": [
+   "graphlib.TopologicalSorter"
+  ]
+ },
+ {
+  "id": 4,
+  "level": 1,
+  "difficulty": "medium",
+  "name": "py_room_scheduler",
+  "file": "py_room_scheduler.py",
+  "description": {
+   "en": "Write a function that determines the minimum number of meeting rooms required to schedule a list of meeting time intervals without overlap, and assigns meetings to rooms.\n\nEach meeting is represented as a list of two integers `[start_time, end_time]`.\n\nThe function should:\n- Sort meetings by start time and assign them to available rooms sequentially.\n- Return a dictionary containing:\n  - `\"total_rooms\"`: the integer count of rooms required.\n  - `\"schedule\"`: a list of lists containing the scheduled intervals for each room.\n- If the input list is empty, return `{\"total_rooms\": 0, \"schedule\": []}`.",
+   "de": "Schreibe eine Funktion, die die minimale Anzahl an Besprechungsräumen ermittelt und Besprechungen ohne Überlappungen zuweist.\n\nJedes Meeting ist eine Liste `[start_time, end_time]`.\n\nDie Funktion soll:\n- Ein Dictionary mit `\"total_rooms\"` (Anzahl) und `\"schedule\"` (Liste der Räume mit Meetings) zurückgeben.\n- Bei leerer Liste `{\"total_rooms\": 0, \"schedule\": []}` zurückgeben.",
+   "fr": "Écris une fonction qui détermine le nombre minimal de salles de réunion nécessaires et attribue les créneaux sans chevauchement.\n\nChaque réunion est une liste `[start_time, end_time]`.\n\nLa fonction doit :\n- Renvoyer un dictionnaire avec `\"total_rooms\"` (nombre de salles) et `\"schedule\"` (créneaux attribués par salle).\n- Renvoyer `{\"total_rooms\": 0, \"schedule\": []}` si la liste est vide.",
+   "es": "Escribe una función que determine el número mínimo de salas de reuniones necesarias y asigne las reuniones sin solapamientos.\n\nCada reunión es una lista `[start_time, end_time]`.\n\nLa función debe:\n- Devolver un diccionario con `\"total_rooms\"` (número de salas) y `\"schedule\"` (reuniones asignadas por sala).\n- Devolver `{\"total_rooms\": 0, \"schedule\": []}` si la lista está vacía.",
+   "it": "Scrivi una funzione che determini il numero minimo di sale riunioni necessarie e assegni i meeting senza sovrapposizioni.\n\nOgni riunione è una lista `[start_time, end_time]`.\n\nLa funzione deve:\n- Restituire un dizionario con `\"total_rooms\"` (conteggio sale) e `\"schedule\"` (meeting assegnati per sala).\n- Restituire `{\"total_rooms\": 0, \"schedule\": []}` se la lista è vuota.",
+   "ru": "Напишите функцию, которая определяет минимальное количество переговорных комнат для расписания встреч без наложений и распределяет встречи по комнатам.\n\nКаждая встреча представлена списком `[start_time, end_time]`.\n\nФункция должна:\n- Возвращать словарь с `\"total_rooms\"` (количество комнат) и `\"schedule\"` (список встреч для каждой комнаты).\n- Возвращать `{\"total_rooms\": 0, \"schedule\": []}`, если список пуст.",
+   "tr": "Toplantı zaman aralıklarını çakışmasız zamanlamak için gereken minimum oda sayısını belirleyen ve toplantıları odalara atayan bir fonksiyon yazın.\n\nHer toplantı `[başlangıç, bitiş]` listesi olarak temsil edilir.\n\nFonksiyon şunları yapmalıdır:\n- `\"total_rooms\"` (gerekli oda sayısı) ve `\"schedule\"` (oda bazında toplantı listesi) içeren bir sözlük döndürmelidir.\n- Liste boşsa `{\"total_rooms\": 0, \"schedule\": []}` döndürmelidir.",
+   "zh": "编写一个函数，计算无重叠安排会议时间段所需的最少会议室数量，并将会议分配到各个房间。\n\n每个会议由 `[start_time, end_time]` 列表表示。\n\n该函数应该：\n- 返回一个包含以下键的字典：\n  - `\"total_rooms\"`：所需会议室的整数数量。\n  - `\"schedule\"`：每个房间安排的会议列表。\n- 如果输入列表为空，则返回 `{\"total_rooms\": 0, \"schedule\": []}`。",
+   "ar": "اكتب دالة تحسب الحد الأدنى لعدد قاعات الاجتماعات المطلوبة وتوزع الفترات الزمنية للاجتماعات بدون تداخل.\n\nيمثل كل اجتماع كقائمة `[start_time, end_time]`.\n\nيجب على الدالة:\n- إرجاع قاموس يحتوي على:\n  - `\"total_rooms\"`: عدد القاعات المطلوبة.\n  - `\"schedule\"`: قائمة تحتوي على الفترات المجدولة لكل قاعة.\n- إرجاع `{\"total_rooms\": 0, \"schedule\": []}` إذا كانت القائمة فارغة."
+  },
+  "signature": "def py_room_scheduler(meetings: list[list[int]]) -> dict[str, Any]:",
+  "examples": [
+   {
+    "input": "py_room_scheduler([[0, 30], [5, 10], [15, 20]])",
+    "output": "{\"total_rooms\": 2, \"schedule\": [[[0, 30]], [[5, 10], [15, 20]]]}"
+   },
+   {
+    "input": "py_room_scheduler([])",
+    "output": "{\"total_rooms\": 0, \"schedule\": []}"
+   }
+  ]
+ },
+ {
+  "id": 5,
+  "level": 2,
+  "difficulty": "medium",
+  "name": "py_island_matrix_counter",
+  "file": "py_island_matrix_counter.py",
+  "description": {
+   "en": "Write a function island_matrix_counter(matrix) that receives a 2D matrix containing \"1\" and \"0\" string values and returns the total number of islands.\n\nAn island is a group of connected \"1\" cells. Cells are considered connected only when they are directly adjacent horizontally (left, right) or vertically (up, down). Diagonal cells do not count as connected.\n\nRequirements:\n- \"1\" represents land.\n- \"0\" represents water.\n- Count each separate island exactly once.\n- An empty matrix (or matrix with no rows) should return 0.\n- DFS/BFS traversal or matrix mutation can be used to explore each complete island.",
+   "de": "Schreibe eine Funktion `island_matrix_counter(matrix)`, die die Gesamtzahl der Inseln in einer 2D-Matrix aus \"1\" und \"0\" Zeichenwerten zurückgibt.\n\n- Eine Insel besteht aus waagerecht oder senkrecht verbundenen \"1\"-Zellen (Diagonale zählt nicht).\n- Gibt 0 bei einer leeren Matrix zurück.",
+   "fr": "Écris une fonction `island_matrix_counter(matrix)` qui renvoie le nombre total d'îles dans une matrice 2D contenant des valeurs \"1\" et \"0\".\n\n- Une île est un groupe de cases \"1\" connectées horizontalement ou verticalement (les diagonales ne comptent pas).\n- Renvoie 0 si la matrice est vide.",
+   "es": "Escribe una función `island_matrix_counter(matrix)` que devuelva el número total de islas en una matriz 2D con valores \"1\" y \"0\".\n\n- Una isla es un grupo de celdas \"1\" conectadas horizontal o verticalmente (las diagonales no cuentan).\n- Devuelve 0 si la matriz está vacía.",
+   "it": "Scrivi una funzione `island_matrix_counter(matrix)` che restituisca il numero totale di isole in una matrice 2D contenente valori \"1\" e \"0\".\n\n- Un'isola è un gruppo di celle \"1\" connesse orizzontalmente o verticalmente (le diagonali non contano).\n- Restituisce 0 per una matrice vuota.",
+   "ru": "Напишите функцию `island_matrix_counter(matrix)`, которая возвращает общее количество островов в двумерной матрице со значениями \"1\" и \"0\".\n\n- Остров - это группа ячеек \"1\", связанных по горизонтали или вертикали (диагонали не учитываются).\n- Возвращает 0 для пустой матрицы.",
+   "tr": "`island_matrix_counter(matrix)` adında, \"1\" ve \"0\" karakterlerinden oluşan 2D bir matristeki toplam ada sayısını döndüren bir fonksiyon yazın.\n\n- Bir ada, yatay veya dikey olarak birbirine bağlı \"1\" hücrelerinden oluşur (Çapraz bağlantılar sayılmaz).\n- Boş matris için 0 döndürür.",
+   "zh": "编写一个函数 `island_matrix_counter(matrix)`，返回包含 \"1\" 和 \"0\" 字符串值的二维矩阵中的岛屿总数。\n\n- 岛屿是由水平或垂直相邻的 \"1\" 单元格构成的区域（对角线不算连接）。\n- 对于空矩阵应返回 0。",
+   "ar": "اكتب دالة `island_matrix_counter(matrix)` تُرجع إجمالي عدد الجزر في مصفوفة ثنائية الأبعاد تحتوي على قيم \"1\" و \"0\".\n\n- تُعتبر الجزيرة مجموعة من خلايا \"1\" المتصلة أفقياً أو رأسياً (الاتصالات القطرية لا تُحتسب).\n- تُرجع 0 إذا كانت المصفوفة فارغة."
+  },
+  "signature": "def island_matrix_counter(matrix: list[list[str]]) -> int:",
+  "examples": [
+   {
+    "input": "island_matrix_counter([[\"1\", \"1\", \"1\", \"1\", \"0\"], [\"1\", \"1\", \"1\", \"0\", \"0\"], [\"1\", \"1\", \"1\", \"1\", \"0\"], [\"0\", \"0\", \"0\", \"0\", \"0\"]])",
+    "output": "1"
+   },
+   {
+    "input": "island_matrix_counter([[\"1\", \"1\", \"0\", \"0\", \"0\"], [\"1\", \"1\", \"0\", \"0\", \"0\"], [\"0\", \"0\", \"1\", \"0\", \"0\"], [\"0\", \"0\", \"0\", \"1\", \"1\"]])",
+    "output": "3"
+   },
+   {
+    "input": "island_matrix_counter([])",
+    "output": "0"
+   }
+  ]
+ },
+ {
+  "id": 6,
+  "level": 3,
+  "difficulty": "hard",
+  "name": "py_prism_detector",
+  "file": "py_prism_detector.py",
+  "description": {
+   "en": "Write a function that searches for all occurrences of a target word pattern within a 2D grid of characters in all 8 cardinal and diagonal directions.\n\nThe directions and their codes are:\n- (1, 0) -> \"H\" (Horizontal right)\n- (-1, 0) -> \"H-\" (Horizontal left)\n- (0, 1) -> \"V\" (Vertical down)\n- (0, -1) -> \"V-\" (Vertical up)\n- (1, 1) -> \"D1\" (Diagonal down-right)\n- (-1, -1) -> \"D1-\" (Diagonal up-left)\n- (-1, 1) -> \"D2\" (Diagonal up-right)\n- (1, -1) -> \"D2-\" (Diagonal down-left)\n\nThe function should:\n- Take a grid of strings `grid` and a target string `pattern`.\n- Return a list of tuples `(x, y, direction_code)` for each match, where `x` is the column index and `y` is the row index of the first character.\n- Return an empty list `[]` if either `grid` or `pattern` is empty.",
+   "de": "Schreibe eine Funktion, die nach einem Zielwort in einem 2D-Zeichenraster in allen 8 Richtungen sucht.\n\n- Gibt eine Liste von Tupeln `(x, y, richtungscode)` zurück.\n- Gibt `[]` zurück, wenn das Raster oder Wort leer ist.",
+   "fr": "Écris une fonction qui cherche toutes les occurrences d'un mot cible dans une grille 2D dans les 8 directions.\n\n- Renvoie une liste de tuples `(x, y, code_direction)`.\n- Renvoie `[]` si la grille ou le mot est vide.",
+   "es": "Escribe una función que busque todas las ocurrencias de una palabra en una cuadrícula 2D en las 8 direcciones.\n\n- Devuelve una lista de tuplas `(x, y, código_dirección)`.\n- Devuelve `[]` si la cuadrícula o la palabra están vacías.",
+   "it": "Scrivi una funzione che cerchi tutte le occorrenze di una parola target in una griglia 2D in tutte le 8 direzioni.\n\n- Restituisce una lista di tuple `(x, y, codice_direzione)`.\n- Restituisce `[]` se la griglia o la parola sono vuote.",
+   "ru": "Напишите функцию для поиска всех вхождений слова в двумерной сетке символов во всех 8 направлениях.\n\n- Возвращает список кортежей `(x, y, код_направления)`.\n- Возвращает `[]`, если сетка или слово пустые.",
+   "tr": "2D karakter ızgarasında hedef kelimeyi tüm 8 yönde arayan bir fonksiyon yazın.\n\n- `(x, y, yön_kodu)` demetleri listesi döndürür.\n- Izgara veya kelime boşsa `[]` döndürür.",
+   "zh": "编写一个函数，在二维字符网格中沿 8 个方向搜索目标单词的所有匹配项。\n\n- 返回包含 `(x, y, 方向代码)` 的元组列表。\n- 如果网格或单词为空则返回 `[]`。",
+   "ar": "اكتب دالة تبحث عن جميع مواضع ظهور الكلمة المستهدفة في شبكة أحرف ثنائية الأبعاد في جميع الاتجاهات الثمانية.\n\n- تُرجع قائمة من الأزواج `(x, y, رمز_الاتجاه)`.\n- تُرجع `[]` إذا كانت الشبكة أو الكلمة فارغة."
+  },
+  "signature": "def prism_detector(grid: list[str], pattern: str):",
+  "examples": [
+   {
+    "input": "prism_detector([\"CAT\", \"A..\", \"T..\"], \"CAT\")",
+    "output": "[(0, 0, \"H\"), (0, 0, \"V\")]"
+   },
+   {
+    "input": "prism_detector([], \"CAT\")",
+    "output": "[]"
+   }
+  ]
+ },
+ {
+  "id": 7,
+  "level": 3,
+  "difficulty": "hard",
+  "name": "py_word_ladder",
+  "file": "py_word_ladder.py",
+  "description": {
+   "en": "Write a function that computes the length of the shortest transformation sequence from a `start` word to an `end` word using a dictionary list of allowed words `sentence`.\n\nEach transformation step must change exactly one single character. All intermediate words must exist in `sentence`.\n\nThe function should:\n- Return the total number of words in the shortest ladder (including `start` and `end`).\n- Return 0 if no transformation sequence is possible.",
+   "de": "Schreibe eine Funktion, die die Länge der kürzesten Transformationssequenz von einem Startwort zu einem Zielwort berechnet.\n\n- Gibt die Anzahl der Wörter im kürzesten Pfad zurück.\n- Gibt 0 zurück, wenn keine Transformation möglich ist.",
+   "fr": "Écris une fonction qui calcule la longueur de la séquence de transformation la plus courte d'un mot de départ à un mot de fin.\n\n- Renvoie le nombre de mots dans l'échelle la plus courte.\n- Renvoie 0 si aucune transformation n'est possible.",
+   "es": "Escribe una función que calcule la longitud de la secuencia de transformación más corta de una palabra inicial a una final.\n\n- Devuelve el número de palabras de la escala más corta.\n- Devuelve 0 si no es posible ninguna transformación.",
+   "it": "Scrivi una funzione che calcoli la lunghezza della sequenza di trasformazione più breve da una parola iniziale a una finale.\n\n- Restituisce il numero di parole nella scala più breve.\n- Restituisce 0 se non è possibile alcuna trasformazione.",
+   "ru": "Напишите функцию, которая вычисляет длину кратчайшей последовательности трансформации от начального слова к конечному.\n\n- Возвращает количество слов в кратчайшей цепочке.\n- Возвращает 0, если трансформация невозможна.",
+   "tr": "Başlangıç kelimesinden hedef kelimeye en kısa dönüştürme dizisinin uzunluğunu hesaplayan fonksiyon yazın.\n\n- En kısa merdivendeki kelime sayısını döndürür.\n- Dönüştürme mümkün değilse 0 döndürür.",
+   "zh": "编写一个函数，计算从起始单词到目标单词的最短转换序列长度。\n\n- 返回最短单词接龙中的单词总数。\n- 如果无法转换则返回 0。",
+   "ar": "اكتب دالة تحسب طول أقصر تسلسل تحويل من كلمة البداية إلى كلمة النهاية.\n\n- تُرجع عدد الكلمات في أقصر مسار تحويل.\n- تُرجع 0 إذا لم يكن هناك تحويل ممكن."
+  },
+  "signature": "def word_ladder(start: str, end: str, sentence: list[str]) -> int:",
+  "examples": [
+   {
+    "input": "word_ladder(\"hit\", \"cog\", [\"hot\", \"dot\", \"dog\", \"lot\", \"log\", \"cog\"])",
+    "output": "5"
+   },
+   {
+    "input": "word_ladder(\"hit\", \"cog\", [\"hot\", \"dot\", \"dog\", \"lot\", \"log\"])",
+    "output": "0"
+   }
+  ]
+ }
+]

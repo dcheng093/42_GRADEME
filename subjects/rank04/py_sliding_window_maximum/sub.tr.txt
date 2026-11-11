@@ -1,0 +1,24 @@
+Assignment name  : py_sliding_window_maximum
+Expected files   : py_sliding_window_maximum.py
+--------------------------------------------------------------------------------
+
+Bir dizideki her k boyutundaki kayan penceredeki maksimum elemanı bulan bir fonksiyon yazın. Her pencere konumu için maksimumların listesini döndürün.
+
+Fonksiyon şunları yapmalıdır:
+- Dizi boyunca k boyutunda bir pencere kaydırmalıdır
+- Her pencere konumundaki maksimum elemanı bulmalıdır
+- Maksimum değerlerin listesini döndürmelidir
+- Uç durumları işlemelidir (boş dizi, k <= 0, k > dizi uzunluğu)
+- Geçersiz girdiler için boş liste döndürmelidir
+
+def sliding_window_maximum(nums: list[int], k: int) -> list[int]:
+
+Örnekler:
+
+sliding_window_maximum([1, 3, -1, -3, 5, 3, 6, 7], 3)  → [3, 3, 5, 5, 6, 7]
+sliding_window_maximum([1, 2, 3, 4, 5], 2)             → [2, 3, 4, 5]
+sliding_window_maximum([5, 4, 3, 2, 1], 1)             → [5, 4, 3, 2, 1]
+sliding_window_maximum([1, 2, 3], 3)                   → [3]
+sliding_window_maximum([1, 2, 3], 4)                   → []
+sliding_window_maximum([], 2)                          → []
+sliding_window_maximum([1, 2, 3], 0)                   → []

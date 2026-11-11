@@ -1,0 +1,17 @@
+Assignment name  : py_palindrome_partitioner
+Expected files   : py_palindrome_partitioner.py
+--------------------------------------------------------------------------------
+
+给定一个字符串 s，找出将其分割所需的最小切割次数，使分割出的每个子串都是回文串。
+
+- 返回最小切割次数（整数）
+- 长度为 1 的字符串需要 0 次切割
+- 空字符串需要 0 次切割
+
+def palindrome_partitioner(s: str) -> int:
+
+示例:
+
+palindrome_partitioner("aab")  → 1
+palindrome_partitioner("aba")  → 0
+palindrome_partitioner("abc")  → 2

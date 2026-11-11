@@ -1,0 +1,12 @@
+[
+  ["hello world", "leh"],
+  ["hello world", "abc"],
+  ["aaaaab", "a"],
+  ["12345abc", "0123456789"],
+  ["", "abc"],
+  ["abc", ""],
+  ["", ""],
+  ["abcabc", "cba"],
+  ["   indent", " "],
+  []
+]

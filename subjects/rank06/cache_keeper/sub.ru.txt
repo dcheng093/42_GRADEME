@@ -1,0 +1,35 @@
+Assignment name  : cache_keeper
+Expected files   : cache_keeper.py
+Forbidden functions : collections.OrderedDict
+--------------------------------------------------------------------------------
+
+Реализуйте класс с именем `CacheKeeper`, представляющий кэш с алгоритмом вытеснения наименее используемых элементов (LRU) фиксированной емкости.
+
+Класс должен содержать следующие методы:
+
+1. `__init__(self, capacity: int)`:
+Инициализирует LRU-кэш с положительной емкостью `capacity`.
+
+2. `get(self, key: int) -> int`:
+Возвращает значение по ключу `key`, если он присутствует в кэше, либо `-1`, если ключ отсутствует. Успешный вызов `get` делает ключ наиболее недавно использованным.
+
+3. `put(self, key: int, value: int) -> None`:
+Вставляет или обновляет пару ключ-значение. Этот ключ становится наиболее недавно использованным. Если объем превышает `capacity`, вытесняется наименее недавно использованный ключ.
+
+Операции должны выполняться в среднем за время O(1).
+Запрещено использовать `collections.OrderedDict`.
+
+class CacheKeeper:
+    def __init__(self, capacity: int):
+    def get(self, key: int) -> int:
+    def put(self, key: int, value: int) -> None:
+
+Примеры:
+
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1)        → 1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.put(3, 3); c.get(1)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(2)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(1)
+                                                              → 1

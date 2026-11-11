@@ -1,0 +1,22 @@
+Assignment name  : task_order
+Expected files   : task_order.py
+Forbidden functions : graphlib.TopologicalSorter
+--------------------------------------------------------------------------------
+
+`0` ile `n - 1` arasında numaralandırılmış `n` adet görev bulunmaktadır. Size bir `n` tamsayısı ve her `[a, b]` çiftinin `a` görevine başlanmadan önce `b` görevinin tamamlanması gerektiğini belirttiği bir `prereqs` bağımlılık listesi verilir.
+
+Tüm görevlerin tamamlanabileceği geçerli bir yürütme sırası döndüren `task_order` adında bir fonksiyon yazın.
+
+Gereksinimler:
+- Bekleyen ön koşulu bulunmayan ve aynı anda seçilebilecek birden fazla görev olduğunda, her zaman en küçük dizine sahip görevi seçin (sözlükbilimsel sıra).
+- Döngüsel bağımlılık nedeniyle tüm görevleri tamamlamak imkansızsa boş bir liste `[]` döndürün.
+- `graphlib.TopologicalSorter` kullanımı yasaktır.
+
+def task_order(n: int, prereqs: list[list[int]]) -> list[int]:
+
+Örnekler:
+
+task_order(2, [[1, 0]])                          → [0, 1]
+task_order(4, [[1, 0], [2, 0], [3, 1], [3, 2]])  → [0, 1, 2, 3]
+task_order(2, [[0, 1], [1, 0]])                  → []
+task_order(3, [])                                → [0, 1, 2]

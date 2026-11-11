@@ -1,0 +1,29 @@
+Assignment name  : trie_autocomplete
+Expected files   : trie_autocomplete.py
+--------------------------------------------------------------------------------
+
+Écris une fonction qui implémente un système d'autocomplétion à l'aide d'une structure de données Trie (arbre préfixe).
+La fonction doit insérer une liste de mots dans le Trie et trouver tous les mots commençant par un préfixe donné.
+
+La fonction doit :
+- Construire un Trie à partir de la liste de mots.
+- Renvoyer tous les mots uniques qui commencent par le préfixe donné.
+- Renvoyer les résultats dans l'ordre alphabétique.
+- Gérer un préfixe vide en renvoyant tous les mots uniques triés.
+- Renvoyer une liste vide si aucune correspondance n'est trouvée.
+- Être sensible à la casse.
+- Veiller à ce que les doublons dans l'entrée n'apparaissent qu'une seule fois dans la sortie.
+
+def trie_autocomplete(words: list[str], prefix: str) -> list[str]:
+
+Exemples:
+
+trie_autocomplete(["apple", "app", "apricot", "banana"], "app")
+                                                              → ["app", "apple"]
+trie_autocomplete(["apple", "app", "apricot", "banana"], "ban")
+                                                              → ["banana"]
+trie_autocomplete(["hello", "world", "help", "heap"], "he")   → ["heap", "hello", "help"]
+trie_autocomplete(["test"], "xyz")                            → []
+trie_autocomplete(["cat", "car", "card", "care"], "car")      → ["car", "card", "care"]
+trie_autocomplete([], "test")                                 → []
+trie_autocomplete(["a", "ab", "abc"], "")                     → ["a", "ab", "abc"]

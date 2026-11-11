@@ -1,0 +1,15 @@
+Assignment name  : py_prism_detector
+Expected files   : py_prism_detector.py
+--------------------------------------------------------------------------------
+
+2D karakter ızgarasında hedef kelimeyi tüm 8 yönde arayan bir fonksiyon yazın.
+
+- `(x, y, yön_kodu)` demetleri listesi döndürür.
+- Izgara veya kelime boşsa `[]` döndürür.
+
+def prism_detector(grid: list[str], pattern: str):
+
+Örnekler:
+
+prism_detector(["CAT", "A..", "T.."], "CAT")  → [(0, 0, "H"), (0, 0, "V")]
+prism_detector([], "CAT")                     → []

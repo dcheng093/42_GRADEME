@@ -1,0 +1,15 @@
+Assignment name  : py_prism_detector
+Expected files   : py_prism_detector.py
+--------------------------------------------------------------------------------
+
+编写一个函数，在二维字符网格中沿 8 个方向搜索目标单词的所有匹配项。
+
+- 返回包含 `(x, y, 方向代码)` 的元组列表。
+- 如果网格或单词为空则返回 `[]`。
+
+def prism_detector(grid: list[str], pattern: str):
+
+示例:
+
+prism_detector(["CAT", "A..", "T.."], "CAT")  → [(0, 0, "H"), (0, 0, "V")]
+prism_detector([], "CAT")                     → []

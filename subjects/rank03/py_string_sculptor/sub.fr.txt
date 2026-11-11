@@ -2,14 +2,15 @@ Assignment name  : py_string_sculptor
 Expected files   : py_string_sculptor.py
 --------------------------------------------------------------------------------
 
-Écris une fonction qui transforme une chaîne en alternant la casse des seuls caractères alphabétiques. Les autres caractères restent inchangés et ne comptent pas pour l’alternance. Le premier caractère alphabétique doit être en minuscule, le second en majuscule, le troisième en minuscule, etc. Les espaces réinitialisent l’alternance (la lettre suivante après un espace est à nouveau en minuscule).
+Écris une fonction qui transforme une chaîne en alternant la casse des seuls caractères alphabétiques. Les autres caractères restent inchangés et ne comptent pas pour l’alternance. Le premier caractère alphabétique doit être en minuscule, le second en majuscule, le troisième en minuscule, etc.
 
 def string_sculptor(text: str) -> str:
 
 Exemples:
 
 string_sculptor("hello")        → "hElLo"
-string_sculptor("Hello World")  → "hElLo wOrLd"
+string_sculptor("Hello World")  → "hElLo WoRlD"
+string_sculptor("   hello   ")  → "   hElLo   "
 string_sculptor("abc123def")    → "aBc123DeF"
 string_sculptor("Python3.9!")   → "pYtHoN3.9!"
 string_sculptor("")             → ""

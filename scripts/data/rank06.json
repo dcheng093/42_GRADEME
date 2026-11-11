@@ -1,0 +1,386 @@
+[
+ {
+  "id": 1,
+  "level": 1,
+  "difficulty": "medium",
+  "name": "prefix_dictionary",
+  "assignment": "prefix_dictionary",
+  "file": "prefix_dictionary.py",
+  "description": {
+   "en": "Implement a class named `PrefixDictionary` that represents a prefix tree (Trie).\n\nThe class must provide the following methods:\n\n1. `__init__(self)`:\nInitializes an empty prefix dictionary.\n\n2. `insert(self, word: str) -> None`:\nInserts the string `word` into the prefix dictionary.\n\n3. `search(self, word: str) -> bool`:\nReturns `True` if the exact string `word` has been inserted into the prefix dictionary, and `False` otherwise.\n\n4. `starts_with(self, prefix: str) -> bool`:\nReturns `True` if there is any previously inserted string that begins with the given `prefix`, and `False` otherwise.\n\nAll inputs consist only of lowercase English letters (`'a'` - `'z'`).",
+   "de": "Implementiere eine Klasse namens `PrefixDictionary`, die einen Präfixbaum (Trie) darstellt.\n\nDie Klasse muss folgende Methoden bereitstellen:\n\n1. `__init__(self)`:\nInitialisiert ein leeres Präfix-Wörterbuch.\n\n2. `insert(self, word: str) -> None`:\nFügt die Zeichenkette `word` in das Präfix-Wörterbuch ein.\n\n3. `search(self, word: str) -> bool`:\nGibt `True` zurück, wenn genau diese Zeichenkette `word` im Präfix-Wörterbuch vorhanden ist, andernfalls `False`.\n\n4. `starts_with(self, prefix: str) -> bool`:\nGibt `True` zurück, wenn mindestens ein zuvor eingefügtes Wort mit dem angegebenen `prefix` beginnt, andernfalls `False`.\n\nAlle Eingaben bestehen ausschließlich aus Kleinbuchstaben (`'a'` - `'z'`).",
+   "fr": "Implémente une classe nommée `PrefixDictionary` représentant un arbre préfixe (Trie).\n\nLa classe doit fournir les méthodes suivantes :\n\n1. `__init__(self)` :\nInitialise un dictionnaire de préfixes vide.\n\n2. `insert(self, word: str) -> None` :\nInsère la chaîne `word` dans le dictionnaire de préfixes.\n\n3. `search(self, word: str) -> bool` :\nRenvoie `True` si la chaîne exacte `word` a été insérée dans le dictionnaire, et `False` sinon.\n\n4. `starts_with(self, prefix: str) -> bool` :\nRenvoie `True` s'il existe une chaîne précédemment insérée qui commence par le `prefix` donné, et `False` sinon.\n\nToutes les entrées sont composées uniquement de lettres minuscules (`'a'` - `'z'`).",
+   "es": "Implementa una clase llamada `PrefixDictionary` que represente un árbol de prefijos (Trie).\n\nLa clase debe proporcionar los siguientes métodos:\n\n1. `__init__(self)`:\nInicializa un diccionario de prefijos vacío.\n\n2. `insert(self, word: str) -> None`:\nInserta la cadena `word` en el diccionario de prefijos.\n\n3. `search(self, word: str) -> bool`:\nDevuelve `True` si la cadena exacta `word` ha sido insertada en el diccionario de prefijos, y `False` en caso contrario.\n\n4. `starts_with(self, prefix: str) -> bool`:\nDevuelve `True` si existe alguna palabra previamente insertada que comience con el prefijo dado `prefix`, y `False` en caso contrario.\n\nTodas las entradas constan únicamente de letras minúsculas (`'a'` - `'z'`).",
+   "it": "Implementa una classe denominata `PrefixDictionary` che rappresenti un albero dei prefissi (Trie).\n\nLa classe deve fornire i seguenti metodi:\n\n1. `__init__(self)`:\nInizializza un dizionario di prefissi vuoto.\n\n2. `insert(self, word: str) -> None`:\nInserisce la stringa `word` nel dizionario dei prefissi.\n\n3. `search(self, word: str) -> bool`:\nRestituisce `True` se l'esatta stringa `word` è stata inserita nel dizionario, e `False` altrimenti.\n\n4. `starts_with(self, prefix: str) -> bool`:\nRestituisce `True` se esiste una stringa precedentemente inserita che inizia con il prefisso specificato `prefix`, e `False` altrimenti.\n\nTutti gli input sono composti esclusivamente da lettere minuscole (`'a'` - `'z'`).",
+   "ru": "Реализуйте класс с именем `PrefixDictionary`, представляющий префиксное дерево (Trie).\n\nКласс должен содержать следующие методы:\n\n1. `__init__(self)`:\nИнициализирует пустое префиксное дерево.\n\n2. `insert(self, word: str) -> None`:\nВставляет строку `word` в префиксное дерево.\n\n3. `search(self, word: str) -> bool`:\nВозвращает `True`, если точная строка `word` присутствует в префиксном дереве, и `False` в противном случае.\n\n4. `starts_with(self, prefix: str) -> bool`:\nВозвращает `True`, если существует хотя бы одно ранее добавленное слово, начинающееся с указанного префикса `prefix`, и `False` в противном случае.\n\nВсе входные строки состоят только из строчных букв латинского алфавита (`'a'` - `'z'`).",
+   "tr": "Bir önek ağacını (Trie) temsil eden `PrefixDictionary` adında bir sınıf yazın.\n\nSınıf aşağıdaki metotları içermelidir:\n\n1. `__init__(self)`:\nBoş bir önek sözlüğü başlatır.\n\n2. `insert(self, word: str) -> None`:\n`word` dizgesini önek sözlüğüne ekler.\n\n3. `search(self, word: str) -> bool`:\n`word` dizgesi sözlüğe tam olarak eklenmişse `True`, aksi halde `False` döndürür.\n\n4. `starts_with(self, prefix: str) -> bool`:\nDaha önce eklenmiş herhangi bir kelime verilen `prefix` ile başlıyorsa `True`, aksi halde `False` döndürür.\n\nTüm girdiler yalnızca küçük harflerden (`'a'` - `'z'`) oluşur.",
+   "zh": "编写一个名为 `PrefixDictionary` 的类，实现前缀树（Trie）。\n\n该类必须提供以下方法：\n\n1. `__init__(self)`：\n初始化一个空的前缀字典。\n\n2. `insert(self, word: str) -> None`：\n将字符串 `word` 插入到前缀字典中。\n\n3. `search(self, word: str) -> bool`：\n如果前缀字典中存在完全匹配的字符串 `word`，返回 `True`；否则返回 `False`。\n\n4. `starts_with(self, prefix: str) -> bool`：\n如果前缀字典中存在以给定前缀 `prefix` 开头的字符串，返回 `True`；否则返回 `False`。\n\n所有输入字符串仅包含小写英文字母（`'a'` - `'z'`）。",
+   "ar": "اكتب فئة باسم `PrefixDictionary` تمثل شجرة البادئات (Trie).\n\nيجب أن توفر الفئة الدوال التالية:\n\n1. `__init__(self)`:\nتهيئة قاموس بادئات فارغ.\n\n2. `insert(self, word: str) -> None`:\nإدراج السلسلة `word` في قاموس البادئات.\n\n3. `search(self, word: str) -> bool`:\nتُرجع `True` إذا كانت السلسلة المطابقة تماماً `word` موجودة في القاموس، و `False` خلاف ذلك.\n\n4. `starts_with(self, prefix: str) -> bool`:\nتُرجع `True` إذا كانت هناك أي كلمة مضافة مسبقاً تبدأ بالبادئة المحددة `prefix`، و `False` خلاف ذلك.\n\nتتكون جميع المدخلات من حروف إنجليزية صغيرة فقط (`'a'` - `'z'`)."
+  },
+  "signature": "class PrefixDictionary:\n    def __init__(self):\n    def insert(self, word: str) -> None:\n    def search(self, word: str) -> bool:\n    def starts_with(self, prefix: str) -> bool:",
+  "examples": [
+   {
+    "input": "d = PrefixDictionary(); d.insert(\"apple\"); d.search(\"apple\")",
+    "output": "True"
+   },
+   {
+    "input": "d = PrefixDictionary(); d.insert(\"apple\"); d.search(\"app\")",
+    "output": "False"
+   },
+   {
+    "input": "d = PrefixDictionary(); d.insert(\"apple\"); d.starts_with(\"app\")",
+    "output": "True"
+   },
+   {
+    "input": "d = PrefixDictionary(); d.insert(\"apple\"); d.insert(\"app\"); d.search(\"app\")",
+    "output": "True"
+   }
+  ]
+ },
+ {
+  "id": 2,
+  "level": 1,
+  "difficulty": "medium",
+  "name": "pack_strings",
+  "assignment": "pack_strings",
+  "file": "pack_strings.py",
+  "description": {
+   "en": "Write two functions to serialize and deserialize a list of strings:\n\n1. `pack(strs: list[str]) -> str`:\nEncodes a list of strings into a single string.\n\n2. `unpack(s: str) -> list[str]`:\nDecodes the formatted string back into the original list of strings.\n\nFor every valid list of strings, `unpack(pack(strs))` must evaluate to `strs`.\nThe strings may contain any characters (including digits, delimiters like `#` or `:`, spaces, symbols, and newlines) and may be empty.\nAn empty list `[]` and a list containing a single empty string `[\"\"]` must be distinguished and reconstructed correctly.\nYou may not use `json`, `pickle`, or `eval`.",
+   "de": "Schreibe zwei Funktionen zur Serialisierung und Deserialisierung einer Liste von Zeichenketten:\n\n1. `pack(strs: list[str]) -> str`:\nCodiert eine Liste von Zeichenketten in eine einzelne Zeichenkette.\n\n2. `unpack(s: str) -> list[str]`:\nDecodiert die formatierte Zeichenkette wieder in die ursprüngliche Liste von Zeichenketten.\n\nFür jede Liste von Zeichenketten muss `unpack(pack(strs)) == strs` gelten.\nDie Zeichenketten können beliebige Zeichen enthalten (Ziffern, Trennzeichen wie `#` oder `:`, Leerzeichen, Symbole und Zeilenumbrüche) und können leer sein.\nEine leere Liste `[]` und eine Liste mit einem einzelnen leeren String `[\"\"]` müssen unterschieden und korrekt wiederhergestellt werden.\nDie Verwendung von `json`, `pickle` oder `eval` ist nicht gestattet.",
+   "fr": "Écris deux fonctions pour sérialiser et désérialiser une liste de chaînes de caractères :\n\n1. `pack(strs: list[str]) -> str` :\nEncode une liste de chaînes en une seule chaîne de caractères.\n\n2. `unpack(s: str) -> list[str]` :\nDécode la chaîne formatée pour retrouver la liste d'origine.\n\nPour toute liste de chaînes, l'expression `unpack(pack(strs))` doit être égale à `strs`.\nLes chaînes peuvent contenir n'importe quels caractères (chiffres, séparateurs comme `#` ou `:`, espaces, symboles et retours à la ligne) et peuvent être vides.\nUne liste vide `[]` et une liste contenant une unique chaîne vide `[\"\"]` doivent être distinguées et restituées correctement.\nL'utilisation de `json`, `pickle` ou `eval` est interdite.",
+   "es": "Escribe dos funciones para serializar y deserializar una lista de cadenas:\n\n1. `pack(strs: list[str]) -> str`:\nCodifica una lista de cadenas en una única cadena de texto.\n\n2. `unpack(s: str) -> list[str]`:\nDecodifica la cadena formateada para recuperar la lista original de cadenas.\n\nPara cualquier lista de cadenas, `unpack(pack(strs))` debe ser idéntico a `strs`.\nLas cadenas pueden contener cualquier carácter (dígitos, delimitadores como `#` o `:`, espacios, símbolos y saltos de línea) y pueden estar vacías.\nUna lista vacía `[]` y una lista que contenga una única cadena vacía `[\"\"]` deben distinguirse y reconstruirse correctamente.\nEstá prohibido el uso de `json`, `pickle` o `eval`.",
+   "it": "Scrivi due funzioni per serializzare e deserializzare un elenco di stringhe:\n\n1. `pack(strs: list[str]) -> str`:\nCodifica un elenco di stringhe in una singola stringa.\n\n2. `unpack(s: str) -> list[str]`:\nDecodifica la stringa formattata ripristinando l'elenco di stringhe originale.\n\nPer ogni elenco di stringhe, `unpack(pack(strs))` deve risultare uguale a `strs`.\nLe stringhe possono contenere qualsiasi carattere (cifre, delimitatori come `#` o `:`, spazi, simboli e ritorni a capo) e possono essere vuote.\nUn elenco vuoto `[]` e un elenco contenente una singola stringa vuota `[\"\"]` devono essere distinti e ricostruiti correttamente.\nNon è consentito l'uso di `json`, `pickle` o `eval`.",
+   "ru": "Напишите две функции для сериализации и десериализации списка строк:\n\n1. `pack(strs: list[str]) -> str`:\nКодирует список строк в одну строку.\n\n2. `unpack(s: str) -> list[str]`:\nДекодирует строку обратно в исходный список строк.\n\nДля любого списка строк выражение `unpack(pack(strs))` должно в точности возвращать `strs`.\nСтроки могут содержать любые символы (цифры, разделители вроде `#` или `:`, пробелы, спецсимволы и переводы строк) и могут быть пустыми.\nПустой список `[]` и список с одной пустой строкой `[\"\"]` должны различаться и восстанавливаться корректно.\nЗапрещено использовать модули `json`, `pickle` или функцию `eval`.",
+   "tr": "Bir dizge listesini serileştirmek ve seriden çıkarmak için iki fonksiyon yazın:\n\n1. `pack(strs: list[str]) -> str`:\nBir dizge listesini tek bir dizgeye kodlar.\n\n2. `unpack(s: str) -> list[str]`:\nBiçimlendirilmiş dizgeyi çözerek orijinal dizge listesine dönüştürür.\n\nTüm geçerli dizge listeleri için `unpack(pack(strs)) == strs` sağlanmalıdır.\nDizgeler herhangi bir karakter içerebilir (rakamlar, `#` veya `:` gibi ayırıcılar, boşluklar, semboller ve yeni satır karakterleri) ve boş olabilir.\nBoş bir liste `[]` ile tek bir boş dizge içeren `[\"\"]` listesi birbirinden ayırt edilmeli ve doğru şekilde geri yüklenmelidir.\n`json`, `pickle` veya `eval` kullanımı yasaktır.",
+   "zh": "编写两个函数来序列化和反序列化字符串列表：\n\n1. `pack(strs: list[str]) -> str`：\n将一个字符串列表编码为一个单一字符串。\n\n2. `unpack(s: str) -> list[str]`：\n将该字符串解码回原始的字符串列表。\n\n对于任意字符串列表，`unpack(pack(strs))` 必须严格等于 `strs`。\n字符串可能包含任何字符（包括数字、`#` 或 `:` 等分隔符、空格、特殊符号和换行符），并且可能为空。\n空列表 `[]` 和仅包含一个空字符串的列表 `[\"\"]` 属于不同输入，必须能够被准确区分与还原。\n禁止使用 `json`、`pickle` 或 `eval`。",
+   "ar": "اكتب دالتين لتسلسل واسترجاع قائمة من السلاسل النصية:\n\n1. `pack(strs: list[str]) -> str`:\nترميز قائمة من السلاسل النصية في سلسلة نصية واحدة.\n\n2. `unpack(s: str) -> list[str]`:\nفك ترميز السلسلة النصية وإرجاع القائمة الأصلية للسلاسل.\n\nلكل قائمة صالحة من السلاسل النصية، يجب أن تتطابق النتيجة `unpack(pack(strs))` تماماً مع `strs`.\nيمكن أن تحتوي السلاسل على أي أحرف (بما في ذلك الأرقام، الفواصل مثل `#` أو `:`، المسافات، الرموز، والأسطر الجديدة) ويمكن أن تكون فارغة.\nيجب التمييز بدقة بين القائمة الفارغة `[]` والقائمة التي تحتوي على سلسلة فارغة واحدة `[\"\"]` واسترجاعهما بشكل صحيح.\nيمنع استخدام `json` أو `pickle` أو `eval`."
+  },
+  "signature": "def pack(strs: list[str]) -> str:\ndef unpack(s: str) -> list[str]:",
+  "examples": [
+   {
+    "input": "unpack(pack([\"hello\", \"world\"]))",
+    "output": "[\"hello\", \"world\"]"
+   },
+   {
+    "input": "unpack(pack([]))",
+    "output": "[]"
+   },
+   {
+    "input": "unpack(pack([\"\"]))",
+    "output": "[\"\"]"
+   },
+   {
+    "input": "unpack(pack([\"42\", \"exam#net\", \"level:6\"]))",
+    "output": "[\"42\", \"exam#net\", \"level:6\"]"
+   }
+  ],
+  "forbidden": [
+   "json",
+   "pickle",
+   "eval"
+  ]
+ },
+ {
+  "id": 3,
+  "level": 1,
+  "difficulty": "medium",
+  "name": "task_order",
+  "assignment": "task_order",
+  "file": "task_order.py",
+  "description": {
+   "en": "There are `n` tasks labeled from `0` to `n - 1`. You are given an integer `n` and a list of dependency pairs `prereqs`, where each pair `[a, b]` indicates that task `b` must be completed before task `a` can be started.\n\nWrite a function `task_order` that returns a valid execution order in which all tasks can be finished.\n\nRequirements:\n- When multiple tasks have no remaining prerequisites and can be chosen at the same time, always pick the task with the smallest index (lexicographical tie-breaking).\n- If it is impossible to finish all tasks due to a circular dependency (cycle), return an empty list `[]`.\n- You may not use `graphlib.TopologicalSorter`.",
+   "de": "Es gibt `n` Aufgaben, nummeriert von `0` bis `n - 1`. Gegeben sind eine Ganzzahl `n` und eine Liste von Abhängigkeitspaaren `prereqs`, wobei jedes Paar `[a, b]` bedeutet, dass Aufgabe `b` abgeschlossen sein muss, bevor Aufgabe `a` begonnen werden kann.\n\nSchreibe eine Funktion `task_order`, die eine gültige Reihenfolge zurückgibt, in der alle Aufgaben ausgeführt werden können.\n\nAnforderungen:\n- Wenn mehrere Aufgaben gleichzeitig ausgeführt werden können (keine offenen Voraussetzungen mehr haben), wähle stets die Aufgabe mit dem kleinsten Index (lexikographische Reihenfolge).\n- Wenn es aufgrund einer zyklischen Abhängigkeit unmöglich ist, alle Aufgaben abzuschließen, gib eine leere Liste `[]` zurück.\n- Die Verwendung von `graphlib.TopologicalSorter` ist nicht gestattet.",
+   "fr": "Il y a `n` tâches numérotées de `0` à `n - 1`. On vous donne un entier `n` et une liste de paires de dépendances `prereqs`, où chaque paire `[a, b]` indique que la tâche `b` doit être terminée avant de pouvoir commencer la tâche `a`.\n\nÉcris une fonction `task_order` qui renvoie un ordre valide permettant d'accomplir toutes les tâches.\n\nExigences :\n- Lorsque plusieurs tâches n'ont plus de prérequis et peuvent être choisies en même temps, choisis toujours celle ayant le plus petit indice (ordre lexicographique).\n- S'il est impossible de terminer toutes les tâches en raison d'une dépendance circulaire (cycle), renvoie une liste vide `[]`.\n- L'utilisation de `graphlib.TopologicalSorter` est interdite.",
+   "es": "Hay `n` tareas numeradas de `0` a `n - 1`. Se te da un entero `n` y una lista de pares de dependencias `prereqs`, donde cada par `[a, b]` indica que la tarea `b` debe completarse antes de poder comenzar la tarea `a`.\n\nEscribe una función `task_order` que devuelva un orden válido en el que se puedan completar todas las tareas.\n\nRequisitos:\n- Cuando varias tareas no tengan prerrequisitos pendientes y puedan seleccionarse al mismo tiempo, elige siempre la tarea con el índice más pequeño (orden lexicográfico).\n- Si es imposible terminar todas las tareas debido a una dependencia circular (ciclo), devuelve una lista vacía `[]`.\n- Está prohibido el uso de `graphlib.TopologicalSorter`.",
+   "it": "Ci sono `n` attività numerate da `0` a `n - 1`. Vengono forniti un intero `n` e un elenco di coppie di dipendenze `prereqs`, dove ciascuna coppia `[a, b]` indica che l'attività `b` deve essere completata prima di poter iniziare l'attività `a`.\n\nScrivi una funzione `task_order` che restituisca un ordine valido con cui completare tutte le attività.\n\nRequisiti:\n- Quando più attività non hanno prerequisiti rimanenti e possono essere selezionate contemporaneamente, scegli sempre l'attività con l'indice minore (ordine lessicografico).\n- Se è impossibile completare tutte le attività a causa di una dipendenza ciclica, restituisci un elenco vuoto `[]`.\n- Non è consentito l'uso di `graphlib.TopologicalSorter`.",
+   "ru": "Имеется `n` задач, пронумерованных от `0` до `n - 1`. Вам дано число `n` и список зависимостей `prereqs`, где пара `[a, b]` означает, что задача `b` должна быть выполнена перед началом задачи `a`.\n\nНапишите функцию `task_order`, которая возвращает допустимый порядок выполнения всех задач.\n\nТребования:\n- Если одновременно доступны для выполнения несколько задач (у них нет невыполненных зависимостей), всегда выбирайте задачу с наименьшим номером (лексикографический порядок).\n- Если невозможно выполнить все задачи из-за наличия циклической зависимости, верните пустой список `[]`.\n- Запрещено использовать `graphlib.TopologicalSorter`.",
+   "tr": "`0` ile `n - 1` arasında numaralandırılmış `n` adet görev bulunmaktadır. Size bir `n` tamsayısı ve her `[a, b]` çiftinin `a` görevine başlanmadan önce `b` görevinin tamamlanması gerektiğini belirttiği bir `prereqs` bağımlılık listesi verilir.\n\nTüm görevlerin tamamlanabileceği geçerli bir yürütme sırası döndüren `task_order` adında bir fonksiyon yazın.\n\nGereksinimler:\n- Bekleyen ön koşulu bulunmayan ve aynı anda seçilebilecek birden fazla görev olduğunda, her zaman en küçük dizine sahip görevi seçin (sözlükbilimsel sıra).\n- Döngüsel bağımlılık nedeniyle tüm görevleri tamamlamak imkansızsa boş bir liste `[]` döndürün.\n- `graphlib.TopologicalSorter` kullanımı yasaktır.",
+   "zh": "有 `n` 个任务，编号从 `0` 到 `n - 1`。给定一个整数 `n` 和依赖对列表 `prereqs`，其中每个对 `[a, b]` 表示在开始任务 `a` 之前必须先完成任务 `b`。\n\n编写一个函数 `task_order`，返回一个能够完成所有任务的有效执行顺序。\n\n要求：\n- 当有多个任务没有前置依赖且可以同时选择时，始终选择编号最小的任务（字典序优先）。\n- 如果由于存在循环依赖（环）而无法完成所有任务，返回空列表 `[]`。\n- 禁止使用 `graphlib.TopologicalSorter`。",
+   "ar": "هناك `n` من المهام المرقمة من `0` إلى `n - 1`. يُعطى عدد صحيح `n` وقائمة من أزواج المتطلبات `prereqs`، حيث يشير كل زوج `[a, b]` إلى أنه يجب إنهاء المهمة `b` قبل البدء في المهمة `a`.\n\nاكتب دالة `task_order` تُرجع ترتيباً صالحاً لتنفيذ جميع المهام.\n\nالمتطلبات:\n- عندما تكون هناك مهام متعددة لا تتطلب شروطاً مسبقة ويمكن اختيارها في نفس الوقت، اختر دائماً المهمة ذات الرقم الأصغر (ترتيب معجمي).\n- إذا كان من المستحيل إنهاء جميع المهام بسبب وجود دورة تبعية دائرية، أرجع قائمة فارغة `[]`.\n- يمنع استخدام `graphlib.TopologicalSorter`."
+  },
+  "signature": "def task_order(n: int, prereqs: list[list[int]]) -> list[int]:",
+  "examples": [
+   {
+    "input": "task_order(2, [[1, 0]])",
+    "output": "[0, 1]"
+   },
+   {
+    "input": "task_order(4, [[1, 0], [2, 0], [3, 1], [3, 2]])",
+    "output": "[0, 1, 2, 3]"
+   },
+   {
+    "input": "task_order(2, [[0, 1], [1, 0]])",
+    "output": "[]"
+   },
+   {
+    "input": "task_order(3, [])",
+    "output": "[0, 1, 2]"
+   }
+  ],
+  "forbidden": [
+   "graphlib.TopologicalSorter"
+  ]
+ },
+ {
+  "id": 4,
+  "level": 1,
+  "difficulty": "medium",
+  "name": "redundant_link",
+  "assignment": "redundant_link",
+  "file": "redundant_link.py",
+  "description": {
+   "en": "A tree is an undirected connected graph with no cycles.\n\nYou are given an undirected graph that started as a tree with `n` nodes labeled from `1` to `n`, but one extra edge was added. As a result, the graph contains exactly one cycle.\n\nThe graph is represented by an array `edges` of length `n`, where `edges[i] = [u, v]` represents an edge between vertices `u` and `v`.\n\nWrite a function `redundant_link` that returns an edge that can be removed so that the resulting graph is a tree of `n` nodes.\nIf there are multiple answers, return the edge that appears last in the given `edges` list.",
+   "de": "Ein Baum ist ein ungerichteter zusammenhängender Graph ohne Zyklen.\n\nGegeben ist ein ungerichteter Graph, der als Baum mit `n` Knoten (beschriftet von `1` bis `n`) begann, zu dem jedoch eine zusätzliche Kante hinzugefügt wurde. Dadurch enthält der Graph genau einen Zyklus.\n\nDer Graph wird durch eine Liste `edges` der Länge `n` dargestellt, wobei `edges[i] = [u, v]` eine Kante zwischen den Knoten `u` und `v` repräsentiert.\n\nSchreibe eine Funktion `redundant_link`, die eine Kante zurückgibt, deren Entfernung den Graphen wieder in einen Baum mit `n` Knoten verwandelt.\nGibt es mehrere Möglichkeiten, gib diejenige Kante zurück, die in der übergebenen Liste `edges` als letzte vorkommt.",
+   "fr": "Un arbre est un graphe non orienté connexe sans cycle.\n\nOn vous donne un graphe non orienté qui était initialement un arbre à `n` nœuds étiquetés de `1` à `n`, auquel une arête supplémentaire a été ajoutée. Le graphe contient donc exactement un cycle.\n\nLe graphe est représenté par une liste `edges` de longueur `n`, où chaque élément `edges[i] = [u, v]` représente une arête entre les sommets `u` et `v`.\n\nÉcris une fonction `redundant_link` qui renvoie une arête pouvant être retirée pour que le graphe redevienne un arbre de `n` nœuds.\nS'il existe plusieurs réponses possibles, renvoie l'arête qui apparaît en dernier dans la liste `edges`.",
+   "es": "Un árbol es un grafo no dirigido conexo y sin ciclos.\n\nSe te proporciona un grafo no dirigido que comenzó como un árbol con `n` nodos etiquetados del `1` al `n`, pero al que se le añadió una arista adicional. Como resultado, el grafo contiene exactamente un ciclo.\n\nEl grafo se describe mediante una lista `edges` de longitud `n`, donde `edges[i] = [u, v]` representa una arista entre los vértices `u` y `v`.\n\nEscribe una función `redundant_link` que devuelva una arista que pueda ser eliminada para que el grafo vuelva a ser un árbol de `n` nodos.\nSi existen varias opciones posibles, devuelve la arista que aparezca en última posición en la lista `edges`.",
+   "it": "Un albero è un grafo non orientato connesso privo di cicli.\n\nViene fornito un grafo non orientato che inizialmente era un albero con `n` nodi etichettati da `1` a `n`, al quale è stato aggiunto un arco supplementare. Di conseguenza, il grafo contiene esattamente un ciclo.\n\nIl grafo è rappresentato da una lista `edges` di lunghezza `n`, dove `edges[i] = [u, v]` indica un arco tra i vertici `u` e `v`.\n\nScrivi una funzione `redundant_link` che restituisca un arco che può essere rimosso affinché il grafo torni ad essere un albero di `n` nodi.\nSe sono presenti più archi idonei, restituisci quello che compare per ultimo nella lista `edges`.",
+   "ru": "Дерево - это неориентированный связный граф без циклов.\n\nВам дан неориентированный граф, который изначально являлся деревом с `n` вершинами (пронумерованными от `1` до `n`), но затем к нему было добавлено ровно одно ребро, образовавшее один цикл.\n\nГраф задан списком `edges` длины `n`, где каждый элемент `edges[i] = [u, v]` обозначает ребро между вершинами `u` и `v`.\n\nНапишите функцию `redundant_link`, которая находит и возвращает ребро, удаление которого возвращает графу структуру дерева из `n` вершин.\nЕсли удалить можно несколько разных ребер, верните то, которое встречается в списке `edges` последним.",
+   "tr": "Ağaç, döngü içermeyen yönsüz ve bağlantılı bir grafiktir.\n\n`1`'den `n`'e kadar etiketlenmiş `n` düğümlü bir ağaç olarak başlayan, ancak sonradan eklenen tek bir kenarla tam olarak bir döngü içeren yönsüz bir grafik verilir.\n\nGrafik, her bir `edges[i] = [u, v]` elemanının `u` ve `v` düğümleri arasındaki kenarı temsil ettiği `n` uzunluğundaki bir `edges` listesi ile ifade edilir.\n\nGrafiğin tekrar `n` düğümlü bir ağaca dönüşmesi için kaldırılabilecek bir kenarı döndüren `redundant_link` adında bir fonksiyon yazın.\nBirden fazla uygun kenar varsa, verilen `edges` listesinde en son görünen kenarı döndürün.",
+   "zh": "树是一个无向、连通且无环的图。\n\n给定一个无向图，该图最初是一棵包含 `n` 个节点（编号从 `1` 到 `n`）的树，但在添加了一条额外边之后恰好包含了一个环。\n\n图通过长度为 `n` 的二维数组 `edges` 表示，其中 `edges[i] = [u, v]` 表示顶点 `u` 和 `v` 之间的一条无向边。\n\n编写一个函数 `redundant_link`，找出并返回一条可以删除的边，使结果图重新成为包含 `n` 个节点的树。\n如果有多条边满足条件，返回在给定 `edges` 列表中最后出现的那一条边。",
+   "ar": "الشجرة هي رسم بياني غير موجه ومتصل وخالٍ من الدورات.\n\nيُعطى رسم بياني غير موجه بدأ كشجرة تحتوي على `n` من العقد المرقمة من `1` إلى `n`، ولكن تمت إضافة حافة إضافية واحدة إليها، مما أدى إلى تكوين دورة واحدة بالضبط.\n\nيُمثل الرسم البياني بمصفوفة `edges` بطول `n`، حيث تمثل `edges[i] = [u, v]` حافة بين العقدتين `u` و `v`.\n\nاكتب دالة `redundant_link` تُرجع حافة يمكن إزالتها ليعود الرسم البياني شجرة مكوّنة من `n` عقدة.\nإذا كانت هناك خيارات متعددة، أرجع الحافة التي تظهر في الترتيب الأخير ضمن قائمة `edges` المعطاة."
+  },
+  "signature": "def redundant_link(edges: list[list[int]]) -> list[int]:",
+  "examples": [
+   {
+    "input": "redundant_link([[1, 2], [1, 3], [2, 3]])",
+    "output": "[2, 3]"
+   },
+   {
+    "input": "redundant_link([[1, 2], [2, 3], [3, 4], [1, 4], [1, 5]])",
+    "output": "[1, 4]"
+   },
+   {
+    "input": "redundant_link([[1, 4], [3, 4], [1, 3], [1, 2], [4, 5]])",
+    "output": "[1, 3]"
+   }
+  ]
+ },
+ {
+  "id": 5,
+  "level": 2,
+  "difficulty": "hard",
+  "name": "union_find_system",
+  "assignment": "union_find_system",
+  "file": "union_find_system.py",
+  "description": {
+   "en": "Write a class named `UnionFind` that implements a Disjoint Set Union (DSU) data structure with path compression and union by rank optimizations.\n\nThe class must provide the following methods:\n\n1. `__init__(self, n: int)`:\nInitializes `n` elements (from 0 to n - 1), where each element initially belongs to its own separate set (parent is itself, and rank is 0).\n\n2. `find(self, x: int) -> int`:\nFinds and returns the representative (root) of the set containing element `x`. Implements path compression so that every traversed node points directly to the root.\n\n3. `union(self, x: int, y: int) -> bool`:\nMerges the set containing `x` with the set containing `y` using union by rank (attaching the tree of smaller rank under the root of larger rank; if ranks are equal, increment the rank of the chosen new root).\nReturns `True` if `x` and `y` were in different sets and successfully merged.\nReturns `False` if `x` and `y` were already in the same set.\n\n4. `connected(self, x: int, y: int) -> bool`:\nReturns `True` if `x` and `y` belong to the same set, and `False` otherwise.",
+   "de": "Schreibe eine Klasse namens `UnionFind`, die eine Disjoint-Set-Union-Datenstruktur (DSU) mit Pfadkompression und Union-by-Rank implementiert.\n\nDie Klasse muss folgende Methoden bereitstellen:\n\n1. `__init__(self, n: int)`:\nInitialisiert `n` Elemente (von 0 bis n - 1), wobei jedes Element anfangs seiner eigenen disjunkten Menge angehört (Elternelement ist es selbst, Rang ist 0).\n\n2. `find(self, x: int) -> int`:\nErmittelt und gibt den Repräsentanten (die Wurzel) der Menge zurück, die das Element `x` enthält. Implementiert Pfadkompression, sodass alle durchlaufenen Knoten direkt auf die Wurzel verweisen.\n\n3. `union(self, x: int, y: int) -> bool`:\nVereinigt die Menge von `x` mit der Menge von `y` mittels Union-by-Rank (der Baum mit kleinerem Rang wird an die Wurzel des größeren Rangs gehängt; bei gleichem Rang wird der Rang der neuen Wurzel inkrementiert).\nGibt `True` zurück, wenn `x` und `y` in verschiedenen Mengen lagen und vereinigt wurden.\nGibt `False` zurück, wenn `x` und `y` bereits in derselben Menge lagen.\n\n4. `connected(self, x: int, y: int) -> bool`:\nGibt `True` zurück, wenn `x` und `y` derselben Menge angehören, andernfalls `False`.",
+   "fr": "Écris une classe nommée `UnionFind` qui implémente une structure de données d'ensembles disjoints (DSU) avec compression de chemin et union par rang.\n\nLa classe doit fournir les méthodes suivantes :\n\n1. `__init__(self, n: int)` :\nInitialise `n` éléments (de 0 à n - 1), où chaque élément appartient initialement à son propre ensemble (chaque élément est son propre parent et son rang vaut 0).\n\n2. `find(self, x: int) -> int` :\nTrouve et renvoie le représentant (la racine) de l'ensemble contenant l'élément `x`. Implémente la compression de chemin pour que chaque nœud traversé pointe directement vers la racine.\n\n3. `union(self, x: int, y: int) -> bool` :\nFusionne l'ensemble contenant `x` avec celui contenant `y` en utilisant l'union par rang (l'arbre de plus petit rang est rattaché sous la racine de plus grand rang ; si les rangs sont égaux, le rang de la nouvelle racine est incrémenté).\nRenvoie `True` si `x` et `y` étaient dans des ensembles différents et ont été fusionnés.\nRenvoie `False` si `x` et `y` étaient déjà dans le même ensemble.\n\n4. `connected(self, x: int, y: int) -> bool` :\nRenvoie `True` si `x` et `y` appartiennent au même ensemble, et `False` sinon.",
+   "es": "Escribe una clase llamada `UnionFind` que implemente una estructura de datos de conjuntos disjuntos (DSU) con compresión de caminos y unión por rango.\n\nLa clase debe implementar los siguientes métodos:\n\n1. `__init__(self, n: int)`:\nInicializa `n` elementos (de 0 a n - 1), donde cada elemento pertenece inicialmente a su propio conjunto separado (su padre es él mismo y su rango es 0).\n\n2. `find(self, x: int) -> int`:\nEncuentra y devuelve el representante (raíz) del conjunto que contiene el elemento `x`. Implementa compresión de caminos para que cada nodo recorrido apunte directamente a la raíz.\n\n3. `union(self, x: int, y: int) -> bool`:\nUne el conjunto que contiene a `x` con el conjunto que contiene a `y` mediante unión por rango (adjuntando el árbol de menor rango bajo la raíz de mayor rango; si los rangos son iguales, incrementa el rango de la nueva raíz).\nDevuelve `True` si `x` e `y` estaban en conjuntos distintos y se unieron con éxito.\nDevuelve `False` si `x` e `y` ya pertenecían al mismo conjunto.\n\n4. `connected(self, x: int, y: int) -> bool`:\nDevuelve `True` si `x` e `y` pertenecen al mismo conjunto, y `False` en caso contrario.",
+   "it": "Scrivi una classe denominata `UnionFind` che implementi una struttura dati per insiemi disgiunti (DSU) con compressione dei percorsi e unione per rango.\n\nLa classe deve fornire i seguenti metodi:\n\n1. `__init__(self, n: int)`:\nInizializza `n` elementi (da 0 a n - 1), dove ciascun elemento appartiene inizialmente al proprio insieme separato (il genitore è l'elemento stesso e il rango è 0).\n\n2. `find(self, x: int) -> int`:\nTrova e restituisce il rappresentante (la radice) dell'insieme contenente l'elemento `x`. Implementa la compressione del percorso in modo che ciascun nodo attraversato punti direttamente alla radice.\n\n3. `union(self, x: int, y: int) -> bool`:\nUnisce l'insieme contenente `x` con l'insieme contenente `y` utilizzando l'unione per rango (collegando l'albero di rango inferiore sotto la radice dell'albero di rango superiore; se i ranghi sono uguali, incrementa il rango della radice risultante).\nRestituisce `True` se `x` e `y` appartenevano a insiemi diversi e sono stati uniti.\nRestituisce `False` se `x` e `y` appartenevano già allo stesso insieme.\n\n4. `connected(self, x: int, y: int) -> bool`:\nRestituisce `True` se `x` e `y` appartengono allo stesso insieme, e `False` altrimenti.",
+   "ru": "Напишите класс с именем `UnionFind`, реализующий систему непересекающихся множеств (DSU) с эвристиками сжатия путей и объединения по рангу.\n\nКласс должен содержать следующие методы:\n\n1. `__init__(self, n: int)`:\nИнициализирует `n` элементов (от 0 до n - 1), где каждый элемент изначально образует отдельное множество (является собственным родителем, а ранг равен 0).\n\n2. `find(self, x: int) -> int`:\nНаходит и возвращает представителя (корень) множества, содержащего элемент `x`. Реализует сжатие пути, перенаправляя пройденные вершины напрямую к корню.\n\n3. `union(self, x: int, y: int) -> bool`:\nОбъединяет множество с элементом `x` и множество с элементом `y` по рангу (дерево с меньшим рангом подвязывается к корню дерева с большим рангом; при равных рангах ранг нового корня увеличивается на 1).\nВозвращает `True`, если `x` и `y` находились в разных множествах и были успешно объединены.\nВозвращает `False`, если `x` и `y` уже находились в одном множестве.\n\n4. `connected(self, x: int, y: int) -> bool`:\nВозвращает `True`, если `x` и `y` принадлежат одному множеству, и `False` в противном случае.",
+   "tr": "Yol sıkıştırması (path compression) ve derecesine göre birleştirme (union by rank) optimizasyonlarına sahip bir Ayrık Küme (Disjoint Set Union / DSU) veri yapısı uygulayan `UnionFind` adında bir sınıf yazın.\n\nSınıf aşağıdaki metotları içermelidir:\n\n1. `__init__(self, n: int)`:\nHer elemanın başlangıçta kendi bağımsız kümesinde yer aldığı (ebeveyn kendisidir ve derece 0'dır) `n` adet elemanı (0 ile n - 1 arası) başlatır.\n\n2. `find(self, x: int) -> int`:\n`x` elemanını içeren kümenin temsilcisini (kökünü) bulur ve döndürür. Gezilen tüm düğümlerin doğrudan kökü göstermesini sağlayan yol sıkıştırma tekniğini uygular.\n\n3. `union(self, x: int, y: int) -> bool`:\n`x` ve `y` elemanlarını içeren kümeleri derecesine göre birleştirme (küçük dereceli ağacı büyük dereceli ağacın köküne bağlama; dereceler eşitse yeni kökün derecesini 1 artırma) yöntemiyle birleştirir.\n`x` ve `y` farklı kümelerdeyse ve başarıyla birleştirildiyse `True` döndürür.\n`x` ve `y` zaten aynı kümedeyse `False` döndürür.\n\n4. `connected(self, x: int, y: int) -> bool`:\n`x` ve `y` aynı kümeye aitse `True`, aksi halde `False` döndürür.",
+   "zh": "编写一个名为 `UnionFind` 的类，实现带有路径压缩（Path Compression）和按秩合并（Union by Rank）优化的并查集（Disjoint Set Union）数据结构。\n\n该类必须提供以下方法：\n\n1. `__init__(self, n: int)`：\n初始化 `n` 个元素（编号从 0 到 n - 1），初始时每个元素自成一个集合（父节点指向自身，秩为 0）。\n\n2. `find(self, x: int) -> int`：\n查找并返回包含元素 `x` 的集合代表元（根节点）。实现路径压缩优化，使查找路径上的所有节点都直接指向根节点。\n\n3. `union(self, x: int, y: int) -> bool`：\n使用按秩合并策略合并包含 `x` 和 `y` 的集合（将秩较小的树连接到秩较大的树的根节点下；如果两树秩相等，则将新根节点的秩加 1）。\n如果 `x` 和 `y` 原本属于不同集合并成功合并，返回 `True`。\n如果 `x` 和 `y` 已经属于同一集合，返回 `False`。\n\n4. `connected(self, x: int, y: int) -> bool`：\n如果 `x` 和 `y` 属于同一个集合，返回 `True`；否则返回 `False`。",
+   "ar": "اكتب فئة باسم `UnionFind` تطبق هيكل بيانات المجموعات المنفصلة (Disjoint Set Union - DSU) مع تحسيني ضغط المسار (Path Compression) والدمج حسب الرتبة (Union by Rank).\n\nيجب أن توفر الفئة الدوال التالية:\n\n1. `__init__(self, n: int)`:\nتهيئة `n` من العناصر (من 0 إلى n - 1)، حيث ينتمي كل عنصر في البداية إلى مجموعته المستقلة الخاصة (العنصر هو الأصل لنفسه ورتبته 0).\n\n2. `find(self, x: int) -> int`:\nتحديد وإرجاع الممثل (الجذر) للمجموعة التي تحتوي على العنصر `x`. تقوم بتطبيق ضغط المسار بحيث تشير جميع العقد في المسار مباشرة إلى الجذر.\n\n3. `union(self, x: int, y: int) -> bool`:\nدمج المجموعة التي تحتوي على `x` مع المجموعة التي تحتوي على `y` باستخدام استراتيجية الدمج حسب الرتبة (ربط الشجرة ذات الرتبة الأصغر تحت جذر الشجرة ذات الرتبة الأكبر؛ وإذا تساوت الرتبتان، تتم زيادة رتبة الجذر الجديد بمقدار 1).\nتُرجع `True` إذا كان `x` و `y` في مجموعتين مختلفتين وتم دمجهما بنجاح.\nتُرجع `False` إذا كان `x` و `y` ينتميان بالفعل إلى نفس المجموعة.\n\n4. `connected(self, x: int, y: int) -> bool`:\nتُرجع `True` إذا كان `x` و `y` ينتميان إلى نفس المجموعة، و `False` خلاف ذلك."
+  },
+  "signature": "class UnionFind:\n    def __init__(self, n: int):\n    def find(self, x: int) -> int:\n    def union(self, x: int, y: int) -> bool:\n    def connected(self, x: int, y: int) -> bool:",
+  "examples": [
+   {
+    "input": "uf = UnionFind(5); uf.connected(0, 1)",
+    "output": "False"
+   },
+   {
+    "input": "uf = UnionFind(5); uf.union(0, 1)",
+    "output": "True"
+   },
+   {
+    "input": "uf = UnionFind(5); uf.union(0, 1); uf.connected(0, 1)",
+    "output": "True"
+   },
+   {
+    "input": "uf = UnionFind(5); uf.union(0, 1); uf.union(1, 2); uf.connected(0, 2)",
+    "output": "True"
+   },
+   {
+    "input": "uf = UnionFind(5); uf.union(0, 1); uf.union(0, 1)",
+    "output": "False"
+   },
+   {
+    "input": "uf = UnionFind(3); uf.union(0, 1); uf.union(1, 2); uf.find(0) == uf.find(2)",
+    "output": "True"
+   }
+  ]
+ },
+ {
+  "id": 6,
+  "level": 2,
+  "difficulty": "hard",
+  "name": "cache_keeper",
+  "assignment": "cache_keeper",
+  "file": "cache_keeper.py",
+  "description": {
+   "en": "Implement a class named `CacheKeeper` that implements a Least Recently Used (LRU) cache with a fixed capacity.\n\nThe class must provide the following methods:\n\n1. `__init__(self, capacity: int)`:\nInitializes the LRU cache with a positive `capacity`.\n\n2. `get(self, key: int) -> int`:\nReturns the value of the `key` if the key exists in the cache, or `-1` if it does not. A successful `get` marks the accessed key as most recently used.\n\n3. `put(self, key: int, value: int) -> None`:\nInserts or updates the `key` with `value`. The inserted or updated key becomes most recently used. If the number of keys exceeds `capacity`, evicts the least recently used key.\n\nOperations should aim for average $O(1)$ time complexity.\nYou may not use `collections.OrderedDict`.",
+   "de": "Implementiere eine Klasse namens `CacheKeeper`, die einen Least-Recently-Used-Cache (LRU) mit fester Kapazität bereitstellt.\n\nDie Klasse muss folgende Methoden bereitstellen:\n\n1. `__init__(self, capacity: int)`:\nInitialisiert den LRU-Cache mit einer positiven Kapazität `capacity`.\n\n2. `get(self, key: int) -> int`:\nGibt den Wert zu `key` zurück, falls der Schlüssel existiert, andernfalls `-1`. Ein erfolgreicher Aufruf von `get` markiert den Schlüssel als zuletzt verwendet (most recently used).\n\n3. `put(self, key: int, value: int) -> None`:\nFügt das Schlüssel-Wert-Paar ein oder aktualisiert es. Der Schlüssel wird als zuletzt verwendet markiert. Überschreitet der Cache die Kapazität `capacity`, wird der am längsten ungenutzte Schlüssel (least recently used) verdrängt.\n\nDie Operationen sollten eine durchschnittliche Zeitkomplexität von $O(1)$ erreichen.\nDie Verwendung von `collections.OrderedDict` ist nicht gestattet.",
+   "fr": "Implémente une classe nommée `CacheKeeper` représentant une mémoire cache LRU (Least Recently Used) de capacité fixe.\n\nLa classe doit fournir les méthodes suivantes :\n\n1. `__init__(self, capacity: int)` :\nInitialise le cache LRU avec une capacité positive `capacity`.\n\n2. `get(self, key: int) -> int` :\nRenvoie la valeur associée à `key` si la clé existe dans le cache, ou `-1` sinon. Une lecture réussie marque la clé comme étant la plus récemment utilisée.\n\n3. `put(self, key: int, value: int) -> None` :\nInsère ou met à jour la paire clé-valeur. La clé devient la plus récemment utilisée. Si le nombre de clés dépasse `capacity`, la clé la moins récemment utilisée est évincée.\n\nLes opérations doivent viser une complexité temporelle moyenne en $O(1)$.\nL'utilisation de `collections.OrderedDict` est interdite.",
+   "es": "Implementa una clase llamada `CacheKeeper` que funcione como una memoria caché LRU (Least Recently Used) con capacidad fija.\n\nLa clase debe proporcionar los siguientes métodos:\n\n1. `__init__(self, capacity: int)`:\nInicializa la caché LRU con una capacidad positiva `capacity`.\n\n2. `get(self, key: int) -> int`:\nDevuelve el valor correspondiente a `key` si la clave existe en la caché, o `-1` si no existe. Un acceso exitoso marca la clave como la usada más recientemente.\n\n3. `put(self, key: int, value: int) -> None`:\nInserta o actualiza la clave con el valor `value`. La clave insertada o actualizada pasa a ser la usada más recientemente. Si el número de claves supera `capacity`, desaloja la clave menos usada recientemente.\n\nLas operaciones deben aspirar a una complejidad temporal promedio de $O(1)$.\nEstá prohibido el uso de `collections.OrderedDict`.",
+   "it": "Implementa una classe denominata `CacheKeeper` che realizzi una cache LRU (Least Recently Used) a capacità fissa.\n\nLa classe deve fornire i seguenti metodi:\n\n1. `__init__(self, capacity: int)`:\nInizializza la cache LRU con una capacità positiva `capacity`.\n\n2. `get(self, key: int) -> int`:\nRestituisce il valore associato a `key` se la chiave è presente nella cache, oppure `-1` in caso contrario. Una lettura con successo contrassegna la chiave come la più recentemente utilizzata.\n\n3. `put(self, key: int, value: int) -> None`:\nInserisce o aggiorna la coppia chiave-valore. La chiave diventa la più recentemente utilizzata. Se il numero di elementi supera `capacity`, elimina la chiave meno recentemente utilizzata.\n\nLe operazioni devono mirare a una complessità temporale media di $O(1)$.\nNon è consentito l'uso di `collections.OrderedDict`.",
+   "ru": "Реализуйте класс с именем `CacheKeeper`, представляющий кэш с алгоритмом вытеснения наименее используемых элементов (LRU) фиксированной емкости.\n\nКласс должен содержать следующие методы:\n\n1. `__init__(self, capacity: int)`:\nИнициализирует LRU-кэш с положительной емкостью `capacity`.\n\n2. `get(self, key: int) -> int`:\nВозвращает значение по ключу `key`, если он присутствует в кэше, либо `-1`, если ключ отсутствует. Успешный вызов `get` делает ключ наиболее недавно использованным.\n\n3. `put(self, key: int, value: int) -> None`:\nВставляет или обновляет пару ключ-значение. Этот ключ становится наиболее недавно использованным. Если объем превышает `capacity`, вытесняется наименее недавно использованный ключ.\n\nОперации должны выполняться в среднем за время $O(1)$.\nЗапрещено использовать `collections.OrderedDict`.",
+   "tr": "Sabit kapasiteye sahip bir En Son Kullanılan (Least Recently Used - LRU) önbelleği uygulayan `CacheKeeper` adında bir sınıf yazın.\n\nSınıf aşağıdaki metotları içermelidir:\n\n1. `__init__(self, capacity: int)`:\nLRU önbelleğini pozitif bir `capacity` değeriyle başlatır.\n\n2. `get(self, key: int) -> int`:\nAnahtar önbellekte mevcutsa değerini, mevcut değilse `-1` döndürür. Başarılı bir `get` işlemi, erişilen anahtarı en son kullanılan olarak işaretler.\n\n3. `put(self, key: int, value: int) -> None`:\nAnahtar ve değeri ekler veya günceller. Eklenen veya güncellenen anahtar en son kullanılan hale gelir. Anahtar sayısı `capacity` sınırını aşarsa, en uzun süredir kullanılmayan anahtar önbellekten çıkarılır.\n\nİşlemler ortalama $O(1)$ zaman karmaşıklığında çalışmalıdır.\n`collections.OrderedDict` kullanımı yasaktır.",
+   "zh": "编写一个名为 `CacheKeeper` 的类，实现具有固定容量的最近最少使用（LRU）缓存。\n\n该类必须提供以下方法：\n\n1. `__init__(self, capacity: int)`：\n使用正整数容量 `capacity` 初始化 LRU 缓存。\n\n2. `get(self, key: int) -> int`：\n如果键 `key` 存在于缓存中，返回其对应的值；否则返回 `-1`。成功的 `get` 操作会将该键标记为最近使用。\n\n3. `put(self, key: int, value: int) -> None`：\n插入或更新键值对。插入或更新后的键成为最近使用的键。如果键的数量超过 `capacity`，则淘汰最近最少使用的键。\n\n各项操作应达到平均 $O(1)$ 的时间复杂度。\n禁止使用 `collections.OrderedDict`。",
+   "ar": "اكتب فئة باسم `CacheKeeper` تطبق ذاكرة تخزين مؤقت تعتمد أسلوب الأقل استخداماً مؤخراً (LRU) بسعة ثابتة.\n\nيجب أن توفر الفئة الدوال التالية:\n\n1. `__init__(self, capacity: int)`:\nتهيئة ذاكرة التخزين المؤقت بسعة موجبة `capacity`.\n\n2. `get(self, key: int) -> int`:\nإرجاع قيمة المفتاح `key` إذا كان موجوداً، أو `-1` إذا لم يكن موجوداً. عملية الوصول الناجحة تجعل المفتاح الأكثر استخداماً مؤخراً.\n\n3. `put(self, key: int, value: int) -> None`:\nإدراج أو تحديث المفتاح بالقيمة `value`. يصبح المفتاح المضاف أو المحدث الأكثر استخداماً مؤخراً. وإذا تجاوز عدد المفاتيح السعة `capacity`، يتم استبعاد المفتاح الأقل استخداماً مؤخراً.\n\nيجب أن تستهدف العمليات تعقيداً زمنياً متوسطاً قدره $O(1)$.\nيمنع استخدام `collections.OrderedDict`."
+  },
+  "signature": "class CacheKeeper:\n    def __init__(self, capacity: int):\n    def get(self, key: int) -> int:\n    def put(self, key: int, value: int) -> None:",
+  "examples": [
+   {
+    "input": "c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1)",
+    "output": "1"
+   },
+   {
+    "input": "c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.put(3, 3); c.get(1)",
+    "output": "-1"
+   },
+   {
+    "input": "c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(2)",
+    "output": "-1"
+   },
+   {
+    "input": "c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(1)",
+    "output": "1"
+   }
+  ],
+  "forbidden": [
+   "collections.OrderedDict"
+  ]
+ },
+ {
+  "id": 7,
+  "level": 2,
+  "difficulty": "hard",
+  "name": "min_heap",
+  "assignment": "min_heap",
+  "file": "min_heap.py",
+  "description": {
+   "en": "Implement a class named `MinHeap` that implements a binary minimum heap stored within a Python list.\n\nThe class must provide the following methods:\n\n1. `__init__(self)`:\nInitializes an empty binary min-heap.\n\n2. `push(self, val: int) -> None`:\nInserts `val` into the heap in $O(\\log n)$ time complexity (sift up).\n\n3. `pop(self) -> int | None`:\nRemoves and returns the minimum value from the heap in $O(\\log n)$ time complexity (sift down). Returns `None` if the heap is empty.\n\n4. `peek(self) -> int | None`:\nReturns the minimum value without removing it in $O(1)$ time complexity. Returns `None` if the heap is empty.\n\n5. `size(self) -> int`:\nReturns the total number of elements currently stored in the heap in $O(1)$ time complexity.\n\nYou may not use the built-in `heapq` module.",
+   "de": "Implementiere eine Klasse namens `MinHeap`, die einen binären Minimum-Heap auf Basis einer Python-Liste darstellt.\n\nDie Klasse muss folgende Methoden bereitstellen:\n\n1. `__init__(self)`:\nInitialisiert einen leeren binären Min-Heap.\n\n2. `push(self, val: int) -> None`:\nFügt `val` in den Heap in $O(\\log n)$ Zeitkomplexität ein (Sift-Up).\n\n3. `pop(self) -> int | None`:\nEntfernt und liefert den kleinsten Wert aus dem Heap in $O(\\log n)$ Zeitkomplexität (Sift-Down). Gibt `None` zurück, wenn der Heap leer ist.\n\n4. `peek(self) -> int | None`:\nGibt den kleinsten Wert zurück, ohne ihn zu entfernen, in $O(1)$ Zeitkomplexität. Gibt `None` zurück, wenn der Heap leer ist.\n\n5. `size(self) -> int`:\nGibt die Gesamtzahl der Elemente im Heap in $O(1)$ Zeitkomplexität zurück.\n\nDie Verwendung des Moduls `heapq` ist nicht gestattet.",
+   "fr": "Implémente une classe nommée `MinHeap` représentant un tas binaire minimum (Min-Heap) stocké dans une liste Python.\n\nLa classe doit fournir les méthodes suivantes :\n\n1. `__init__(self)` :\nInitialise un tas binaire minimum vide.\n\n2. `push(self, val: int) -> None` :\nInsère `val` dans le tas avec une complexité temporelle en $O(\\log n)$ (sift up).\n\n3. `pop(self) -> int | None` :\nExtrait et renvoie la valeur minimale du tas avec une complexité temporelle en $O(\\log n)$ (sift down). Renvoie `None` si le tas est vide.\n\n4. `peek(self) -> int | None` :\nRenvoie la valeur minimale sans la retirer avec une complexité temporelle en $O(1)$. Renvoie `None` si le tas est vide.\n\n5. `size(self) -> int` :\nRenvoie le nombre total d'éléments présents dans le tas en temps $O(1)$.\n\nL'utilisation du module `heapq` est interdite.",
+   "es": "Implementa una clase llamada `MinHeap` que gestione un montículo binario mínimo (Min-Heap) almacenado internamente en una lista de Python.\n\nLa clase debe proporcionar los siguientes métodos:\n\n1. `__init__(self)`:\nInicializa un montículo binario mínimo vacío.\n\n2. `push(self, val: int) -> None`:\nInserta `val` en el montículo con una complejidad temporal de $O(\\log n)$ (sift up).\n\n3. `pop(self) -> int | None`:\nElimina y devuelve el valor mínimo del montículo con una complejidad temporal de $O(\\log n)$ (sift down). Devuelve `None` si el montículo está vacío.\n\n4. `peek(self) -> int | None`:\nDevuelve el valor mínimo sin extraerlo en tiempo $O(1)$. Devuelve `None` si el montículo está vacío.\n\n5. `size(self) -> int`:\nDevuelve el número total de elementos almacenados en el montículo en tiempo $O(1)$.\n\nEstá prohibido el uso del módulo `heapq`.",
+   "it": "Implementa una classe denominata `MinHeap` che realizzi un heap binario di minimo (Min-Heap) memorizzato in una lista Python.\n\nLa classe deve fornire i seguenti metodi:\n\n1. `__init__(self)`:\nInizializza un min-heap binario vuoto.\n\n2. `push(self, val: int) -> None`:\nInserisce `val` nell'heap con complessità temporale $O(\\log n)$ (sift up).\n\n3. `pop(self) -> int | None`:\nRimuove e restituisce il valore minimo dall'heap con complessità temporale $O(\\log n)$ (sift down). Restituisce `None` se l'heap è vuoto.\n\n4. `peek(self) -> int | None`:\nRestituisce il valore minimo senza rimuoverlo in tempo $O(1)$. Restituisce `None` se l'heap è vuoto.\n\n5. `size(self) -> int`:\nRestituisce il numero totale di elementi presenti nell'heap in tempo $O(1)$.\n\nNon è consentito l'uso del modulo `heapq`.",
+   "ru": "Реализуйте класс с именем `MinHeap`, представляющий двоичную кучу на минимум (Min-Heap), хранящуюся в обычном списке Python.\n\nКласс должен содержать следующие методы:\n\n1. `__init__(self)`:\nИнициализирует пустую двоичную min-кучу.\n\n2. `push(self, val: int) -> None`:\nВставляет значение `val` в кучу за время $O(\\log n)$ (просеивание вверх).\n\n3. `pop(self) -> int | None`:\nИзвлекает и возвращает минимальный элемент кучи за время $O(\\log n)$ (просеивание вниз). Возвращает `None`, если куча пуста.\n\n4. `peek(self) -> int | None`:\nВозвращает минимальный элемент без его удаления за время $O(1)$. Возвращает `None`, если куча пуста.\n\n5. `size(self) -> int`:\nВозвращает общее количество элементов в куче за время $O(1)$.\n\nЗапрещено использовать модуль `heapq`.",
+   "tr": "Bir Python listesi içinde saklanan ikili minimum yığın (binary min-heap) uygulayan `MinHeap` adında bir sınıf yazın.\n\nSınıf aşağıdaki metotları içermelidir:\n\n1. `__init__(self)`:\nBoş bir ikili min-yığın başlatır.\n\n2. `push(self, val: int) -> None`:\n`val` değerini $O(\\log n)$ zaman karmaşıklığında yığına ekler (yukarı kaydırma / sift up).\n\n3. `pop(self) -> int | None`:\nYığındaki minimum değeri $O(\\log n)$ zaman karmaşıklığında çıkarır ve döndürür (aşağı kaydırma / sift down). Yığın boşsa `None` döndürür.\n\n4. `peek(self) -> int | None`:\nMinimum değeri çıkarmadan $O(1)$ zaman karmaşıklığında döndürür. Yığın boşsa `None` döndürür.\n\n5. `size(self) -> int`:\nYığında depolanan toplam eleman sayısını $O(1)$ zaman karmaşıklığında döndürür.\n\n`heapq` modülünün kullanımı yasaktır.",
+   "zh": "编写一个名为 `MinHeap` 的类，在 Python 列表中实现二叉最小堆（Min-Heap）。\n\n该类必须提供以下方法：\n\n1. `__init__(self)`：\n初始化一个空的二叉最小堆。\n\n2. `push(self, val: int) -> None`：\n以 $O(\\log n)$ 时间复杂度将 `val` 插入堆中（上浮调整 sift up）。\n\n3. `pop(self) -> int | None`：\n以 $O(\\log n)$ 时间复杂度移除并返回堆中的最小值（下沉调整 sift down）。如果堆为空，则返回 `None`。\n\n4. `peek(self) -> int | None`：\n以 $O(1)$ 时间复杂度返回最小值而不移除。如果堆为空，则返回 `None`。\n\n5. `size(self) -> int`：\n以 $O(1)$ 时间复杂度返回堆中当前存储的元素总数。\n\n禁止使用内置的 `heapq` 模块。",
+   "ar": "اكتب فئة باسم `MinHeap` تطبق كومة ثنائية صغرى (Binary Min-Heap) مخزنة داخل قائمة بايثون.\n\nيجب أن توفر الفئة الدوال التالية:\n\n1. `__init__(self)`:\nتهيئة كومة صغرى ثنائية فارغة.\n\n2. `push(self, val: int) -> None`:\nإدراج `val` في الكومة بتعقيد زمني قدره $O(\\log n)$ (sift up).\n\n3. `pop(self) -> int | None`:\nإزالة وإرجاع أصغر قيمة من الكومة بتعقيد زمني قدره $O(\\log n)$ (sift down). تُرجع `None` إذا كانت الكومة فارغة.\n\n4. `peek(self) -> int | None`:\nإرجاع أصغر قيمة دون إزالتها بتعقيد زمني قدره $O(1)$. تُرجع `None` إذا كانت الكومة فارغة.\n\n5. `size(self) -> int`:\nإرجاع إجمالي عدد العناصر المخزنة حالياً في الكومة في وقت $O(1)$.\n\nيمنع استخدام وحدة `heapq` المدمجة."
+  },
+  "signature": "class MinHeap:\n    def __init__(self):\n    def push(self, val: int) -> None:\n    def pop(self) -> int | None:\n    def peek(self) -> int | None:\n    def size(self) -> int:",
+  "examples": [
+   {
+    "input": "h = MinHeap(); h.push(5); h.push(3); h.push(8); h.peek()",
+    "output": "3"
+   },
+   {
+    "input": "h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop()",
+    "output": "3"
+   },
+   {
+    "input": "h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop(); h.peek()",
+    "output": "5"
+   },
+   {
+    "input": "h = MinHeap(); h.push(5); h.push(3); h.push(8); h.size()",
+    "output": "3"
+   },
+   {
+    "input": "h = MinHeap(); h.pop()",
+    "output": "None"
+   }
+  ],
+  "forbidden": [
+   "heapq"
+  ]
+ },
+ {
+  "id": 8,
+  "level": 1,
+  "difficulty": "medium",
+  "name": "trie_autocomplete",
+  "assignment": "trie_autocomplete",
+  "file": "trie_autocomplete.py",
+  "description": {
+   "en": "Write a function that implements an autocomplete system using a Trie (prefix tree) data structure.\nThe function should insert a list of words into the Trie and find all words that start with a given prefix.\n\nThe function should:\n- Build a Trie from the list of words.\n- Return all unique words that start with the given prefix.\n- Return results in alphabetical (lexicographical) order.\n- Handle an empty prefix by returning all unique words sorted.\n- Return an empty list if no matches are found.\n- Be case-sensitive.\n- Ensure duplicate words in the input appear only once in the output.",
+   "de": "Schreibe eine Funktion, die ein Autovervollständigungssystem mithilfe einer Trie-Datenstruktur (Präfixbaum) implementiert.\nDie Funktion soll eine Liste von Wörtern in den Trie einfügen und alle Wörter finden, die mit einem bestimmten Präfix beginnen.\n\nDie Funktion soll:\n- Einen Trie aus der Wortliste aufbauen.\n- Alle eindeutigen Wörter zurückgeben, die mit dem angegebenen Präfix beginnen.\n- Die Ergebnisse in alphabetischer Reihenfolge zurückgeben.\n- Ein leeres Präfix behandeln, indem alle eindeutigen Wörter sortiert zurückgegeben werden.\n- Eine leere Liste zurückgeben, falls keine Treffer gefunden werden.\n- Groß- und Kleinschreibung beachten (case-sensitive).\n- Sicherstellen, dass Duplikate in der Eingabe im Ergebnis nur einmal vorkommen.",
+   "fr": "Écris une fonction qui implémente un système d'autocomplétion à l'aide d'une structure de données Trie (arbre préfixe).\nLa fonction doit insérer une liste de mots dans le Trie et trouver tous les mots commençant par un préfixe donné.\n\nLa fonction doit :\n- Construire un Trie à partir de la liste de mots.\n- Renvoyer tous les mots uniques qui commencent par le préfixe donné.\n- Renvoyer les résultats dans l'ordre alphabétique.\n- Gérer un préfixe vide en renvoyant tous les mots uniques triés.\n- Renvoyer une liste vide si aucune correspondance n'est trouvée.\n- Être sensible à la casse.\n- Veiller à ce que les doublons dans l'entrée n'apparaissent qu'une seule fois dans la sortie.",
+   "es": "Escribe una función que implemente un sistema de autocompletado utilizando una estructura de datos Trie (árbol de prefijos).\nLa función debe insertar una lista de palabras en el Trie y encontrar todas las palabras que comiencen con un prefijo determinado.\n\nLa función debe:\n- Construir un Trie a partir de la lista de palabras.\n- Devolver todas las palabras únicas que comiencen con el prefijo dado.\n- Devolver los resultados en orden alfabético.\n- Gestionar un prefijo vacío devolviendo todas las palabras únicas ordenadas.\n- Devolver una lista vacía si no se encuentran coincidencias.\n- Ser sensible a mayúsculas y minúsculas (case-sensitive).\n- Garantizar que las palabras duplicadas de la entrada aparezcan solo una vez en la salida.",
+   "it": "Scrivi una funzione che implementi un sistema di completamento automatico (autocomplete) utilizzando una struttura dati Trie (albero dei prefissi).\nLa funzione deve inserire un elenco di parole nel Trie e trovare tutte le parole che iniziano con un determinato prefisso.\n\nLa funzione deve:\n- Costruire un Trie a partire dall'elenco di parole.\n- Restituire tutte le parole uniche che iniziano con il prefisso specificato.\n- Restituire i risultati in ordine alfabetico.\n- Gestire un prefisso vuoto restituendo tutte le parole uniche ordinate.\n- Restituire un elenco vuoto se non viene trovata alcuna corrispondenza.\n- Essere sensibile alle maiuscole/minuscole (case-sensitive).\n- Assicurare che i duplicati nell'input compaiano una sola volta nell'output.",
+   "ru": "Напишите функцию, реализующую систему автодополнения (autocomplete) с использованием префиксного дерева (Trie).\nФункция должна добавлять список слов в дерево и находить все слова, начинающиеся с заданного префикса.\n\nФункция должна:\n- Построить префиксное дерево (Trie) из переданного списка слов.\n- Возвращать все уникальные слова, начинающиеся с указанного префикса.\n- Возвращать результаты в алфавитном порядке.\n- Корректно обрабатывать пустой префикс, возвращая все уникальные слова в отсортированном виде.\n- Возвращать пустой список, если совпадений не найдено.\n- Учитывать регистр символов (case-sensitive).\n- Гарантировать, что повторяющиеся слова из входных данных встречаются в выводе только один раз.",
+   "tr": "Bir Trie (önek ağacı) veri yapısı kullanarak bir otomatik tamamlama sistemi uygulayan bir fonksiyon yazın.\nFonksiyon bir kelime listesini Trie'ye eklemeli ve verilen bir önekle başlayan tüm kelimeleri bulmalıdır.\n\nFonksiyon şunları yapmalıdır:\n- Kelime listesinden bir Trie inşa etmelidir.\n- Verilen önekle başlayan tüm benzersiz kelimeleri döndürmelidir.\n- Sonuçları alfabetik sırada döndürmelidir.\n- Boş bir önek durumunu tüm benzersiz kelimeleri sıralı olarak döndürerek ele almalıdır.\n- Eşleşme bulunamazsa boş bir liste döndürmelidir.\n- Büyük/küçük harfe duyarlı (case-sensitive) olmalıdır.\n- Girdideki yinelenen kelimelerin çıktıda yalnızca bir kez görünmesini sağlamalıdır.",
+   "zh": "编写一个函数，利用前缀树（Trie）数据结构实现一个自动补全系统。\n该函数应将单词列表插入前缀树，并找出所有以给定前缀开头的单词。\n\n该函数应该：\n- 根据单词列表构建一棵前缀树（Trie）。\n- 返回以给定前缀开头的所有不重复单词。\n- 按字母顺序（字典序）返回结果。\n- 处理空前缀情况（按字典序返回所有不重复单词）。\n- 如果未找到任何匹配项，返回空列表。\n- 区分大小写。\n- 输入中重复出现的单词在输出中只应出现一次。",
+   "ar": "اكتب دالة تطبق نظام الإكمال التلقائي (Autocomplete) باستخدام هيكل بيانات شجرة البادئات (Trie).\nيجب على الدالة إدراج قائمة من الكلمات في الشجرة والبحث عن جميع الكلمات التي تبدأ ببادئة محددة.\n\nيجب على الدالة:\n- بناء شجرة بادئات (Trie) من قائمة الكلمات.\n- إرجاع جميع الكلمات الفريدة التي تبدأ بالبادئة المعطاة.\n- إرجاع النتائج مرتبة أبجدياً.\n- معالجة البادئة الفارغة بإرجاع جميع الكلمات الفريدة مرتبة.\n- إرجاع قائمة فارغة إذا لم يتم العثور على أي تطابقات.\n- أن تكون حساسة لحالة الأحرف (Case-sensitive).\n- ضمان ظهور الكلمات المكررة في المدخلات مرة واحدة فقط في المخرجات."
+  },
+  "signature": "def trie_autocomplete(words: list[str], prefix: str) -> list[str]:",
+  "examples": [
+   {
+    "input": "trie_autocomplete([\"apple\", \"app\", \"apricot\", \"banana\"], \"app\")",
+    "output": "[\"app\", \"apple\"]"
+   },
+   {
+    "input": "trie_autocomplete([\"apple\", \"app\", \"apricot\", \"banana\"], \"ban\")",
+    "output": "[\"banana\"]"
+   },
+   {
+    "input": "trie_autocomplete([\"hello\", \"world\", \"help\", \"heap\"], \"he\")",
+    "output": "[\"heap\", \"hello\", \"help\"]"
+   },
+   {
+    "input": "trie_autocomplete([\"test\"], \"xyz\")",
+    "output": "[]"
+   },
+   {
+    "input": "trie_autocomplete([\"cat\", \"car\", \"card\", \"care\"], \"car\")",
+    "output": "[\"car\", \"card\", \"care\"]"
+   },
+   {
+    "input": "trie_autocomplete([], \"test\")",
+    "output": "[]"
+   },
+   {
+    "input": "trie_autocomplete([\"a\", \"ab\", \"abc\"], \"\")",
+    "output": "[\"a\", \"ab\", \"abc\"]"
+   }
+  ]
+ },
+ {
+  "id": 9,
+  "level": 2,
+  "difficulty": "hard",
+  "name": "bridge_finder",
+  "assignment": "bridge_finder",
+  "file": "bridge_finder.py",
+  "description": {
+   "en": "Write a function that finds all bridges in an undirected graph. A bridge is an edge whose removal increases the number of connected components in the graph.\n\nThe function should:\n- Take an undirected graph as an adjacency list;\n- Return all bridges as a list of tuples (u, v) where u < v;\n- Return results sorted by first element, then by second element;\n- Handle empty graphs (return empty list);\n- Handle graphs with no bridges (return empty list).",
+   "de": "Schreibe eine Funktion, die alle Brücken (Bridges) in einem ungerichteten Graphen findet. Eine Brücke ist eine Kante, deren Entfernen die Anzahl der Zusammenhangskomponenten im Graphen erhöht.\n\nDie Funktion soll:\n- Einen ungerichteten Graphen als Adjazenzliste entgegennehmen;\n- Alle Brücken als Liste von Tupeln (u, v) zurückgeben, wobei u < v gilt;\n- Die Ergebnisse aufsteigend nach dem ersten Element und anschließend nach dem zweiten Element sortiert zurückgeben;\n- Leere Graphen behandeln (leere Liste zurückgeben);\n- Graphen ohne Brücken behandeln (leere Liste zurückgeben).",
+   "fr": "Écrivez une fonction qui trouve tous les ponts (isthmes) dans un graphe non orienté. Un pont est une arête dont la suppression augmente le nombre de composantes connexes du graphe.\n\nLa fonction doit :\n- Prendre un graphe non orienté sous forme de liste d'adjacence ;\n- Retourner tous les ponts sous forme d'une liste de tuples (u, v) où u < v ;\n- Retourner les résultats triés par premier élément, puis par second élément ;\n- Gérer les graphes vides (retourner une liste vide) ;\n- Gérer les graphes sans ponts (retourner une liste vide).",
+   "es": "Escribe una función que encuentre todos los puentes en un grafo no dirigido. Un puente es una arista cuya eliminación aumenta el número de componentes conexas del grafo.\n\nLa función debe:\n- Recibir un grafo no dirigido como lista de adyacencia;\n- Devolver todos los puentes como una lista de tuplas (u, v) donde u < v;\n- Devolver los resultados ordenados por el primer elemento y luego por el segundo elemento;\n- Manejar grafos vacíos (devolver una lista vacía);\n- Manejar grafos sin puentes (devolver una lista vacía).",
+   "it": "Scrivi una funzione che trovi tutti i ponti in un grafo non orientato. Un ponte è un arco la cui rimozione aumenta il numero di componenti connesse nel grafo.\n\nLa funzione deve:\n- Ricevere un grafo non orientato come lista di adiacenza;\n- Restituire tutti i ponti come lista di tuple (u, v) dove u < v;\n- Restituire i risultati ordinati per il primo elemento e poi per il secondo elemento;\n- Gestire i grafi vuoti (restituire una lista vuota);\n- Gestire i grafi senza ponti (restituire una lista vuota).",
+   "ru": "Напишите функцию, которая находит все мосты в неориентированном графе. Мост - это ребро, удаление которого увеличивает количество компонент связности в графе.\n\nФункция должна:\n- Принимать неориентированный граф в виде списка смежности;\n- Возвращать все мосты в виде списка кортежей (u, v), где u < v;\n- Возвращать результаты, отсортированные сначала по первому элементу, затем по второму элементу;\n- Корректно обрабатывать пустые графы (возвращать пустой список);\n- Корректно обрабатывать графы без мостов (возвращать пустой список).",
+   "tr": "Yönsüz bir graftaki tüm köprüleri (bridges) bulan bir fonksiyon yazın. Köprü, kaldırılması durumunda graftaki bağlı bileşen (connected components) sayısını artıran bir kenardır.\n\nFonksiyon şunları yapmalıdır:\n- Yönsüz bir grafı komşuluk listesi (adjacency list) olarak almalıdır;\n- Tüm köprüleri u < v olacak şekilde (u, v) demetlerinden (tuple) oluşan bir liste olarak döndürmelidir;\n- Sonuçları önce birinci elemana, ardından ikinci elemana göre sıralanmış olarak döndürmelidir;\n- Boş grafları doğru şekilde işlemelidir (boş liste döndürmelidir);\n- Köprüsü olmayan grafları doğru şekilde işlemelidir (boş liste döndürmelidir).",
+   "zh": "编写一个函数，找出无向图中的所有桥（割边）。桥是指移除后会增加图中连通分量数量的边。\n\n该函数应当：\n- 接收以邻接表形式表示的无向图；\n- 将所有桥作为元组列表 (u, v) 返回，其中 u < v；\n- 返回按第一个元素升序、再按第二个元素升序排列的结果；\n- 处理空图情况（返回空列表）；\n- 处理没有桥的图（返回空列表）。",
+   "ar": "اكتب دالة تعثر على جميع الجسور (bridges) في رسم بياني غير موجه. الجسر هو حافة يؤدي حذفها إلى زيادة عدد المكونات المتصلة في الرسم البياني.\n\nيجب على الدالة أن:\n- تستقبل رسماً بيانياً غير موجه على شكل قائمة تجاور (adjacency list)؛\n- تعيد جميع الجسور كقائمة من الأزواج (u, v) حيث u < v؛\n- تعيد النتائج مرتبة حسب العنصر الأول ثم العنصر الثاني؛\n- تتعامل مع الرسوم البيانية الفارغة (إعادة قائمة فارغة)؛\n- تتعامل مع الرسوم البيانية التي لا تحتوي على جسور (إعادة قائمة فارغة)."
+  },
+  "signature": "def bridge_finder(graph: dict[int, list[int]]) -> list[tuple[int, int]]:",
+  "examples": [
+   {
+    "input": "bridge_finder({0: [1, 2], 1: [0, 2], 2: [0, 1]})",
+    "output": "[]"
+   },
+   {
+    "input": "bridge_finder({0: [1], 1: [0, 2], 2: [1]})",
+    "output": "[(0, 1), (1, 2)]"
+   },
+   {
+    "input": "bridge_finder({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: [1]})",
+    "output": "[(1, 3)]"
+   },
+   {
+    "input": "bridge_finder({})",
+    "output": "[]"
+   },
+   {
+    "input": "bridge_finder({0: [1], 1: [0]})",
+    "output": "[(0, 1)]"
+   },
+   {
+    "input": "bridge_finder({0: [1, 2], 1: [0, 2, 3, 4], 2: [0, 1], 3: [1, 4], 4: [1, 3]})",
+    "output": "[]"
+   }
+  ]
+ }
+]

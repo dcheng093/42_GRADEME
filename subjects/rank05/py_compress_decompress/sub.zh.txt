@@ -1,0 +1,23 @@
+Assignment name  : py_compress_decompress
+Expected files   : py_compress_decompress.py
+--------------------------------------------------------------------------------
+
+编写两个函数：`compress` 和 `decompress`。
+
+`compress(s: str) -> str`：
+- 接收一个字符串，通过在连续重复字符后附加出现次数来进行压缩。
+- 如果字符仅连续出现一次，则省略数字 '1'。
+- 如果输入字符串为空，则返回空字符串。
+
+`decompress(s: str) -> str`：
+- 接收压缩后的字符串并解压还原为原始形式。
+- 支持多位数计数（例如 "a12" -> 12个 'a'）。
+
+def compress(s: str) -> str:
+def decompress(s: str) -> str:
+
+示例:
+
+compress("aabcccccaaa")  → "a2bc5a3"
+decompress("a2bc5a3")    → "aabcccccaaa"
+compress("")             → ""

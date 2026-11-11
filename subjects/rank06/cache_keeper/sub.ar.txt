@@ -1,0 +1,35 @@
+Assignment name  : cache_keeper
+Expected files   : cache_keeper.py
+Forbidden functions : collections.OrderedDict
+--------------------------------------------------------------------------------
+
+اكتب فئة باسم `CacheKeeper` تطبق ذاكرة تخزين مؤقت تعتمد أسلوب الأقل استخداماً مؤخراً (LRU) بسعة ثابتة.
+
+يجب أن توفر الفئة الدوال التالية:
+
+1. `__init__(self, capacity: int)`:
+تهيئة ذاكرة التخزين المؤقت بسعة موجبة `capacity`.
+
+2. `get(self, key: int) -> int`:
+إرجاع قيمة المفتاح `key` إذا كان موجوداً، أو `-1` إذا لم يكن موجوداً. عملية الوصول الناجحة تجعل المفتاح الأكثر استخداماً مؤخراً.
+
+3. `put(self, key: int, value: int) -> None`:
+إدراج أو تحديث المفتاح بالقيمة `value`. يصبح المفتاح المضاف أو المحدث الأكثر استخداماً مؤخراً. وإذا تجاوز عدد المفاتيح السعة `capacity`، يتم استبعاد المفتاح الأقل استخداماً مؤخراً.
+
+يجب أن تستهدف العمليات تعقيداً زمنياً متوسطاً قدره O(1).
+يمنع استخدام `collections.OrderedDict`.
+
+class CacheKeeper:
+    def __init__(self, capacity: int):
+    def get(self, key: int) -> int:
+    def put(self, key: int, value: int) -> None:
+
+أمثلة:
+
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1)        → 1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.put(3, 3); c.get(1)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(2)
+                                                              → -1
+c = CacheKeeper(2); c.put(1, 1); c.put(2, 2); c.get(1); c.put(3, 3); c.get(1)
+                                                              → 1

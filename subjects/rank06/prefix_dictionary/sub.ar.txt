@@ -1,0 +1,36 @@
+Assignment name  : prefix_dictionary
+Expected files   : prefix_dictionary.py
+--------------------------------------------------------------------------------
+
+اكتب فئة باسم `PrefixDictionary` تمثل شجرة البادئات (Trie).
+
+يجب أن توفر الفئة الدوال التالية:
+
+1. `__init__(self)`:
+تهيئة قاموس بادئات فارغ.
+
+2. `insert(self, word: str) -> None`:
+إدراج السلسلة `word` في قاموس البادئات.
+
+3. `search(self, word: str) -> bool`:
+تُرجع `True` إذا كانت السلسلة المطابقة تماماً `word` موجودة في القاموس، و `False` خلاف ذلك.
+
+4. `starts_with(self, prefix: str) -> bool`:
+تُرجع `True` إذا كانت هناك أي كلمة مضافة مسبقاً تبدأ بالبادئة المحددة `prefix`، و `False` خلاف ذلك.
+
+تتكون جميع المدخلات من حروف إنجليزية صغيرة فقط (`'a'` - `'z'`).
+
+class PrefixDictionary:
+    def __init__(self):
+    def insert(self, word: str) -> None:
+    def search(self, word: str) -> bool:
+    def starts_with(self, prefix: str) -> bool:
+
+أمثلة:
+
+d = PrefixDictionary(); d.insert("apple"); d.search("apple")  → True
+d = PrefixDictionary(); d.insert("apple"); d.search("app")    → False
+d = PrefixDictionary(); d.insert("apple"); d.starts_with("app")
+                                                              → True
+d = PrefixDictionary(); d.insert("apple"); d.insert("app"); d.search("app")
+                                                              → True

@@ -1,0 +1,15 @@
+Assignment name  : py_prism_detector
+Expected files   : py_prism_detector.py
+--------------------------------------------------------------------------------
+
+Scrivi una funzione che cerchi tutte le occorrenze di una parola target in una griglia 2D in tutte le 8 direzioni.
+
+- Restituisce una lista di tuple `(x, y, codice_direzione)`.
+- Restituisce `[]` se la griglia o la parola sono vuote.
+
+def prism_detector(grid: list[str], pattern: str):
+
+Esempi:
+
+prism_detector(["CAT", "A..", "T.."], "CAT")  → [(0, 0, "H"), (0, 0, "V")]
+prism_detector([], "CAT")                     → []

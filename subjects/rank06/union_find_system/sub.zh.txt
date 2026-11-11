@@ -1,0 +1,38 @@
+Assignment name  : union_find_system
+Expected files   : union_find_system.py
+--------------------------------------------------------------------------------
+
+编写一个名为 `UnionFind` 的类，实现带有路径压缩（Path Compression）和按秩合并（Union by Rank）优化的并查集（Disjoint Set Union）数据结构。
+
+该类必须提供以下方法：
+
+1. `__init__(self, n: int)`：
+初始化 `n` 个元素（编号从 0 到 n - 1），初始时每个元素自成一个集合（父节点指向自身，秩为 0）。
+
+2. `find(self, x: int) -> int`：
+查找并返回包含元素 `x` 的集合代表元（根节点）。实现路径压缩优化，使查找路径上的所有节点都直接指向根节点。
+
+3. `union(self, x: int, y: int) -> bool`：
+使用按秩合并策略合并包含 `x` 和 `y` 的集合（将秩较小的树连接到秩较大的树的根节点下；如果两树秩相等，则将新根节点的秩加 1）。
+如果 `x` 和 `y` 原本属于不同集合并成功合并，返回 `True`。
+如果 `x` 和 `y` 已经属于同一集合，返回 `False`。
+
+4. `connected(self, x: int, y: int) -> bool`：
+如果 `x` 和 `y` 属于同一个集合，返回 `True`；否则返回 `False`。
+
+class UnionFind:
+    def __init__(self, n: int):
+    def find(self, x: int) -> int:
+    def union(self, x: int, y: int) -> bool:
+    def connected(self, x: int, y: int) -> bool:
+
+示例:
+
+uf = UnionFind(5); uf.connected(0, 1)                         → False
+uf = UnionFind(5); uf.union(0, 1)                             → True
+uf = UnionFind(5); uf.union(0, 1); uf.connected(0, 1)         → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(1, 2); uf.connected(0, 2)
+                                                              → True
+uf = UnionFind(5); uf.union(0, 1); uf.union(0, 1)             → False
+uf = UnionFind(3); uf.union(0, 1); uf.union(1, 2); uf.find(0) == uf.find(2)
+                                                              → True

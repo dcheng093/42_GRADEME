@@ -1,0 +1,41 @@
+Assignment name  : min_heap
+Expected files   : min_heap.py
+Forbidden functions : heapq
+--------------------------------------------------------------------------------
+
+Bir Python listesi içinde saklanan ikili minimum yığın (binary min-heap) uygulayan `MinHeap` adında bir sınıf yazın.
+
+Sınıf aşağıdaki metotları içermelidir:
+
+1. `__init__(self)`:
+Boş bir ikili min-yığın başlatır.
+
+2. `push(self, val: int) -> None`:
+`val` değerini O(log n) zaman karmaşıklığında yığına ekler (yukarı kaydırma / sift up).
+
+3. `pop(self) -> int | None`:
+Yığındaki minimum değeri O(log n) zaman karmaşıklığında çıkarır ve döndürür (aşağı kaydırma / sift down). Yığın boşsa `None` döndürür.
+
+4. `peek(self) -> int | None`:
+Minimum değeri çıkarmadan O(1) zaman karmaşıklığında döndürür. Yığın boşsa `None` döndürür.
+
+5. `size(self) -> int`:
+Yığında depolanan toplam eleman sayısını O(1) zaman karmaşıklığında döndürür.
+
+`heapq` modülünün kullanımı yasaktır.
+
+class MinHeap:
+    def __init__(self):
+    def push(self, val: int) -> None:
+    def pop(self) -> int | None:
+    def peek(self) -> int | None:
+    def size(self) -> int:
+
+Örnekler:
+
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.peek()      → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop()       → 3
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.pop(); h.peek()
+                                                              → 5
+h = MinHeap(); h.push(5); h.push(3); h.push(8); h.size()      → 3
+h = MinHeap(); h.pop()                                        → None

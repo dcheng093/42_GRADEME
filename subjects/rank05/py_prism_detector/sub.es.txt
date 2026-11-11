@@ -1,0 +1,15 @@
+Assignment name  : py_prism_detector
+Expected files   : py_prism_detector.py
+--------------------------------------------------------------------------------
+
+Escribe una función que busque todas las ocurrencias de una palabra en una cuadrícula 2D en las 8 direcciones.
+
+- Devuelve una lista de tuplas `(x, y, código_dirección)`.
+- Devuelve `[]` si la cuadrícula o la palabra están vacías.
+
+def prism_detector(grid: list[str], pattern: str):
+
+Ejemplos:
+
+prism_detector(["CAT", "A..", "T.."], "CAT")  → [(0, 0, "H"), (0, 0, "V")]
+prism_detector([], "CAT")                     → []
