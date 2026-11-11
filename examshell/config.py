@@ -14,6 +14,8 @@ STATE_DIR = ROOT / ".examshell"
 
 TEST_TIMEOUT = 20  # seconds before a test run is killed (infinite loops)
 
+ANIMATIONS = True  # banner reveals, confetti, count-ups. Off automatically when not a terminal.
+
 # Real-exam cooldown: wait before you may `test` again after the Nth failed
 # attempt on the same level. Last value repeats. Set COOLDOWN_ENABLED = False
 # to turn it off.

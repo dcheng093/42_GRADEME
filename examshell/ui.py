@@ -1,10 +1,15 @@
 """Terminal drawing: theme, banner font, cards, bars, prompts."""
 
+import contextlib
 import os
+import random
 import re
 import shutil
 import sys
 import textwrap
+import time
+
+from . import config
 
 COLOR = sys.stdout.isatty() and "NO_COLOR" not in os.environ and os.environ.get("TERM") != "dumb"
 
@@ -105,19 +110,22 @@ _FONT = {
 }
 
 
-def big(text, color=ACCENT, indent=2):
-    """Render text in the block font, solid colour with a grey drop shadow."""
+def _big_rows(text):
     glyphs = [_FONT[ch] for ch in text.upper() if ch in _FONT]
     rows = [" ".join(g[r] for g in glyphs).replace("#", "█") for r in range(5)]
-    rows = [r.replace("█", "██").replace(" ", "  ") for r in rows]
-    if len(rows[0]) + 1 + indent > width():
-        return " " * indent + paint(text, color, "bold")
-    if not COLOR:
-        return "\n".join(" " * indent + r for r in rows)
+    return [r.replace("█", "██").replace(" ", "  ") for r in rows]
+
+
+def _big_fits(rows, indent):
+    return len(rows[0]) + 1 + indent <= width()
+
+
+def _big_cells(rows, color):
+    """Grid of (char, colour) cells: solid letters plus a grey drop shadow one row taller."""
     w = len(rows[0]) + 1
     filled = [[c < len(r) and r[c] == "█" for c in range(w)] for r in rows]
     filled.append([False] * w)
-    out = []
+    grid = []
     for r in range(len(filled)):
         cells = []
         for c in range(w):
@@ -127,6 +135,13 @@ def big(text, color=ACCENT, indent=2):
                 cells.append(("░", SHADOW))
             else:
                 cells.append((" ", None))
+        grid.append(cells)
+    return grid
+
+
+def _render(grid, indent=2):
+    out = []
+    for cells in grid:
         line, run, run_color = "", "", None
         for ch, col in cells + [("", "end")]:
             if col != run_color:
@@ -135,6 +150,179 @@ def big(text, color=ACCENT, indent=2):
             run += ch
         out.append(" " * indent + line.rstrip())
     return "\n".join(out)
+
+
+def big(text, color=ACCENT, indent=2):
+    """Render text in the block font, solid colour with a grey drop shadow."""
+    rows = _big_rows(text)
+    if not _big_fits(rows, indent):
+        return " " * indent + paint(text, color, "bold")
+    if not COLOR:
+        return "\n".join(" " * indent + r for r in rows)
+    return _render(_big_cells(rows, color), indent)
+
+
+# ── animation ───────────────────────────────────────────────────────────────
+GLEAM = 231  # bright white: shimmer and flash
+CONFETTI = "✦*·•+"
+
+
+def animated():
+    return COLOR and sys.stdout.isatty() and config.ANIMATIONS
+
+
+@contextlib.contextmanager
+def _quiet_keyboard():
+    """No echo while animating, and drop anything typed meanwhile (so a stray
+    Enter doesn't answer the next prompt)."""
+    try:
+        import termios
+        fd = sys.stdin.fileno()
+        saved = termios.tcgetattr(fd)
+        quiet = list(saved)
+        quiet[3] &= ~termios.ECHO
+        termios.tcsetattr(fd, termios.TCSADRAIN, quiet)
+    except Exception:  # noqa: BLE001 - no tty, no termios (Windows): just animate
+        yield
+        return
+    try:
+        yield
+    finally:
+        try:
+            termios.tcsetattr(fd, termios.TCSADRAIN, saved)
+            termios.tcflush(fd, termios.TCIFLUSH)
+        except termios.error:
+            pass
+
+
+def play(frames, delay=0.03):
+    """Draw multi-line frames in place. A frame is a string or (string, seconds).
+
+    Without a terminal (or with animations off) only the last frame is printed.
+    Ctrl-C skips straight to the last frame.
+    """
+    frames = [f if isinstance(f, tuple) else (f, delay) for f in frames]
+    if not frames:
+        return
+    if not animated():
+        print(frames[-1][0])
+        return
+    height = max(text.count("\n") + 1 for text, _ in frames)
+    out, drawn = sys.stdout, False
+
+    def draw(text):
+        nonlocal drawn
+        lines = text.split("\n")
+        lines += [""] * (height - len(lines))
+        out.write((f"\x1b[{height}F" if drawn else "") + "".join(f"\r{l}\x1b[K\n" for l in lines))
+        out.flush()
+        drawn = True
+
+    out.write("\x1b[?25l")
+    try:
+        with _quiet_keyboard():
+            try:
+                for i, (text, pause) in enumerate(frames):
+                    draw(text)
+                    if i + 1 < len(frames):
+                        time.sleep(pause)
+            except KeyboardInterrupt:
+                draw(frames[-1][0])
+    finally:
+        out.write("\x1b[?25h")
+        out.flush()
+
+
+def _recolor(grid, fn):
+    """Copy of `grid` with each letter cell's colour replaced by fn(row, col, colour)."""
+    return [[(ch, fn(r, c, col)) if ch == "█" else (ch, col) for c, (ch, col) in enumerate(row)]
+            for r, row in enumerate(grid)]
+
+
+def _shimmer(grid, indent, step=4, band=3, delay=0.015):
+    """A diagonal band of light sweeping left to right across the letters."""
+    w, h = len(grid[0]), len(grid)
+    return [(_render(_recolor(grid, lambda r, c, col: GLEAM if 0 <= c - r - p < band else col), indent), delay)
+            for p in range(-band, w + h, step)]
+
+
+_REVEALED = set()
+
+
+def reveal(text, color=ACCENT, indent=2):
+    """Print a banner: wipe in left to right the first time, then a shimmer."""
+    rows = _big_rows(text)
+    if not (animated() and _big_fits(rows, indent)):
+        print(big(text, color, indent))
+        return
+    grid = _big_cells(rows, color)
+    frames = []
+    if text not in _REVEALED:
+        _REVEALED.add(text)
+        blank = (" ", None)
+        frames += [(_render([[cell if c < cut else blank for c, cell in enumerate(row)] for row in grid],
+                            indent), 0.018)
+                   for cut in range(0, len(grid[0]), 3)]
+    frames += _shimmer(grid, indent)
+    frames.append(_render(grid, indent))
+    play(frames)
+
+
+def pass_banner(text="PASSED", color=OK, indent=2):
+    """Two quick white flashes, then a shimmer."""
+    rows = _big_rows(text)
+    if not (animated() and _big_fits(rows, indent)):
+        print(big(text, color, indent))
+        return
+    grid = _big_cells(rows, color)
+    lit = _render(_recolor(grid, lambda r, c, col: GLEAM), indent)
+    calm = _render(grid, indent)
+    play([(lit, 0.07), (calm, 0.07), (lit, 0.07), (calm, 0.05)] + _shimmer(grid, indent) + [calm])
+
+
+def fail_banner(text="FAILED", color=ERR, indent=2):
+    """A short sideways shake."""
+    rows = _big_rows(text)
+    if not (animated() and _big_fits(rows, indent + 4)):
+        print(big(text, color, indent))
+        return
+    grid = _big_cells(rows, color)
+    play([(_render(grid, indent + offset), 0.045) for offset in (3, -2, 2, -1, 1, 0)])
+
+
+def confetti(text, color=OK, indent=2, count=34):
+    """The banner with sparkles falling through it (only over empty cells)."""
+    rows = _big_rows(text)
+    if not (animated() and _big_fits(rows, indent)):
+        print(big(text, color, indent))
+        return
+    grid = _big_cells(rows, color)
+    h, w = len(grid), len(grid[0])
+    colors = (OK, HILITE, ACCENT, 213)
+    bits = [(random.randrange(w), -random.randrange(18), random.choice(CONFETTI), random.choice(colors))
+            for _ in range(count)]
+    frames = []
+    for f in range(18 + h):
+        frame = [list(row) for row in grid]
+        for x, start, ch, col in bits:
+            y = start + f
+            if 0 <= y < h and frame[y][x][0] == " ":
+                frame[y][x] = (CONFETTI[(CONFETTI.index(ch) + f // 3) % len(CONFETTI)], col)
+        frames.append((_render(frame, indent), 0.04))
+    frames.append(_render(grid, indent))
+    play(frames)
+
+
+def count_up(make_frame, start, end, duration=0.7, max_frames=20):
+    """Ease-out tween: frames make_frame(v) for v from start to end (ints)."""
+    n = max(2, min(max_frames, abs(end - start) + 1))
+    values = []
+    for i in range(n):
+        t = i / (n - 1)
+        v = round(start + (end - start) * (1 - (1 - t) ** 3))
+        if not values or v != values[-1]:
+            values.append(v)
+    play([(make_frame(v), duration / len(values)) for v in values])
 
 
 # ── layout pieces ───────────────────────────────────────────────────────────

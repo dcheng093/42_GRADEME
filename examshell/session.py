@@ -134,10 +134,12 @@ def _grade(q, stats, started):
     before = dict(stats.question(q.id))
     stats.record_test(q.id, result.passed, time.monotonic() - started)
     print()
-    print(ui.big("PASSED", ui.OK) if result.passed else ui.big("FAILED", ui.ERR))
     if result.passed:
+        ui.pass_banner()
         print()
         print("  " + _pass_note(before, stats.question(q.id)))
+    else:
+        ui.fail_banner()
     print()
     return result
 
@@ -186,8 +188,11 @@ def level_run(rank, level):
 
 
 def from_question(rank, index):
-    """Start at all_questions(rank)[index] and walk the rest of the rank in order."""
-    return all_questions(rank)[index:]
+    """all_questions(rank)[index] first, then the rest of its level shuffled, then later levels."""
+    picked = all_questions(rank)[index]
+    rest = [Question(rank, picked.level, name) for name in rank.levels[picked.level].pool if name != picked.name]
+    random.shuffle(rest)
+    return [picked] + rest + level_run(rank, picked.level + 1)
 
 
 def _segment(playlist, idx):
@@ -305,31 +310,35 @@ def _level_complete(rank, level, questions, solved, elapsed, next_level):
     ui.clear()
     print()
     if not missed:
-        print(ui.big(f"L{level + 1} CLEAR", ui.OK))
+        ui.confetti(f"L{level + 1} CLEAR", ui.OK)
         print()
         ui.say(f"congratulations — you solved every question in level {level + 1}!", ui.OK, "bold")
     else:
-        print(ui.big(f"L{level + 1} DONE", ui.HILITE))
+        ui.reveal(f"L{level + 1} DONE", ui.HILITE)
         print()
         ui.say(f"level {level + 1} finished — {len(done)} of {len(questions)} solved."
                + (" nice work!" if done else " the map remembers which ones you skipped."), ui.HILITE, "bold")
     print()
-    lines = [
-        ui.paint(f"{'level':<10}", ui.MUTED) + _level_label(rank, level),
-        ui.paint(f"{'solved':<10}", ui.MUTED) + ui.level_bar(len(done), len(questions), 20),
-        ui.paint(f"{'time':<10}", ui.MUTED) + ui.duration(elapsed),
-    ]
+    rest = []
     if missed:
-        lines.append("")
-        lines.append(ui.paint("not solved this run", ui.MUTED))
-        lines += ["  " + ui.paint("✘ ", ui.ERR) + q.name for q in missed]
+        rest.append("")
+        rest.append(ui.paint("not solved this run", ui.MUTED))
+        rest += ["  " + ui.paint("✘ ", ui.ERR) + q.name for q in missed]
     if next_level is not None:
-        lines += ["", ui.paint(f"{'next up':<10}", ui.MUTED) + _level_label(rank, next_level)
-                  + ui.paint(f" · {len(rank.levels[next_level].pool)} questions, shuffled", ui.MUTED)]
-    print(ui.card(lines, title=f"{rank.title} · level {level + 1} complete", color=ui.OK if not missed else ui.LINE))
+        rest += ["", ui.paint(f"{'next up':<10}", ui.MUTED) + _level_label(rank, next_level)
+                 + ui.paint(f" · {len(rank.levels[next_level].pool)} questions, shuffled", ui.MUTED)]
+
+    def summary(solved_so_far):  # the solved bar fills up
+        return ui.card([
+            ui.paint(f"{'level':<10}", ui.MUTED) + _level_label(rank, level),
+            ui.paint(f"{'solved':<10}", ui.MUTED) + ui.level_bar(solved_so_far, len(questions), 20),
+            ui.paint(f"{'time':<10}", ui.MUTED) + ui.duration(elapsed),
+        ] + rest, title=f"{rank.title} · level {level + 1} complete", color=ui.OK if not missed else ui.LINE)
+
+    ui.count_up(summary, 0, len(done), duration=0.6)
     print()
     if next_level is None:
-        print(ui.big("ALL DONE", ui.ACCENT))
+        ui.confetti("ALL DONE", ui.ACCENT)
         print()
         ui.say(f"that was the last level of {rank.title} — great run.", ui.ACCENT, "bold")
         print()
@@ -372,7 +381,7 @@ def _boot(rank):
     """Fake examshell login + 'waiting for the exam to start'. False = backed out."""
     ui.clear()
     print()
-    print(ui.big("examshell", ui.ACCENT))
+    ui.reveal("examshell", ui.ACCENT)
     print()
     steps = [
         ("login: ", _login()),
@@ -619,11 +628,15 @@ def _countdown(until):
 
 def _exam_result(rank, grade, passed, elapsed, reason, trace):
     ui.clear()
-    color = ui.OK if grade == 100 else ui.HILITE if grade >= 50 else ui.ERR
+
+    def tint(g):
+        return ui.OK if g == 100 else ui.HILITE if g >= 50 else ui.ERR
+
+    color = tint(grade)
     print()
-    print(ui.big(f"{grade}/100", color))
+    ui.count_up(lambda g: ui.big(f"{g}/100", tint(g)), 0, grade, duration=0.9)
     print()
-    print("  " + ui.roadmap(rank, -1, passed))
+    ui.play([("  " + ui.roadmap(rank, -1, k), 0.15) for k in range(passed + 1)])
     print()
     verdict = {
         "finished": "all levels cleared — go get that rank!",

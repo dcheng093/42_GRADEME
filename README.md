@@ -26,7 +26,7 @@ Write your answer in `rendu/<question>/`, then type `test`.
 ## Two ways to play
 
 ### Practice
-Pick a rank, and you get a map of every level and question, with ✔ / ✘ next to the ones you've already tried. Type `L3` to work through **every** question of level 3 in a shuffled order (none skipped), or a number / name / `r` to start at one question and go in order. When you reach the end of a level you get a summary screen (solved count, time, anything you skipped) before moving on to the next level — or back to the menu.
+Pick a rank, and you get a map of every level and question, with ✔ / ✘ next to the ones you've already tried. Type `L3` to work through **every** question of level 3 in a shuffled order (none skipped), or a number / name / `r` to start at that question, then do the rest of its level in a shuffled order. When you reach the end of a level you get a summary screen (solved count, time, anything you skipped) before moving on to the next level — or back to the menu.
 
 ### Real exam
 One random question per level, a 3-hour clock, and a grade that goes up with each level you clear.
@@ -154,7 +154,7 @@ scripts/
 
 - Python 3.8+
 - For Rank 02: `gcc`
-- Linux, macOS or WSL. Set `NO_COLOR=1` if you want plain output.
+- Linux, macOS or WSL. Set `NO_COLOR=1` if you want plain output, or `ANIMATIONS = False` in `examshell/config.py` to keep the colours but skip the animations.
 
 ## Credits
 

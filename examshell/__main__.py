@@ -20,7 +20,7 @@ NOTICE = []  # one-shot messages shown under the banner
 def splash():
     ui.clear()
     print()
-    print(ui.big(config.APP_NAME))
+    ui.reveal(config.APP_NAME)
     print()
     print("  " + ui.paint(config.TAGLINE, ui.MUTED))
     print()
@@ -58,8 +58,8 @@ def _mark(stats, q):
 
 PICK_COMMANDS = (
     ("L2", "every question of level 2, shuffled — then on to level 3"),
-    ("7", "start at question 7 (or type its name) and go in order"),
-    ("r", "start at a random question"),
+    ("7", "start at question 7 (or type its name), then the rest of its level shuffled"),
+    ("r", "start at a random question, then the rest of its level shuffled"),
     ("enter", "back"),
 )
 
@@ -109,7 +109,7 @@ def stats_screen(stats):
     while True:
         ui.clear()
         print()
-        print(ui.big("STATS"))
+        ui.reveal("STATS")
         print()
         for rank in config.RANKS.values():
             lines = []
@@ -155,7 +155,7 @@ def stats_screen(stats):
 def help_screen():
     ui.clear()
     print()
-    print(ui.big("HELP"))
+    ui.reveal("HELP")
     print()
     print(ui.card([
         ui.paint("practice", ui.ACCENT, "bold"),
