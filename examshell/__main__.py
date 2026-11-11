@@ -312,7 +312,7 @@ def _check_one(q, answers):
     if q.is_python and not answers:
         shutil.copy(q.path / "solution.py", q.candidate)
     else:
-        for name in q.expected_files:
+        for name in q.files_in(source):
             if (source / name).is_file():
                 shutil.copy(source / name, q.rendu_dir / name)
     try:

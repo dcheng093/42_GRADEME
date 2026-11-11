@@ -1,0 +1,9 @@
+{
+  "compiler": "c++",
+  "std": "c++98",
+  "leaks": true,
+  "builds": [
+    {"name": "the subject's main", "main": "mains/subject.cpp", "cases": [[]]},
+    {"name": "every operator, negatives, chaining", "main": "mains/operators.cpp", "cases": [[]]}
+  ]
+}

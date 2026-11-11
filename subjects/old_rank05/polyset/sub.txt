@@ -1,0 +1,33 @@
+Assignment name  : polyset
+Expected files   : searchable_array_bag.hpp, searchable_array_bag.cpp, searchable_tree_bag.hpp, searchable_tree_bag.cpp, set.hpp, set.cpp
+--------------------------------------------------------------------------------
+
+You will find in this directory some classes:
+- bag: an abstract class representing a bag
+- searchable_bag: an abstract class representing a bag with the ability to
+  search in it.
+- array_bag: an implementation of a bag with an array as underlying data
+  structure.
+- tree_bag: an implementation of a bag with a binary search tree as underlying
+  data structure.
+
+(A bag holds values, duplicates included. A set holds each value at most once.)
+
+First Part:
+Since a bag without a searching function isn't very useful, implement two
+classes searchable_array_bag and searchable_tree_bag, that will inherit from
+array_bag and tree_bag and implement the searchable_bag abstract class.
+
+Second Part:
+Implement the class set that will wrap a searchable_bag and turn it into a set.
+
+You will find in this directory a main that must compile with your code
+(rendu/polyset/main.cpp). Everything is compiled with:
+
+    c++ -Wall -Wextra -Werror -std=c++98
+
+All classes should be in orthodox canonical form. Don't forget the const.
+
+The given files (bag.hpp, searchable_bag.hpp, array_bag.*, tree_bag.*) are
+copied to rendu/polyset/ for you to read. The tests always use the originals,
+so editing them changes nothing.

@@ -136,6 +136,19 @@ RANKS = {
             Level("advanced structures", pool=("union_find_system", "cache_keeper", "min_heap", "bridge_finder")),
         ),
     ),
+    # ── old curriculum (before the Python ranks) ──
+    "old_rank05": Rank(
+        key="old_rank05",
+        title="Rank 05 · old",
+        language="mixed",
+        time_limit=3 * 60 * 60,
+        curriculum="old",
+        note="C++98 classes, then bsq / life in C",
+        levels=(
+            Level("C++ classes", pool=("bigint", "polyset", "vect2")),
+            Level("C programs", pool=("bsq", "life")),
+        ),
+    ),
     # The Python pool before the 42exam.net one (2025 beta): practice only
     "rank03_legacy": Rank(
         key="rank03_legacy",

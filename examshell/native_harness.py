@@ -36,6 +36,8 @@ Exit 0 = every check passed, 1 = failed, 2 = the question itself is broken.
 The verdict is also written to --report as JSON, never parsed from output.
 """
 
+import fnmatch
+import hashlib
 import json
 import os
 import re
@@ -111,7 +113,7 @@ class Spec:
     def cpp(self):
         if "compiler" in self.data:
             return self.data["compiler"] == "c++"
-        return any(f.endswith((".cpp", ".cc", ".hpp")) for f in self.expected)
+        return any(f.endswith((".cpp", ".cc", ".hpp")) for f in self.expected + [s.name for s in self.ref_sources])
 
     @property
     def compiler(self):
@@ -139,16 +141,32 @@ class Spec:
         refs = self.data.get("ref")
         if refs:
             return [self.qdir / r for r in refs]
+        ref_dir = self.qdir / "ref"
+        if ref_dir.is_dir():
+            return sorted(f for f in ref_dir.iterdir() if f.name.endswith(SOURCE_EXT))
         return [self.qdir / f"{self.name}.c"]
 
     @property
     def given(self):
-        return [self.qdir / g for g in self.data.get("given", [])]
+        """Files handed out with the subject, compiled from here (never from rendu/)."""
+        if "given" in self.data:
+            return [self.qdir / g for g in self.data["given"]]
+        folder = self.qdir / "given"
+        return sorted(folder.iterdir()) if folder.is_dir() else []
 
-    @property
-    def user_sources(self):
+    def user_files_in(self, folder):
+        """Expected file names, with patterns like *.c expanded against `folder`."""
+        names = []
+        for pattern in self.expected:
+            if any(c in pattern for c in "*?["):
+                names += sorted(f.name for f in folder.iterdir() if f.is_file() and fnmatch.fnmatch(f.name, pattern))
+            else:
+                names.append(pattern)
+        return names
+
+    def user_sources(self, folder):
         given = {g.name for g in self.given}
-        return [f for f in self.expected if f.endswith(SOURCE_EXT) and f not in given]
+        return [f for f in self.user_files_in(folder) if f.endswith(SOURCE_EXT) and f not in given]
 
     @property
     def builds(self):
@@ -169,6 +187,10 @@ class Spec:
 _DIAG = re.compile(r"^(.+?):(\d+):(?:\d+:)? (?:fatal )?error: (.+)$")
 _LINK = re.compile(r"(undefined reference to|multiple definition of) [`'‘\"]([^'’`\"]+)['’`\"]")
 _MAC_LINK = re.compile(r'"([^"]+)", referenced from')
+
+
+def _binary_name(key):
+    return f"{key[0]}_{hashlib.sha1(repr(key).encode()).hexdigest()[:10]}"
 
 
 class Builder:
@@ -204,7 +226,7 @@ class Builder:
         key = ("ref", main, tuple(defines or ()))
         if key in self.cache:
             return self.cache[key]
-        binary = self.tmp / (out or f"ref_{len(self.cache)}")
+        binary = self.tmp / (out or _binary_name(key))
         includes = {str(s.parent) for s in self.spec.ref_sources}
         cmd = [self.spec.compiler, "-w", *[f for f in self.spec.flags if f.startswith("-std")],
                *self._defines(defines), *[f"-I{i}" for i in sorted(includes)], f"-I{self.given_dir}",
@@ -221,12 +243,13 @@ class Builder:
         key = ("user", main, tuple(defines or ()))
         if key in self.cache:
             return self.cache[key]
-        sources = self.spec.user_sources if sources is None else sources
+        sources = self.spec.user_sources(self.user_dir) if sources is None else sources
         missing = [s for s in sources if not (self.user_dir / s).is_file()]
-        if missing:
-            rel = ", ".join(f"rendu/{self.rendu.name}/{m}" for m in missing)
+        globs = [p for p in self.spec.expected if any(c in p for c in "*?[") and p.endswith(SOURCE_EXT)]
+        if missing or not sources:
+            rel = ", ".join(f"rendu/{self.rendu.name}/{m}" for m in (missing or globs or self.spec.expected))
             raise Fail(_card("file not found", [("expected", rel)]))
-        binary = self.tmp / (out or f"user_{len(self.cache)}")
+        binary = self.tmp / (out or _binary_name(key))
         cmd = [self.spec.compiler, *self.spec.flags, "-g", "-fdiagnostics-color=never",
                *self._defines(defines), f"-I{self.user_dir}", f"-I{self.given_dir}", "-o", str(binary),
                *[str(self.user_dir / s) for s in sources], *self._given_sources(), *self._main(main)]
@@ -592,7 +615,7 @@ class Context:
 
     @property
     def user_files(self):
-        return set(self.spec.expected)
+        return set(self.spec.user_files_in(self.builder.user_dir))
 
     def fail(self, title, rows=()):
         raise Fail(_card(title, list(rows)))

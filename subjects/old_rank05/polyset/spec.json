@@ -1,0 +1,12 @@
+{
+  "compiler": "c++",
+  "std": "c++98",
+  "leaks": true,
+  "compare": ["stdout", "exit"],
+  "builds": [
+    {"name": "the subject's main", "main": "mains/subject.cpp",
+     "cases": [["1"], ["10", "20", "30"], ["5", "5", "3"], ["-4", "0", "7", "-4"], ["100", "1", "50", "2", "99"],
+               ["0"], []]},
+    {"name": "has, duplicates, copies, sets", "main": "mains/search_and_copy.cpp", "cases": [[]]}
+  ]
+}

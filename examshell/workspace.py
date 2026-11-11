@@ -17,8 +17,11 @@ def prepare(question):
     """
     question.rendu_dir.mkdir(parents=True, exist_ok=True)
     for name in question.expected_files:
-        (question.rendu_dir / name).touch(exist_ok=True)
-    handed_out = list(question.given_files) + sorted(question.path.glob("*.h"))
+        if not any(c in name for c in "*?["):
+            (question.rendu_dir / name).touch(exist_ok=True)
+    if not question.candidate.exists():  # `*.c`: start with <name>.c
+        question.candidate.touch()
+    handed_out = list(question.given_files) + list(question.handout_files) + sorted(question.path.glob("*.h"))
     for src in handed_out:
         target = question.rendu_dir / src.name
         if src.name not in question.expected_files and not target.exists():
@@ -41,11 +44,29 @@ def is_stub(text):
             and all(_STUB_LINE.fullmatch(l) for l in lines))
 
 
+def _handed_out():
+    """(name, content) of every file a subject hands out: copies of those aren't your work."""
+    found = set()
+    for folder in ("given", "handout"):
+        for f in config.SUBJECTS.glob(f"*/*/{folder}/*"):
+            found.add((f.name, f.read_bytes()))
+        for f in config.SUBJECTS.glob(f"*/*/*/{folder}/*"):
+            found.add((f.name, f.read_bytes()))
+    for f in config.SUBJECTS.glob("*/*/*/*.h"):  # rank02 headers (ft_list.h…)
+        found.add((f.name, f.read_bytes()))
+    return found
+
+
 def _has_work(path):
-    return any(
-        f.is_file() and f.stat().st_size > 0 and not is_stub(f.read_text(errors="replace"))
-        for f in path.rglob("*")
-    )
+    handed_out = None
+    for f in path.rglob("*"):
+        if not f.is_file() or f.stat().st_size == 0 or is_stub(f.read_text(errors="replace")):
+            continue
+        if handed_out is None:
+            handed_out = _handed_out()
+        if (f.name, f.read_bytes()) not in handed_out:
+            return True
+    return False
 
 
 def archive():

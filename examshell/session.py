@@ -110,6 +110,9 @@ def _subject(q, lang="en"):
     given = [g.name for g in q.given_files]
     if given:
         lines.append(ui.paint(f"{'given (read-only)':<19}", ui.MUTED) + ui.paint(" ".join(given), ui.MUTED))
+    handout = [h.name for h in q.handout_files]
+    if handout:
+        lines.append(ui.paint(f"{'handed out':<19}", ui.MUTED) + ui.paint(" ".join(handout), ui.MUTED))
     print()
     right = q.rank.levels[q.level].theme + (f" · {lang}" if lang != "en" else "")
     print(ui.card(lines, title=q.name, right=ui.paint(right, ui.MUTED)))
@@ -127,7 +130,7 @@ def _help(commands):
 def _is_empty(q):
     """True if you haven't written anything yet (only empty files or untouched starters)."""
     given = {g.name for g in q.given_files}
-    for name in q.expected_files:
+    for name in q.files_in(q.rendu_dir):
         path = q.rendu_dir / name
         if name in given or not path.is_file() or path.stat().st_size == 0:
             continue

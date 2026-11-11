@@ -1,0 +1,10 @@
+{
+  "compiler": "c++",
+  "std": "c++98",
+  "leaks": true,
+  "builds": [
+    {"name": "the subject's main", "main": "mains/subject.cpp", "cases": [[]]},
+    {"name": "addition, ++, copies", "main": "mains/addition.cpp", "cases": [[]]},
+    {"name": "digit shifts, comparisons", "main": "mains/shift_compare.cpp", "cases": [[]]}
+  ]
+}

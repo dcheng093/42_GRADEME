@@ -1,0 +1,189 @@
+{
+ "leaks": true,
+ "compare": [
+  "stdout"
+ ],
+ "builds": [
+  {
+   "name": "",
+   "main": null,
+   "cases": [
+    {
+     "argv": [
+      "5",
+      "5",
+      "0"
+     ],
+     "stdin": "sdxddssaaww",
+     "show": "echo 'sdxddssaaww' | ./life 5 5 0",
+     "leaks": true
+    },
+    {
+     "argv": [
+      "10",
+      "6",
+      "0"
+     ],
+     "stdin": "sdxssdswdxdddxsaddawxwdxwaa",
+     "show": "echo 'sdxssdswdxdddxsaddawxwdxwaa' | ./life 10 6 0",
+     "leaks": true
+    },
+    {
+     "argv": [
+      "3",
+      "3",
+      "0"
+     ],
+     "stdin": "dxss",
+     "show": "echo 'dxss' | ./life 3 3 0",
+     "leaks": true
+    },
+    {
+     "argv": [
+      "3",
+      "3",
+      "1"
+     ],
+     "stdin": "dxss",
+     "show": "echo 'dxss' | ./life 3 3 1"
+    },
+    {
+     "argv": [
+      "3",
+      "3",
+      "2"
+     ],
+     "stdin": "dxss",
+     "show": "echo 'dxss' | ./life 3 3 2"
+    },
+    {
+     "argv": [
+      "5",
+      "5",
+      "1"
+     ],
+     "stdin": "sdxddssaaww",
+     "show": "echo 'sdxddssaaww' | ./life 5 5 1"
+    },
+    {
+     "argv": [
+      "5",
+      "5",
+      "3"
+     ],
+     "stdin": "sdxddssaaww",
+     "show": "echo 'sdxddssaaww' | ./life 5 5 3"
+    },
+    {
+     "argv": [
+      "4",
+      "4",
+      "0"
+     ],
+     "stdin": "",
+     "show": "./life 4 4 0 < /dev/null   (nothing drawn)"
+    },
+    {
+     "argv": [
+      "4",
+      "4",
+      "5"
+     ],
+     "stdin": "",
+     "show": "./life 4 4 5 < /dev/null"
+    },
+    {
+     "argv": [
+      "4",
+      "4",
+      "7"
+     ],
+     "stdin": "sdxdsax",
+     "show": "echo 'sdxdsax' | ./life 4 4 7   (a block never changes)"
+    },
+    {
+     "argv": [
+      "1",
+      "1",
+      "1"
+     ],
+     "stdin": "x",
+     "show": "echo 'x' | ./life 1 1 1   (one cell dies alone)"
+    },
+    {
+     "argv": [
+      "1",
+      "1",
+      "0"
+     ],
+     "stdin": "x",
+     "show": "echo 'x' | ./life 1 1 0"
+    },
+    {
+     "argv": [
+      "6",
+      "6",
+      "4"
+     ],
+     "stdin": "xddddd",
+     "show": "echo 'xddddd' | ./life 6 6 4   (a row on the top edge)"
+    },
+    {
+     "argv": [
+      "8",
+      "8",
+      "4"
+     ],
+     "stdin": "dxxdsxxaasxxdxxdxx",
+     "show": "./life 8 8 4   (a glider, 4 steps)"
+    },
+    {
+     "argv": [
+      "8",
+      "8",
+      "12"
+     ],
+     "stdin": "dxxdsxxaasxxdxxdxx",
+     "show": "./life 8 8 12   (a glider into the corner)"
+    },
+    {
+     "argv": [
+      "22",
+      "22",
+      "30"
+     ],
+     "stdin": "ddddddddddsssssssssxxdxxaasxxdxxsxx",
+     "show": "./life 22 22 30   (R-pentomino)",
+     "leaks": true
+    },
+    {
+     "argv": [
+      "6",
+      "4",
+      "2"
+     ],
+     "stdin": "sdxdddxasxddd",
+     "show": "./life 6 4 2   (toad)"
+    },
+    {
+     "argv": [
+      "12",
+      "3",
+      "3"
+     ],
+     "stdin": "sxddddddddddd",
+     "show": "./life 12 3 3   (a long line)"
+    },
+    {
+     "argv": [
+      "7",
+      "7",
+      "1"
+     ],
+     "stdin": "sdxdddddsaaaaaasxdddddsaaaaaa",
+     "show": "./life 7 7 1   (pen lifted and lowered again)"
+    }
+   ]
+  }
+ ]
+}

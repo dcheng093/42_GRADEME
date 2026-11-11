@@ -1,5 +1,6 @@
 """Question lookup: turns config.RANKS into concrete folders and files."""
 
+import fnmatch
 import json
 import re
 from dataclasses import dataclass
@@ -82,7 +83,23 @@ class Question:
 
     @property
     def candidate(self) -> Path:
-        return self.rendu_dir / self.expected_files[0]
+        """Your main file: the first expected file (for `*.c`, <name>.c)."""
+        first = self.expected_files[0]
+        if _is_glob(first):
+            return self.rendu_dir / (self.name + Path(first).suffix)
+        return self.rendu_dir / first
+
+    def files_in(self, folder) -> list:
+        """Expected file names found in `folder` (patterns like *.c expanded)."""
+        names = []
+        for pattern in self.expected_files:
+            if _is_glob(pattern):
+                if folder.is_dir():
+                    names += sorted(f.name for f in folder.iterdir()
+                                    if f.is_file() and fnmatch.fnmatch(f.name, pattern))
+            else:
+                names.append(pattern)
+        return names
 
     @property
     def spec(self) -> dict:
@@ -91,8 +108,18 @@ class Question:
 
     @property
     def given_files(self) -> list:
-        """Files the subject hands out (copied to rendu/, never graded from there)."""
-        return [self.path / g for g in self.spec.get("given", [])]
+        """Files the subject hands out that tests compile from the subject folder
+        (your copies in rendu/ are ignored)."""
+        if "given" in self.spec:
+            return [self.path / g for g in self.spec["given"]]
+        folder = self.path / "given"
+        return sorted(folder.iterdir()) if folder.is_dir() else []
+
+    @property
+    def handout_files(self) -> list:
+        """Extra files handed out for you to read or compile yourself (a subject main)."""
+        folder = self.path / "handout"
+        return sorted(folder.iterdir()) if folder.is_dir() else []
 
     @property
     def reference_dir(self) -> Path:
@@ -107,13 +134,17 @@ class Question:
             sol = self.path / "solution.py"
             return [sol] if sol.is_file() else []
         given = {g.name for g in self.given_files}
-        return [self.reference_dir / f for f in self.expected_files
+        return [self.reference_dir / f for f in self.files_in(self.reference_dir)
                 if f not in given and (self.reference_dir / f).is_file()]
 
     @property
     def solution(self):
         files = self.solution_files
         return files[0] if files else None
+
+
+def _is_glob(name):
+    return any(c in name for c in "*?[")
 
 
 def all_questions(rank):
