@@ -1,0 +1,73 @@
+{
+ "leaks": false,
+ "timeout": 5,
+ "builds": [
+  {
+   "name": "",
+   "main": "mains/pico_tests.c",
+   "cases": [
+    {
+     "argv": [
+      "0"
+     ],
+     "show": "test 0: one command"
+    },
+    {
+     "argv": [
+      "1"
+     ],
+     "show": "test 1: a pipe",
+     "hint": "a pipe end still open in the parent (or a child) keeps the next command waiting for input"
+    },
+    {
+     "argv": [
+      "2"
+     ],
+     "show": "test 2: the subject's example",
+     "hint": "a pipe end still open in the parent (or a child) keeps the next command waiting for input"
+    },
+    {
+     "argv": [
+      "3"
+     ],
+     "show": "test 3: four commands",
+     "hint": "a pipe end still open in the parent (or a child) keeps the next command waiting for input"
+    },
+    {
+     "argv": [
+      "4"
+     ],
+     "show": "test 4: sort | head",
+     "hint": "a pipe end still open in the parent (or a child) keeps the next command waiting for input"
+    },
+    {
+     "argv": [
+      "5"
+     ],
+     "show": "test 5: yes | head: pipes must be closed",
+     "hint": "yes only stops when no one holds the read end of its pipe: close it in the parent and children"
+    },
+    {
+     "argv": [
+      "6"
+     ],
+     "show": "test 6: 40 commands",
+     "hint": "close every pipe end you don't need, or you'll run out of fds"
+    },
+    {
+     "argv": [
+      "7"
+     ],
+     "show": "test 7: a command that doesn't exist (first)",
+     "hint": "the other commands must still run and be waited for"
+    },
+    {
+     "argv": [
+      "8"
+     ],
+     "show": "test 8: a command that doesn't exist (last)"
+    }
+   ]
+  }
+ ]
+}

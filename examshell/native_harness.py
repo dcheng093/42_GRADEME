@@ -738,6 +738,8 @@ def run_cases(spec, builder, tmp, out, ctx):
                 run_rows.insert(0, ("test", build["name"]))
             if build.get("defines"):
                 run_rows.append(("built with", " ".join(f"-D{d}" for d in build["defines"])))
+            if case.get("hint"):
+                rows = rows + [("why", case["hint"])]
             raise Fail(_card(f"{title}  (case {n} of {total}, {n - 1} passed before it)", run_rows + rows))
         states.append("ok")
         wants = case.get("leaks", build.get("leaks", spec.data.get("leaks", False)))

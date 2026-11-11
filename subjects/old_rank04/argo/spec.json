@@ -1,0 +1,393 @@
+{
+ "leaks": false,
+ "builds": [
+  {
+   "name": "",
+   "main": null,
+   "cases": [
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "1"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '1' > in.json; ./argo in.json   (an integer)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "\"bonjour\""
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '\"bonjour\"' > in.json; ./argo in.json   (a string)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "\"escape! \\\" \""
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '\"escape! \\\" \"' > in.json; ./argo in.json   (an escaped quote)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"tomatoes\":42,\"potatoes\":234}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"tomatoes\":42,\"potatoes\":234}' > in.json; ./argo in.json   (a map)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"recursion\":{\"recursion\":{\"recursion\":{\"recursion\":\"recursion\"}}}}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"recursion\":{\"recursion\":{\"recursion\":{\"recursion\":\"recursion\"}}}}' > in.json; ./argo in.json   (nested maps)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "\"unfinished string"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '\"unfinished string' > in.json; ./argo in.json   (unfinished string)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "\"unfinished string 2\\\""
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '\"unfinished string 2\\\"' > in.json; ./argo in.json   (unfinished after an escape)",
+     "leaks": true
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"no value?\":}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"no value?\":}' > in.json; ./argo in.json   (a key without a value)",
+     "leaks": true
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "-42"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '-42' > in.json; ./argo in.json   (a negative number)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "2147483647"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '2147483647' > in.json; ./argo in.json   (INT_MAX)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "0"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '0' > in.json; ./argo in.json   (zero)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "\"\""
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '\"\"' > in.json; ./argo in.json   (an empty string)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{}' > in.json; ./argo in.json   (an empty map)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"a\":{}}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"a\":{}}' > in.json; ./argo in.json   (a map holding an empty map)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "\"back\\\\slash\""
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '\"back\\\\slash\"' > in.json; ./argo in.json   (an escaped backslash)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"k\":\"v\",\"k\":\"w\"}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"k\":\"v\",\"k\":\"w\"}' > in.json; ./argo in.json   (the same key twice)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"a\":1,\"b\":\"two\",\"c\":{\"d\":-3}}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"a\":1,\"b\":\"two\",\"c\":{\"d\":-3}}' > in.json; ./argo in.json   (mixed values)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"\\\"quoted\\\" key\":1}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"\\\"quoted\\\" key\":1}' > in.json; ./argo in.json   (escapes in a key)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": ""
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '' > in.json; ./argo in.json   (empty input)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{' > in.json; ./argo in.json   (an unfinished map)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"a\""
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"a\"' > in.json; ./argo in.json   (a key, then nothing)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"a\":1"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"a\":1' > in.json; ./argo in.json   (no closing brace)",
+     "leaks": true
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"a\":1,}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"a\":1,}' > in.json; ./argo in.json   (a trailing comma)",
+     "leaks": true
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{ \"a\":1}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{ \"a\":1}' > in.json; ./argo in.json   (a space (spaces are invalid))"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{1:2}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{1:2}' > in.json; ./argo in.json   (a key that isn't a string)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"a\" :1}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"a\" :1}' > in.json; ./argo in.json   (a space before the colon)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "{\"a\":1 \"b\":2}"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '{\"a\":1 \"b\":2}' > in.json; ./argo in.json   (a missing comma)",
+     "leaks": true
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "x"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n 'x' > in.json; ./argo in.json   (a letter)"
+    },
+    {
+     "argv": [
+      "in.json"
+     ],
+     "files": {
+      "in.json": "[1,2]"
+     },
+     "compare": [
+      "stdout",
+      "exit"
+     ],
+     "show": "echo -n '[1,2]' > in.json; ./argo in.json   (a list (not handled))"
+    }
+   ]
+  }
+ ]
+}

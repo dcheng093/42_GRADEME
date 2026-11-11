@@ -1,0 +1,146 @@
+{
+ "leaks": false,
+ "timeout": 4,
+ "builds": [
+  {
+   "name": "",
+   "main": "mains/sandbox_tests.c",
+   "cases": [
+    {
+     "argv": [
+      "0",
+      "1"
+     ],
+     "show": "sandbox(a nice function), verbose=true"
+    },
+    {
+     "argv": [
+      "0",
+      "0"
+     ],
+     "show": "sandbox(a nice function), verbose=false"
+    },
+    {
+     "argv": [
+      "1",
+      "1"
+     ],
+     "show": "sandbox(a nice function that prints), verbose=true"
+    },
+    {
+     "argv": [
+      "2",
+      "1"
+     ],
+     "show": "sandbox(exit(1)), verbose=true"
+    },
+    {
+     "argv": [
+      "2",
+      "0"
+     ],
+     "show": "sandbox(exit(1)), verbose=false"
+    },
+    {
+     "argv": [
+      "3",
+      "1"
+     ],
+     "show": "sandbox(exit(42)), verbose=true"
+    },
+    {
+     "argv": [
+      "4",
+      "1"
+     ],
+     "show": "sandbox(exit(0) is nice), verbose=true"
+    },
+    {
+     "argv": [
+      "5",
+      "1"
+     ],
+     "show": "sandbox(a segfault), verbose=true"
+    },
+    {
+     "argv": [
+      "5",
+      "0"
+     ],
+     "show": "sandbox(a segfault), verbose=false"
+    },
+    {
+     "argv": [
+      "6",
+      "1"
+     ],
+     "show": "sandbox(abort()), verbose=true"
+    },
+    {
+     "argv": [
+      "7",
+      "1"
+     ],
+     "show": "sandbox(SIGFPE), verbose=true"
+    },
+    {
+     "argv": [
+      "8",
+      "1"
+     ],
+     "show": "sandbox(killed by SIGKILL), verbose=true"
+    },
+    {
+     "argv": [
+      "9",
+      "1"
+     ],
+     "show": "sandbox(an infinite loop), verbose=true",
+     "hint": "on timeout: kill the child, then waitpid() it, so nothing is left behind",
+     "timeout": 6
+    },
+    {
+     "argv": [
+      "9",
+      "0"
+     ],
+     "show": "sandbox(an infinite loop), verbose=false",
+     "hint": "on timeout: kill the child, then waitpid() it, so nothing is left behind",
+     "timeout": 6
+    },
+    {
+     "argv": [
+      "10",
+      "1"
+     ],
+     "show": "sandbox(sleep(10)), verbose=true",
+     "hint": "on timeout: kill the child, then waitpid() it, so nothing is left behind",
+     "timeout": 6
+    },
+    {
+     "argv": [
+      "11",
+      "1"
+     ],
+     "show": "sandbox(0.2s of work), verbose=true"
+    },
+    {
+     "argv": [
+      "12",
+      "1"
+     ],
+     "show": "sandbox(ignores SIGALRM and loops), verbose=true",
+     "hint": "on timeout: kill the child, then waitpid() it, so nothing is left behind",
+     "timeout": 6
+    },
+    {
+     "argv": [
+      "13",
+      "1"
+     ],
+     "show": "sandbox(forks a child of its own), verbose=true"
+    }
+   ]
+  }
+ ]
+}

@@ -149,6 +149,18 @@ RANKS = {
             Level("backtracking", pool=("n_queens", "permutations", "powerset", "rip", "tsp")),
         ),
     ),
+    "old_rank04": Rank(
+        key="old_rank04",
+        title="Rank 04 · old",
+        language="c",
+        time_limit=3 * 60 * 60,
+        curriculum="old",
+        note="processes and pipes, then parsers",
+        levels=(
+            Level("processes", pool=("ft_popen", "picoshell", "sandbox")),
+            Level("parsers", pool=("argo", "vbc")),
+        ),
+    ),
     "old_rank05": Rank(
         key="old_rank05",
         title="Rank 05 · old",

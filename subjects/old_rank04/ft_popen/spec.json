@@ -1,0 +1,89 @@
+{
+ "leaks": false,
+ "timeout": 10,
+ "builds": [
+  {
+   "name": "",
+   "main": "mains/popen_tests.c",
+   "cases": [
+    {
+     "argv": [
+      "0"
+     ],
+     "show": "test 0: read from echo",
+     "compare": [
+      "stdout"
+     ]
+    },
+    {
+     "argv": [
+      "1"
+     ],
+     "show": "test 1: write into cat",
+     "compare": [
+      "stdout"
+     ],
+     "hint": "cat only stops when every copy of the pipe's write end is closed (parent and child)"
+    },
+    {
+     "argv": [
+      "2"
+     ],
+     "show": "test 2: the subject's chain: printf | grep",
+     "compare": [
+      "stdout"
+     ],
+     "hint": "each command must only keep the pipe end it uses"
+    },
+    {
+     "argv": [
+      "3"
+     ],
+     "show": "test 3: invalid parameters return -1",
+     "compare": [
+      "stdout"
+     ]
+    },
+    {
+     "argv": [
+      "4"
+     ],
+     "show": "test 4: a command that doesn't exist",
+     "compare": [
+      "stdout"
+     ]
+    },
+    {
+     "argv": [
+      "5"
+     ],
+     "show": "test 5: no fd leaked in the parent",
+     "compare": [
+      "stdout"
+     ],
+     "hint": "the parent must close the pipe end it doesn't return"
+    },
+    {
+     "argv": [
+      "6"
+     ],
+     "show": "test 6: no extra fd in the command (close the pipe ends)",
+     "compare": [
+      "stdout"
+     ],
+     "hint": "after dup2() the child must close both original pipe fds"
+    },
+    {
+     "argv": [
+      "7"
+     ],
+     "show": "test 7: 100 calls in a row",
+     "compare": [
+      "stdout"
+     ],
+     "hint": "close every fd you don't return, also when something fails"
+    }
+   ]
+  }
+ ]
+}
