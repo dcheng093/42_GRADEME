@@ -1,0 +1,38 @@
+A reminder of how a select() server works in C++ (not compiled with your
+files: copy what you need).
+
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <sys/select.h>
+    #include <unistd.h>
+    #include <cstring>
+
+    int listener = socket(AF_INET, SOCK_STREAM, 0);
+    sockaddr_in addr;
+    std::memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);   // 127.0.0.1
+    addr.sin_port = htons(port);
+    bind(listener, (sockaddr *)&addr, sizeof(addr));
+    listen(listener, 128);
+
+    while (true) {
+        fd_set readable;
+        FD_ZERO(&readable);
+        FD_SET(listener, &readable);          // + every client fd
+        select(max_fd + 1, &readable, NULL, NULL, NULL);
+        if (FD_ISSET(listener, &readable))
+            int client = accept(listener, NULL, NULL);
+        // for each readable client: recv(); 0 or -1 means it left
+    }
+
+A signal handler only sets a flag; select() then fails with EINTR and your
+loop can check the flag:
+
+    volatile sig_atomic_t stop = 0;
+    void on_sigint(int) { stop = 1; }
+    ...
+    struct sigaction sa;
+    std::memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = on_sigint;
+    sigaction(SIGINT, &sa, NULL);

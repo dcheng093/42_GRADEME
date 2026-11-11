@@ -173,6 +173,17 @@ RANKS = {
             Level("C programs", pool=("bsq", "life")),
         ),
     ),
+    "old_rank06": Rank(
+        key="old_rank06",
+        title="Rank 06 · old",
+        language="mixed",
+        time_limit=3 * 60 * 60,
+        curriculum="old",
+        note="a chat server in C, or a key-value server in C++",
+        levels=(
+            Level("servers", pool=("mini_serv", "mini_db")),
+        ),
+    ),
     # The Python pool before the 42exam.net one (2025 beta): practice only
     "rank03_legacy": Rank(
         key="rank03_legacy",
