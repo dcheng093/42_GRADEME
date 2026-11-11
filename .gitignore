@@ -7,12 +7,6 @@ trace/
 __pycache__/
 *.pyc
 
-# rank02 tester build artifacts
-out1
-out2
-out*.txt
-a.out
-
 .DS_Store
 
 # third-party package the new rank03 pool was imported from

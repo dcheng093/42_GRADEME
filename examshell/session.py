@@ -131,11 +131,26 @@ def _grade(q, stats, started):
     print("  " + ui.paint("╭─ ", ui.LINE) + ui.paint("test results", ui.ACCENT, "bold"))
     result = runner.run_tests(q)
     print("  " + ui.paint("╰─", ui.LINE))
+    before = dict(stats.question(q.id))
     stats.record_test(q.id, result.passed, time.monotonic() - started)
     print()
     print(ui.big("PASSED", ui.OK) if result.passed else ui.big("FAILED", ui.ERR))
+    if result.passed:
+        print()
+        print("  " + _pass_note(before, stats.question(q.id)))
     print()
     return result
+
+
+def _pass_note(before, now):
+    """One line under PASSED: first solve, a new best time, or the running tally."""
+    best, old = now.get("best_time"), before.get("best_time")
+    if not before.get("passes"):
+        return ui.paint("✦ first solve", ui.HILITE, "bold") + ui.paint(f"  in {ui.duration(best)}", ui.MUTED)
+    if old is not None and int(best) < int(old):
+        return (ui.paint(f"✦ new best time {ui.duration(best)}", ui.HILITE, "bold")
+                + ui.paint(f"  (was {ui.duration(old)})", ui.MUTED))
+    return ui.paint(f"solved {now['passes']} times · best {ui.duration(best)}", ui.MUTED)
 
 
 def _show_solution(q):

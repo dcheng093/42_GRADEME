@@ -128,6 +128,8 @@ It finds `<question>/<file>` anywhere inside the folder.
 2. Add `<name>` to a level's pool in `examshell/config.py`.
 3. Run `make check`.
 
+For Rank 02, a question folder holds `sub.txt`, the reference `<name>.c`, a `main.c` for function exercises, and `cases.json`: a list of argv lists such as `[["zaz", "art", "zul"], []]`. Your program and the reference run on each list and their stdout must match. Your file is compiled with `-Wall -Wextra -Werror`.
+
 ## Layout
 
 ```
@@ -135,12 +137,13 @@ examshell/          the app (stdlib only)
   config.py         name, levels, timers, all in one place
   session.py        practice + exam flows
   harness.py        rank03 test harness + failure cards
+  c_harness.py      rank02 test harness (compile once, run cases.json)
   runner.py         runs tests with a timeout
   ui.py             colours, block font, boxes, bars
   stats.py          local history
   workspace.py      rendu/ and trace/
 subjects/
-  rank02/levelN/<q>/   sub.txt, reference .c, tester.sh
+  rank02/levelN/<q>/   sub.txt, reference .c, main.c, cases.json
   rank03/<q>/          sub.txt, sub.<lang>.txt, solution.py, tests.py
   rank03_legacy/<q>/   the old rank03 pool
 scripts/
@@ -150,9 +153,9 @@ scripts/
 ## Requirements
 
 - Python 3.8+
-- For Rank 02: `bash` and `gcc`
+- For Rank 02: `gcc`
 - Linux, macOS or WSL. Set `NO_COLOR=1` if you want plain output.
 
 ## Credits
 
-The Rank 02 exercises and testers come from [terminal-42s/42_examshell](https://github.com/terminal-42s/42_examshell). The Rank 03 subjects are adapted from [sergioromero2k/42_Exam_Ranks](https://github.com/sergioromero2k/42_Exam_Ranks), [this guy](https://note.com/it_morning/n/n070a3e238fe6?hl=en), [examshell-python](https://pypi.org/project/examshell-python/), [42exam.net](https://rank03.42exam.net/). The engine, the Python testers and everything else were rebuilt from scratch. 
+The Rank 02 exercises and test cases come from [terminal-42s/42_examshell](https://github.com/terminal-42s/42_examshell). The Rank 03 subjects are adapted from [sergioromero2k/42_Exam_Ranks](https://github.com/sergioromero2k/42_Exam_Ranks), [this guy](https://note.com/it_morning/n/n070a3e238fe6?hl=en), [examshell-python](https://pypi.org/project/examshell-python/), [42exam.net](https://rank03.42exam.net/). The engine, the Python testers and everything else were rebuilt from scratch. 

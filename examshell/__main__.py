@@ -1,10 +1,12 @@
 """Entry point: python3 -m examshell  (or just `make`)."""
 
 import argparse
+import os
 import random
 import shutil
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor
 
 from . import config, runner, session, ui, workspace
 from .questions import all_questions, missing_questions
@@ -269,29 +271,21 @@ def check(ranks, answers=None):
     if config.RENDU.exists():
         workspace.archive()
     failures, skipped = [], []
-    for rank in ranks:
-        print(ui.paint(f"\n{rank.title}", "bold"))
-        for q in all_questions(rank):
-            source = _find_answer(q, answers) if answers else q.path
-            if source is None:
-                skipped.append(q.id)
-                print(f"  {ui.paint('-', 'gray')} {q.name:<26} {ui.paint('no answer found', 'gray')}")
-                continue
-            workspace.prepare(q)
-            if rank.language == "python":
-                src = source / "solution.py" if source == q.path else source / q.expected_files[0]
-                shutil.copy(src, q.candidate)
-            else:
-                for name in q.expected_files:
-                    if (source / name).is_file():
-                        shutil.copy(source / name, q.rendu_dir / name)
-            result = runner.run_tests(q, quiet=True)
-            mark = ui.paint("✔", ui.OK) if result.passed else ui.paint("✘", ui.ERR)
-            note = "timeout" if result.timed_out else f"{result.seconds:.1f}s"
-            print(f"  {mark} {q.name:<26} {ui.paint(note, 'gray')}")
-            if not result.passed:
-                failures.append(q.id)
-            shutil.rmtree(q.rendu_dir, ignore_errors=True)
+    # every question has its own rendu/<q>/ and harness process, so grade them side by side
+    with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
+        for rank in ranks:
+            print(ui.paint(f"\n{rank.title}", "bold"))
+            questions = all_questions(rank)
+            for q, result in zip(questions, pool.map(lambda q: _check_one(q, answers), questions)):
+                if result is None:
+                    skipped.append(q.id)
+                    print(f"  {ui.paint('-', 'gray')} {q.name:<26} {ui.paint('no answer found', 'gray')}")
+                    continue
+                mark = ui.paint("✔", ui.OK) if result.passed else ui.paint("✘", ui.ERR)
+                note = "timeout" if result.timed_out else f"{result.seconds:.1f}s"
+                print(f"  {mark} {q.name:<26} {ui.paint(note, 'gray')}")
+                if not result.passed:
+                    failures.append(q.id)
     shutil.rmtree(config.RENDU, ignore_errors=True)
     workspace.clean_caches()
     total = sum(len(all_questions(r)) for r in ranks) - len(skipped)
@@ -300,6 +294,25 @@ def check(ranks, answers=None):
     for f in failures:
         print("  " + ui.paint("✘ " + f, ui.ERR))
     return 1 if failures else 0
+
+
+def _check_one(q, answers):
+    """Grade one question with its reference (or your answer). None = no answer found."""
+    source = _find_answer(q, answers) if answers else q.path
+    if source is None:
+        return None
+    workspace.prepare(q)
+    if q.rank.language == "python":
+        src = source / "solution.py" if source == q.path else source / q.expected_files[0]
+        shutil.copy(src, q.candidate)
+    else:
+        for name in q.expected_files:
+            if (source / name).is_file():
+                shutil.copy(source / name, q.rendu_dir / name)
+    try:
+        return runner.run_tests(q, quiet=True)
+    finally:
+        shutil.rmtree(q.rendu_dir, ignore_errors=True)
 
 
 def _find_answer(q, root):

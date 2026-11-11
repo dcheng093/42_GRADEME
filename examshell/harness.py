@@ -136,6 +136,7 @@ def main(argv):
     qdir, candidate = Path(argv[1]), Path(argv[2])
     question = qdir.name
     out = sys.stdout
+    start = time.monotonic()
     checker = Checker(out)
     captured = io.StringIO()  # anything the student's code prints
 
@@ -188,7 +189,8 @@ def main(argv):
         return 1
 
     _clear_line(out)
-    print(f"  {ui.paint('✔', ui.OK, 'bold')} {checker.count}/{checker.count} checks passed")
+    took = ui.paint(f"· {time.monotonic() - start:.2f}s", ui.MUTED)
+    print(f"  {ui.paint('✔', ui.OK, 'bold')} {checker.count}/{checker.count} checks passed  {took}")
     return 0
 
 
