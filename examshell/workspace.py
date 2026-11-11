@@ -10,27 +10,34 @@ from . import config
 
 
 def prepare(question):
-    """Create rendu/<question>/ with empty expected files. Returns the main file."""
+    """Create rendu/<question>/ with the expected files. Returns the main file.
+
+    Files the subject hands out (spec.json "given", headers like ft_list.h) are
+    copied in too, unless you already have them.
+    """
     question.rendu_dir.mkdir(parents=True, exist_ok=True)
     for name in question.expected_files:
         (question.rendu_dir / name).touch(exist_ok=True)
-    # headers the subject hands you (ft_list.h, list.h…) unless you must write them
-    for header in question.path.glob("*.h"):
-        target = question.rendu_dir / header.name
-        if header.name not in question.expected_files and not target.exists():
-            shutil.copy(header, target)
-    # Python subjects start with the function signature already written
+    handed_out = list(question.given_files) + sorted(question.path.glob("*.h"))
+    for src in handed_out:
+        target = question.rendu_dir / src.name
+        if src.name not in question.expected_files and not target.exists():
+            shutil.copy(src, target)
+    # Python subjects start with the signature already written
     if question.starter and question.candidate.stat().st_size == 0:
         question.candidate.write_text(question.starter)
     return question.candidate
 
 
-_STUB = re.compile(r"\Adef [^\n]*:\n    pass\n\Z")
+_STUB_LINE = re.compile(r"(class \w+.*:|\s*def \w+\(.*\).*:|\s+pass|\s*\"\"\".*\"\"\"|\s*)")
 
 
 def is_stub(text):
-    """True if `text` is an untouched starter written by prepare()."""
-    return bool(_STUB.match(text))
+    """True if `text` is an untouched starter written by prepare(): only class/def
+    headers and `pass` lines."""
+    lines = text.splitlines()
+    return (any(l.lstrip().startswith(("def ", "class ")) for l in lines)
+            and all(_STUB_LINE.fullmatch(l) for l in lines))
 
 
 def _has_work(path):

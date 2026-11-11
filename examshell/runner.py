@@ -1,10 +1,11 @@
 """Runs a question's tests with a timeout and reports the result."""
 
+import json
 import os
-import re
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 from dataclasses import dataclass
 
@@ -18,23 +19,37 @@ class Result:
     timed_out: bool = False
 
 
-HARNESS = {"python": "examshell.harness", "c": "examshell.c_harness"}
-
-
-def run_tests(question, candidate=None, quiet=False):
-    """Run the tests for `question` against `candidate` (default: rendu file).
+def run_tests(question, quiet=False):
+    """Run the tests for `question` against what is in its rendu folder.
 
     The harness prints straight to the terminal; quiet=True captures and hides it.
+    The verdict comes from the report file the harness writes, never from its
+    output, so a program that prints "checks passed" gains nothing.
     """
-    candidate = candidate or question.candidate
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
     if quiet:
         env["NO_COLOR"] = "1"
-    cmd = [sys.executable, "-m", HARNESS[question.rank.language], str(question.path), str(candidate)]
-    return _run(cmd, cwd=config.ROOT, env=env, quiet=quiet)
+    if question.is_python:
+        harness, target, timeout = "examshell.harness", question.candidate, config.TEST_TIMEOUT
+    else:
+        harness, target, timeout = "examshell.native_harness", question.rendu_dir, config.NATIVE_TEST_TIMEOUT
+    fd, report = tempfile.mkstemp(prefix="examshell-report-", suffix=".json")
+    os.close(fd)
+    try:
+        cmd = [sys.executable, "-m", harness, str(question.path), str(target), "--report", report]
+        result = _run(cmd, cwd=config.ROOT, env=env, quiet=quiet, timeout=timeout)
+        try:
+            verdict = json.loads(open(report).read() or "{}")
+        except (OSError, ValueError):
+            verdict = {}
+        result.passed = result.passed and bool(verdict.get("passed"))
+        return result
+    finally:
+        os.unlink(report)
 
 
-def _run(cmd, cwd, env, quiet=False):
+def _run(cmd, cwd, env, quiet=False, timeout=None):
+    timeout = timeout or config.TEST_TIMEOUT
     start = time.monotonic()
     proc = subprocess.Popen(
         cmd, cwd=cwd, env=env, start_new_session=True,
@@ -44,7 +59,7 @@ def _run(cmd, cwd, env, quiet=False):
     )
     timed_out = False
     try:
-        output, _ = proc.communicate(timeout=config.TEST_TIMEOUT)
+        output, _ = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
         timed_out = True
         _kill(proc)
@@ -58,14 +73,11 @@ def _run(cmd, cwd, env, quiet=False):
     if timed_out:
         if not quiet:
             print()
-            print("  " + ui.paint(f"✘ timed out after {config.TEST_TIMEOUT}s", ui.ERR, "bold"))
+            print("  " + ui.paint(f"✘ timed out after {timeout}s", ui.ERR, "bold"))
             print("  " + ui.paint("│", ui.ERR) + " probably an infinite loop (or waiting for input)")
         return Result(False, seconds, True)
 
-    passed = proc.returncode == 0
-    if quiet and passed and output and not re.search(r"checks passed", output):
-        passed = False  # a harness that exits 0 without saying so is suspicious
-    return Result(passed, seconds)
+    return Result(proc.returncode == 0, seconds)
 
 
 def _kill(proc):

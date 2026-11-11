@@ -9,6 +9,7 @@ import ast
 import contextlib
 import importlib.util
 import io
+import json
 import sys
 import time
 import traceback
@@ -129,9 +130,24 @@ def find_forbidden(source, forbidden):
 
 
 def main(argv):
+    argv = list(argv)
+    report = None
+    if "--report" in argv:
+        i = argv.index("--report")
+        report = argv[i + 1]
+        del argv[i:i + 2]
+        sys.argv[:] = argv  # the code under test never sees where the verdict goes
+    code, total = _main(argv)
+    if report:
+        Path(report).write_text(json.dumps({"passed": code == 0, "total": total}))
+    return code
+
+
+def _main(argv):
+    """Returns (exit code, number of checks)."""
     if len(argv) != 3:
-        print("usage: python3 -m examshell.harness QUESTION_DIR CANDIDATE", file=sys.stderr)
-        return 2
+        print("usage: python3 -m examshell.harness QUESTION_DIR CANDIDATE [--report FILE]", file=sys.stderr)
+        return 2, 0
     sys.dont_write_bytecode = True
     qdir, candidate = Path(argv[1]), Path(argv[2])
     question = qdir.name
@@ -159,7 +175,7 @@ def main(argv):
                 rows += [("used", f"{name}  at {rel} line {lineno}"),
                          ("code", lines[lineno - 1].strip() if lineno <= len(lines) else "")]
             print(_card("forbidden function used", rows))
-            return 1
+            return 1, 0
 
     try:
         if not candidate.is_file():
@@ -179,19 +195,19 @@ def main(argv):
             rows += [("expected", repr(fail.expected)), ("got", repr(fail.result))]
         print(_card(f"check {fail.number} failed  ({fail.number - 1} passed before it)", rows))
         _show_prints(captured)
-        return 1
+        return 1, checker.count
     except KeyboardInterrupt:
         raise
     except BaseException as error:  # noqa: BLE001 - student code can raise anything
         _clear_line(out)
         print(_describe_crash(error, candidate, question, module, checker.count))
         _show_prints(captured)
-        return 1
+        return 1, checker.count
 
     _clear_line(out)
     took = ui.paint(f"· {time.monotonic() - start:.2f}s", ui.MUTED)
     print(f"  {ui.paint('✔', ui.OK, 'bold')} {checker.count}/{checker.count} checks passed  {took}")
-    return 0
+    return 0, checker.count
 
 
 def _describe_crash(error, candidate, question, module, passed):

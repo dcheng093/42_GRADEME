@@ -100,8 +100,16 @@ def _subject(q, lang="en"):
         lines.append(line)
     while lines and not lines[-1].strip():
         lines.pop()
-    rel = q.candidate.relative_to(config.ROOT)
-    lines += ["", ui.paint(f"{'your file':<19}", ui.MUTED) + ui.paint(str(rel), ui.HILITE, "bold")]
+    if len(q.expected_files) == 1:
+        rel = q.candidate.relative_to(config.ROOT)
+        lines += ["", ui.paint(f"{'your file':<19}", ui.MUTED) + ui.paint(str(rel), ui.HILITE, "bold")]
+    else:
+        folder = q.rendu_dir.relative_to(config.ROOT)
+        lines += ["", ui.paint(f"{'your files':<19}", ui.MUTED) + ui.paint(f"{folder}/", ui.HILITE, "bold")
+                  + ui.paint("  " + " ".join(q.expected_files), ui.HILITE)]
+    given = [g.name for g in q.given_files]
+    if given:
+        lines.append(ui.paint(f"{'given (read-only)':<19}", ui.MUTED) + ui.paint(" ".join(given), ui.MUTED))
     print()
     right = q.rank.levels[q.level].theme + (f" · {lang}" if lang != "en" else "")
     print(ui.card(lines, title=q.name, right=ui.paint(right, ui.MUTED)))
@@ -117,15 +125,22 @@ def _help(commands):
 
 
 def _is_empty(q):
-    if not q.candidate.is_file() or q.candidate.stat().st_size == 0:
-        return True
-    return workspace.is_stub(q.candidate.read_text(errors="replace"))
+    """True if you haven't written anything yet (only empty files or untouched starters)."""
+    given = {g.name for g in q.given_files}
+    for name in q.expected_files:
+        path = q.rendu_dir / name
+        if name in given or not path.is_file() or path.stat().st_size == 0:
+            continue
+        if not workspace.is_stub(path.read_text(errors="replace")):
+            return False
+    return True
 
 
 def _grade(q, stats, started):
     """Run the tests, print the verdict, record it. Returns the Result or None."""
     if _is_empty(q):
-        ui.say(f"{q.candidate.relative_to(config.ROOT)} is empty — write your answer there first", ui.HILITE)
+        where = q.candidate if len(q.expected_files) == 1 else q.rendu_dir
+        ui.say(f"{where.relative_to(config.ROOT)} is empty — write your answer there first", ui.HILITE)
         return None
     print()
     print("  " + ui.paint("╭─ ", ui.LINE) + ui.paint("test results", ui.ACCENT, "bold"))
@@ -156,12 +171,14 @@ def _pass_note(before, now):
 
 
 def _show_solution(q):
-    if q.solution is None:
+    files = q.solution_files
+    if not files:
         ui.say("no reference solution for this one")
         return
-    lines = q.solution.read_text(errors="replace").rstrip().splitlines()
-    print(ui.card([ui.paint(f"{i:>3} ", ui.MUTED) + line for i, line in enumerate(lines, 1)],
-                  title=f"solution · {q.solution.name}", title_color=ui.HILITE, color=ui.HILITE))
+    for path in files:
+        lines = path.read_text(errors="replace").rstrip().splitlines()
+        print(ui.card([ui.paint(f"{i:>3} ", ui.MUTED) + line for i, line in enumerate(lines, 1)],
+                      title=f"solution · {path.name}", title_color=ui.HILITE, color=ui.HILITE))
 
 
 def _ask(label, symbol="❯"):
@@ -181,7 +198,7 @@ def level_run(rank, level):
     """Every question from `level` to the last level, each level shuffled."""
     playlist = []
     for li in range(level, len(rank.levels)):
-        qs = [Question(rank, li, name) for name in rank.levels[li].pool]
+        qs = [Question(rank, li, name) for name in rank.levels[li].practice_pool]
         random.shuffle(qs)
         playlist += qs
     return playlist
@@ -190,7 +207,8 @@ def level_run(rank, level):
 def from_question(rank, index):
     """all_questions(rank)[index] first, then the rest of its level shuffled, then later levels."""
     picked = all_questions(rank)[index]
-    rest = [Question(rank, picked.level, name) for name in rank.levels[picked.level].pool if name != picked.name]
+    rest = [Question(rank, picked.level, name) for name in rank.levels[picked.level].practice_pool
+            if name != picked.name]
     random.shuffle(rest)
     return [picked] + rest + level_run(rank, picked.level + 1)
 
@@ -326,7 +344,7 @@ def _level_complete(rank, level, questions, solved, elapsed, next_level):
         rest += ["  " + ui.paint("✘ ", ui.ERR) + q.name for q in missed]
     if next_level is not None:
         rest += ["", ui.paint(f"{'next up':<10}", ui.MUTED) + _level_label(rank, next_level)
-                 + ui.paint(f" · {len(rank.levels[next_level].pool)} questions, shuffled", ui.MUTED)]
+                 + ui.paint(f" · {len(rank.levels[next_level].practice_pool)} questions, shuffled", ui.MUTED)]
 
     def summary(solved_so_far):  # the solved bar fills up
         return ui.card([

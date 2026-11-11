@@ -444,12 +444,23 @@ def confirm(question, default_yes=False):
 
 
 def menu(title, options, footer=""):
-    """options: list of (key, label, hint). Returns the chosen key, or None for back."""
+    """options: list of (key, label, hint). Returns the chosen key, or None for back.
+
+    An option with key None is a section header: options are then listed
+    compactly under their headers.
+    """
     lines = []
-    pad = max(len(label) for _, label, _ in options)
-    keyw = max(len(str(k)) for k, _, _ in options)
+    real = [o for o in options if o[0] is not None]
+    sections = len(real) != len(options)
+    pad = max(len(label) for _, label, _ in real)
+    keyw = max(len(str(k)) for k, _, _ in real)
     for i, (key, label, hint) in enumerate(options):
-        if i:
+        if key is None:
+            if i:
+                lines.append("")
+            lines.append(paint(label.upper(), ACCENT, "bold"))
+            continue
+        if i and not sections:
             lines.append("")
         k = chip(f"{key:^{keyw}}")
         lines.append(f"{k}  {paint(f'{label:<{pad}}', 'bold')}" + (f"   {paint(hint, MUTED)}" if hint else ""))
@@ -457,7 +468,7 @@ def menu(title, options, footer=""):
         lines += ["", paint(footer, MUTED)]
     print(card(lines, title=title))
     print()
-    keys = {str(k).lower(): k for k, _, _ in options}
+    keys = {str(k).lower(): k for k, _, _ in real}
     while True:
         choice = ask().lower()
         if choice in keys:

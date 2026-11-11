@@ -38,13 +38,19 @@ def _archive():
 
 def choose_rank(purpose, exam=False):
     ranks = [r for r in config.RANKS.values() if r.exam or not exam]
-    options = [
-        (i, r.title, f"{'C' if r.language == 'c' else 'Python'} · {len(r.levels)} levels · "
-                     f"{len(all_questions(r))} questions")
-        for i, r in enumerate(ranks, 1)
-    ]
+    options, order = [], []
+    for curriculum, header in config.CURRICULA:
+        group = [r for r in ranks if r.curriculum == curriculum]
+        if not group:
+            continue
+        options.append((None, header, None))
+        for r in group:
+            order.append(r)
+            hint = (f"{r.language_label} · {len(r.levels)} level{'s' * (len(r.levels) > 1)} · "
+                    f"{len(all_questions(r))} questions" + (f" · {r.note}" if r.note else ""))
+            options.append((len(order), r.title, hint))
     choice = ui.menu(purpose, options, footer="enter = back")
-    return None if choice is None else ranks[choice - 1]
+    return None if choice is None else order[choice - 1]
 
 
 def _mark(stats, q):
@@ -67,7 +73,7 @@ PICK_COMMANDS = (
 def pick_question(rank, stats):
     """Level map. Returns the playlist of questions to practise, or None."""
     questions = all_questions(rank)
-    col = max(len(q.name) for q in questions) + 10
+    col = max(len(q.name) + (7 if q.extra else 0) for q in questions) + 10
     per_row = max(1, min(3, (ui.card_width() - 4) // col))
     print()
     print(ui.status_strip(ui.chip(config.APP_NAME) + "  " + ui.paint(rank.title, "bold") + "  " + ui.chip("PRACTICE"),
@@ -80,7 +86,8 @@ def pick_question(rank, stats):
         for row in range(0, len(entries), per_row):
             cells = []
             for i, q in entries[row:row + per_row]:
-                cell = f"{ui.paint(f'{i + 1:>3}', ui.MUTED)}  {_mark(stats, q)} {q.name}"
+                rare = ui.paint(" (rare)", ui.MUTED) if q.extra else ""
+                cell = f"{ui.paint(f'{i + 1:>3}', ui.MUTED)}  {_mark(stats, q)} {q.name}{rare}"
                 cells.append(cell + " " * (col - ui.visible_len(cell)))
             lines.append("".join(cells).rstrip())
         print(ui.card(lines, title=f"L{li + 1}  {level.theme}", right=ui.level_bar(solved, len(entries), 10)))
@@ -298,13 +305,12 @@ def check(ranks, answers=None):
 
 def _check_one(q, answers):
     """Grade one question with its reference (or your answer). None = no answer found."""
-    source = _find_answer(q, answers) if answers else q.path
+    source = _find_answer(q, answers) if answers else q.reference_dir
     if source is None:
         return None
     workspace.prepare(q)
-    if q.rank.language == "python":
-        src = source / "solution.py" if source == q.path else source / q.expected_files[0]
-        shutil.copy(src, q.candidate)
+    if q.is_python and not answers:
+        shutil.copy(q.path / "solution.py", q.candidate)
     else:
         for name in q.expected_files:
             if (source / name).is_file():
@@ -316,23 +322,31 @@ def _check_one(q, answers):
 
 
 def _find_answer(q, root):
-    """Look for <root>/**/<question>/<expected file>."""
+    """Look for <root>/**/<question>/ holding the expected files (at least the first)."""
     for path in sorted(root.rglob(q.expected_files[0])):
         if path.parent.name == q.name:
             return path.parent
     return None
 
 
+def _ranks_for(choice):
+    if choice == "all":
+        return list(config.RANKS.values())
+    if choice in ("current", "old"):
+        return [r for r in config.RANKS.values() if r.curriculum == choice]
+    return [config.RANKS[choice]]
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="examshell", description=f"{config.APP_NAME} — 42 exam practice")
-    parser.add_argument("--check", nargs="?", const="all", choices=["all", *config.RANKS],
+    parser.add_argument("--check", nargs="?", const="all", choices=["all", "current", "old", *config.RANKS],
                         help="grade every question with the reference solutions")
     parser.add_argument("--answers", metavar="DIR",
                         help="with --check: grade your own answers from DIR (<question>/<file> anywhere inside)")
     args = parser.parse_args(argv)
     if args.check:
         from pathlib import Path
-        ranks = list(config.RANKS.values()) if args.check == "all" else [config.RANKS[args.check]]
+        ranks = _ranks_for(args.check)
         return check(ranks, Path(args.answers).resolve() if args.answers else None)
     return run_interactive()
 

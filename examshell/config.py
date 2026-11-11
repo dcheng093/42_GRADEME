@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 APP_NAME = "GRADEME"
-TAGLINE = "42 exam practice  ·  rank02 in C  ·  rank03 in Python"
+TAGLINE = "42 exam practice  ·  every rank  ·  C · C++ · Python"
 
 ROOT = Path(__file__).resolve().parent.parent
 SUBJECTS = ROOT / "subjects"
@@ -12,7 +12,8 @@ RENDU = ROOT / "rendu"
 TRACE = ROOT / "trace"
 STATE_DIR = ROOT / ".examshell"
 
-TEST_TIMEOUT = 20  # seconds before a test run is killed (infinite loops)
+TEST_TIMEOUT = 20  # seconds before a Python test run is killed (infinite loops)
+NATIVE_TEST_TIMEOUT = 120  # C/C++: compiling + every case + valgrind; each run has its own limit too
 
 ANIMATIONS = True  # banner reveals, confetti, count-ups. Off automatically when not a terminal.
 
@@ -28,16 +29,31 @@ class Level:
     theme: str
     pool: tuple
     folder: str = ""  # sub-folder under subjects/<rank>/, if the rank uses one
+    extras: tuple = ()  # practice only: never drawn in a real exam (rare subjects)
+
+    @property
+    def practice_pool(self):
+        return self.pool + self.extras
 
 
 @dataclass(frozen=True)
 class Rank:
     key: str
     title: str
-    language: str  # "c" or "python"
+    language: str  # display only: "c", "cpp", "python" or "mixed" (each question picks its own harness)
     time_limit: int  # seconds, real exam mode
     levels: tuple
     exam: bool = True  # offered in real-exam mode (False = practice only)
+    curriculum: str = "current"  # "current" (2025+: rank02 C, ranks 03-06 Python) or "old"
+    note: str = ""  # one line shown in the rank picker
+
+    @property
+    def language_label(self):
+        return LANGUAGE_LABELS.get(self.language, self.language)
+
+
+LANGUAGE_LABELS = {"c": "C", "cpp": "C++", "python": "Python", "mixed": "C / C++"}
+CURRICULA = (("current", "current curriculum"), ("old", "old curriculum"))
 
 
 RANKS = {
@@ -86,13 +102,15 @@ RANKS = {
             Level("hard", pool=("py_whisper_cipher",)),
         ),
     ),
-    # The pool before the change: practice only
+    # The Python pool before the 42exam.net one (2025 beta): practice only
     "rank03_legacy": Rank(
         key="rank03_legacy",
-        title="Rank 03 · old pool",
+        title="Rank 03 · Python beta pool",
         language="python",
         time_limit=3 * 60 * 60,
         exam=False,
+        curriculum="old",
+        note="the first Python pool, before the current one",
         levels=(
             Level("strings", pool=("alternate_case", "capitalize_words", "valid_anagram")),
             Level("parsing", pool=("atoi", "py_echo_validator", "whisper_lipher")),

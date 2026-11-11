@@ -1,5 +1,6 @@
 """Question lookup: turns config.RANKS into concrete folders and files."""
 
+import json
 import re
 from dataclasses import dataclass
 from functools import cached_property
@@ -42,17 +43,36 @@ class Question:
     def expected_files(self) -> list:
         match = re.search(r"^Expected files\s*:\s*(.+)$", self.subject, re.MULTILINE)
         if match:
-            files = [f.strip() for f in match.group(1).split(",") if f.strip()]
+            files = [f.strip() for f in re.split(r"[,\s]+", match.group(1)) if f.strip()]
             if files:
                 return files
-        ext = ".py" if self.rank.language == "python" else ".c"
-        return [self.name + ext]
+        if (self.path / "solution.py").is_file():
+            return [self.name + ".py"]
+        return [self.name + ".c"]
+
+    @property
+    def is_python(self) -> bool:
+        return self.expected_files[0].endswith(".py")
+
+    @property
+    def language_label(self) -> str:
+        if self.is_python:
+            return "Python"
+        return "C++" if any(f.endswith((".cpp", ".hpp")) for f in self.expected_files) else "C"
+
+    @property
+    def extra(self) -> bool:
+        """A practice-only question: never drawn in a real exam."""
+        return self.name in self.rank.levels[self.level].extras
 
     @cached_property
     def starter(self) -> str:
-        """Initial answer file content: the subject's function signature (Python only)."""
-        if self.rank.language != "python":
+        """Initial answer file content (Python only): starter.py, or the subject's signature."""
+        if not self.is_python:
             return ""
+        custom = self.path / "starter.py"
+        if custom.is_file():
+            return custom.read_text(encoding="utf-8")
         match = re.search(r"^def \w+\(.*\).*:\s*$", self.subject, re.MULTILINE)
         return f"{match.group(0).strip()}\n    pass\n" if match else ""
 
@@ -65,16 +85,40 @@ class Question:
         return self.rendu_dir / self.expected_files[0]
 
     @property
+    def spec(self) -> dict:
+        path = self.path / "spec.json"
+        return json.loads(path.read_text()) if path.is_file() else {}
+
+    @property
+    def given_files(self) -> list:
+        """Files the subject hands out (copied to rendu/, never graded from there)."""
+        return [self.path / g for g in self.spec.get("given", [])]
+
+    @property
+    def reference_dir(self) -> Path:
+        """Folder holding the reference answer under its expected file names."""
+        ref = self.path / "ref"
+        return ref if ref.is_dir() else self.path
+
+    @property
+    def solution_files(self) -> list:
+        """The reference answer, one Path per file (empty if there is none)."""
+        if self.is_python:
+            sol = self.path / "solution.py"
+            return [sol] if sol.is_file() else []
+        given = {g.name for g in self.given_files}
+        return [self.reference_dir / f for f in self.expected_files
+                if f not in given and (self.reference_dir / f).is_file()]
+
+    @property
     def solution(self):
-        for name in ("solution.py", self.name + ".c"):
-            if (self.path / name).is_file():
-                return self.path / name
-        return None
+        files = self.solution_files
+        return files[0] if files else None
 
 
 def all_questions(rank):
     """Every question of a rank, level by level, in config order."""
-    return [Question(rank, i, name) for i, lvl in enumerate(rank.levels) for name in lvl.pool]
+    return [Question(rank, i, name) for i, lvl in enumerate(rank.levels) for name in lvl.practice_pool]
 
 
 def missing_questions():
