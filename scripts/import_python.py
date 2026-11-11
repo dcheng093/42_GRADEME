@@ -176,17 +176,9 @@ def subject_text(task: Task, lang: str, signature: str) -> str:
     return "\n".join(lines) + "\n"
 
 
-def _stub_body(def_line: str) -> str:
-    """`pass` where mypy accepts it (no return value), else
-    `raise NotImplementedError`."""
-    returns = re.search(r"->\s*(.+?)\s*:\s*$", def_line)
-    if not returns or returns.group(1) == "None":
-        return "pass"
-    return "raise NotImplementedError"
-
-
 def starter_text(signature: str) -> str:
-    """Signature lines turned into a file that imports, with stub bodies."""
+    """Signature lines turned into a starter file: the def/class headers
+    only, no bodies."""
     lines = []
     if re.search(r"\bAny\b", signature):
         lines += ["from typing import Any", "", ""]
@@ -207,7 +199,7 @@ def starter_text(signature: str) -> str:
                 lines.append("")
             if "def __init__(" in line and "->" not in line:
                 line = re.sub(r"\)\s*:\s*$", ") -> None:", line)
-            lines += [line, " " * (indent + 4) + _stub_body(line)]
+            lines.append(line)
         else:
             if i and lines and lines[-1] != "":
                 lines += ["", ""]

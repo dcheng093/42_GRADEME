@@ -87,15 +87,27 @@ class Question:
 
     @cached_property
     def starter(self) -> str:
-        """Initial answer file content (Python only): starter.py, or the
-        subject's signature."""
-        if not self.is_python:
+        """Initial content of your main file: the subject's signature, no
+        body. Python: starter.py, or the subject's def line. C: the
+        subject's prototype of the function named like the file, without
+        its `;`. Empty when the subject declares none (programs)."""
+        if self.is_python:
+            custom = self.path / "starter.py"
+            if custom.is_file():
+                return custom.read_text(encoding="utf-8")
+            match = re.search(
+                r"^def \w+\(.*\).*:\s*$", self.subject, re.MULTILINE
+            )
+            return f"{match.group(0).strip()}\n" if match else ""
+        if self.candidate.suffix != ".c":
             return ""
-        custom = self.path / "starter.py"
-        if custom.is_file():
-            return custom.read_text(encoding="utf-8")
-        match = re.search(r"^def \w+\(.*\).*:\s*$", self.subject, re.MULTILINE)
-        return f"{match.group(0).strip()}\n    pass\n" if match else ""
+        name = re.escape(self.candidate.stem)
+        match = re.search(
+            rf"^[ \t]*([A-Za-z_][\w \t*]*?\b{name}[ \t]*\(.*\))[ \t]*;[ \t]*$",
+            self.subject,
+            re.MULTILINE,
+        )
+        return f"{match.group(1).strip()}\n" if match else ""
 
     @property
     def rendu_dir(self) -> Path:

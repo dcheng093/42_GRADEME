@@ -60,7 +60,9 @@ This is 42's current curriculum: Rank 02 is in C, and ranks 03 to 06 are in Pyth
 | **Rank 06** | 2 | L1 prefix_dictionary, pack_strings, task_order, redundant_link, trie_autocomplete · L2 union_find_system, cache_keeper, min_heap, bridge_finder |
 | **Rank 03 · Python beta pool** | 6 | the first Python pool (alternate_case, atoi, rotate_90, …), practice only |
 
-Watch the names in the Python ranks. The file is `py_<name>.py`, but the function usually has no `py_` prefix (`def bracket_validator(...)`), except where the subject's signature says otherwise (`py_graph_cycle_detector`). Every Python subject is available in EN, DE, FR, ES, IT, RU, TR, ZH and AR (`sub fr`). Rank 06 asks for classes too; your file then starts with the class skeleton already written.
+Watch the names in the Python ranks. The file is `py_<name>.py`, but the function usually has no `py_` prefix (`def bracket_validator(...)`), except where the subject's signature says otherwise (`py_graph_cycle_detector`). Every Python subject is available in EN, DE, FR, ES, IT, RU, TR, ZH and AR (`sub fr`). Rank 06 asks for classes too; your file then starts with the class skeleton already written. Starter files hold only the signatures, with no bodies, so they won't import until you write the functions.
+
+In C, a subject that declares a function prototype (ft_strlen, sort_list, ft_popen…) starts your `.c` file with that prototype, minus the `;`. The list subjects get their header in `rendu/` too (`ft_list.h`, and `list.h` for sort_list).
 
 ### C cursus
 

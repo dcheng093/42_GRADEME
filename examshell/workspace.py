@@ -30,10 +30,20 @@ def prepare(question: Question) -> Path:
             shutil.copy(src, target)
     for name in question.expected_files:
         if not any(c in name for c in "*?["):
-            (question.rendu_dir / name).touch(exist_ok=True)
+            target = question.rendu_dir / name
+            header = question.path / name
+            # a header you turn in (ft_list_foreach's ft_list.h) starts as
+            # the subject's copy
+            if (
+                name.endswith(".h")
+                and header.is_file()
+                and (not target.exists() or target.stat().st_size == 0)
+            ):
+                shutil.copy(header, target)
+            target.touch(exist_ok=True)
     if not question.candidate.exists():  # `*.c`: start with <name>.c
         question.candidate.touch()
-    # Python subjects start with the signature already written
+    # function subjects start with the signature already written
     if question.starter and question.candidate.stat().st_size == 0:
         question.candidate.write_text(question.starter)
     return question.candidate
@@ -45,10 +55,20 @@ _STUB_LINE = re.compile(
 )
 
 
+# a C prototype line, `;` optional: the C starter
+_C_SIGNATURE = re.compile(
+    r"\s*[A-Za-z_]\w*(?:[ \t]+\w+)*[ \t*]+\w+[ \t]*\(.*\)\s*;?\s*"
+)
+
+
 def is_stub(text: str) -> bool:
     """True if `text` is an untouched starter written by prepare(): only
-    class/def headers and `pass` / `raise NotImplementedError` lines."""
+    class/def headers (and `pass` / `raise NotImplementedError` lines, as
+    older starters had), or only C prototypes."""
     lines = text.splitlines()
+    code = [line for line in lines if line.strip()]
+    if code and all(_C_SIGNATURE.fullmatch(line) for line in code):
+        return True
     return any(
         line.lstrip().startswith(("def ", "class ")) for line in lines
     ) and all(_STUB_LINE.fullmatch(line) for line in lines)

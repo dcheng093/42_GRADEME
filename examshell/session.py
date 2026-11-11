@@ -195,6 +195,10 @@ def _is_empty(q: Question) -> bool:
         path = q.rendu_dir / name
         if name in given or not path.is_file() or path.stat().st_size == 0:
             continue
+        handed = q.path / name  # a header prepare() copied in
+        if name.endswith(".h") and handed.is_file():
+            if handed.read_bytes() == path.read_bytes():
+                continue
         if not workspace.is_stub(path.read_text(errors="replace")):
             return False
     return True
