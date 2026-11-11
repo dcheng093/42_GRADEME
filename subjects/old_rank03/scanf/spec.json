@@ -1,0 +1,284 @@
+{
+ "builds": [
+  {
+   "name": "",
+   "main": "mains/scan.c",
+   "cases": [
+    {
+     "argv": [
+      "0"
+     ],
+     "stdin": "42",
+     "show": "printf '42' | ./a.out   (scenario 0)"
+    },
+    {
+     "argv": [
+      "0"
+     ],
+     "stdin": "  -42xyz",
+     "show": "printf '  -42xyz' | ./a.out   (scenario 0)"
+    },
+    {
+     "argv": [
+      "0"
+     ],
+     "stdin": "+7\n",
+     "show": "printf '+7\\n' | ./a.out   (scenario 0)"
+    },
+    {
+     "argv": [
+      "0"
+     ],
+     "stdin": "abc",
+     "show": "printf 'abc' | ./a.out   (scenario 0)"
+    },
+    {
+     "argv": [
+      "0"
+     ],
+     "stdin": "",
+     "show": "printf '' | ./a.out   (scenario 0)"
+    },
+    {
+     "argv": [
+      "0"
+     ],
+     "stdin": "\n\t 123",
+     "show": "printf '\\n\\t 123' | ./a.out   (scenario 0)"
+    },
+    {
+     "argv": [
+      "1"
+     ],
+     "stdin": "12 34",
+     "show": "printf '12 34' | ./a.out   (scenario 1)"
+    },
+    {
+     "argv": [
+      "1"
+     ],
+     "stdin": "12\n\n34 rest",
+     "show": "printf '12\\n\\n34 rest' | ./a.out   (scenario 1)"
+    },
+    {
+     "argv": [
+      "1"
+     ],
+     "stdin": "12 x",
+     "show": "printf '12 x' | ./a.out   (scenario 1)"
+    },
+    {
+     "argv": [
+      "2"
+     ],
+     "stdin": "hello world",
+     "show": "printf 'hello world' | ./a.out   (scenario 2)"
+    },
+    {
+     "argv": [
+      "2"
+     ],
+     "stdin": "\n\t  word\n",
+     "show": "printf '\\n\\t  word\\n' | ./a.out   (scenario 2)"
+    },
+    {
+     "argv": [
+      "2"
+     ],
+     "stdin": "",
+     "show": "printf '' | ./a.out   (scenario 2)"
+    },
+    {
+     "argv": [
+      "3"
+     ],
+     "stdin": "a",
+     "show": "printf 'a' | ./a.out   (scenario 3)"
+    },
+    {
+     "argv": [
+      "3"
+     ],
+     "stdin": " b",
+     "show": "printf ' b' | ./a.out   (scenario 3)"
+    },
+    {
+     "argv": [
+      "3"
+     ],
+     "stdin": "",
+     "show": "printf '' | ./a.out   (scenario 3)"
+    },
+    {
+     "argv": [
+      "4"
+     ],
+     "stdin": "xyz",
+     "show": "printf 'xyz' | ./a.out   (scenario 4)"
+    },
+    {
+     "argv": [
+      "4"
+     ],
+     "stdin": "a b",
+     "show": "printf 'a b' | ./a.out   (scenario 4)"
+    },
+    {
+     "argv": [
+      "4"
+     ],
+     "stdin": "ab",
+     "show": "printf 'ab' | ./a.out   (scenario 4)"
+    },
+    {
+     "argv": [
+      "5"
+     ],
+     "stdin": "   q",
+     "show": "printf '   q' | ./a.out   (scenario 5)"
+    },
+    {
+     "argv": [
+      "5"
+     ],
+     "stdin": "\n\nz",
+     "show": "printf '\\n\\nz' | ./a.out   (scenario 5)"
+    },
+    {
+     "argv": [
+      "6"
+     ],
+     "stdin": "12abc!",
+     "show": "printf '12abc!' | ./a.out   (scenario 6)"
+    },
+    {
+     "argv": [
+      "6"
+     ],
+     "stdin": "7 seven\n",
+     "show": "printf '7 seven\\n' | ./a.out   (scenario 6)"
+    },
+    {
+     "argv": [
+      "6"
+     ],
+     "stdin": "x1",
+     "show": "printf 'x1' | ./a.out   (scenario 6)"
+    },
+    {
+     "argv": [
+      "7"
+     ],
+     "stdin": "abc 5",
+     "show": "printf 'abc 5' | ./a.out   (scenario 7)"
+    },
+    {
+     "argv": [
+      "7"
+     ],
+     "stdin": "abc5",
+     "show": "printf 'abc5' | ./a.out   (scenario 7)"
+    },
+    {
+     "argv": [
+      "7"
+     ],
+     "stdin": "abd 5",
+     "show": "printf 'abd 5' | ./a.out   (scenario 7)"
+    },
+    {
+     "argv": [
+      "8"
+     ],
+     "stdin": "1,2",
+     "show": "printf '1,2' | ./a.out   (scenario 8)"
+    },
+    {
+     "argv": [
+      "8"
+     ],
+     "stdin": "1, 2",
+     "show": "printf '1, 2' | ./a.out   (scenario 8)"
+    },
+    {
+     "argv": [
+      "8"
+     ],
+     "stdin": "1 ,2",
+     "show": "printf '1 ,2' | ./a.out   (scenario 8)"
+    },
+    {
+     "argv": [
+      "8"
+     ],
+     "stdin": "3;4",
+     "show": "printf '3;4' | ./a.out   (scenario 8)"
+    },
+    {
+     "argv": [
+      "9"
+     ],
+     "stdin": "one two 3",
+     "show": "printf 'one two 3' | ./a.out   (scenario 9)"
+    },
+    {
+     "argv": [
+      "9"
+     ],
+     "stdin": "one\ntwo\n-3\n",
+     "show": "printf 'one\\ntwo\\n-3\\n' | ./a.out   (scenario 9)"
+    },
+    {
+     "argv": [
+      "9"
+     ],
+     "stdin": "only",
+     "show": "printf 'only' | ./a.out   (scenario 9)"
+    },
+    {
+     "argv": [
+      "10"
+     ],
+     "stdin": "1 2 3 -4 +5",
+     "show": "printf '1 2 3 -4 +5' | ./a.out   (scenario 10)"
+    },
+    {
+     "argv": [
+      "10"
+     ],
+     "stdin": "1 2 x 3",
+     "show": "printf '1 2 x 3' | ./a.out   (scenario 10)"
+    },
+    {
+     "argv": [
+      "11"
+     ],
+     "stdin": "word next",
+     "show": "printf 'word next' | ./a.out   (scenario 11)"
+    },
+    {
+     "argv": [
+      "11"
+     ],
+     "stdin": "word",
+     "show": "printf 'word' | ./a.out   (scenario 11)"
+    },
+    {
+     "argv": [
+      "12"
+     ],
+     "stdin": "12abc",
+     "show": "printf '12abc' | ./a.out   (scenario 12)"
+    },
+    {
+     "argv": [
+      "12"
+     ],
+     "stdin": "  99   rest of it",
+     "show": "printf '  99   rest of it' | ./a.out   (scenario 12)"
+    }
+   ]
+  }
+ ],
+ "leaks": false
+}

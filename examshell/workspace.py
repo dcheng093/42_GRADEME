@@ -16,16 +16,20 @@ def prepare(question):
     copied in too, unless you already have them.
     """
     question.rendu_dir.mkdir(parents=True, exist_ok=True)
+    # handouts first: some are the file you complete (a skeleton, a broken gnl)
+    for src in question.handout_files:
+        target = question.rendu_dir / src.name
+        if not target.exists():
+            shutil.copy(src, target)
+    for src in list(question.given_files) + sorted(question.path.glob("*.h")):
+        target = question.rendu_dir / src.name
+        if src.name not in question.expected_files and not target.exists():
+            shutil.copy(src, target)
     for name in question.expected_files:
         if not any(c in name for c in "*?["):
             (question.rendu_dir / name).touch(exist_ok=True)
     if not question.candidate.exists():  # `*.c`: start with <name>.c
         question.candidate.touch()
-    handed_out = list(question.given_files) + list(question.handout_files) + sorted(question.path.glob("*.h"))
-    for src in handed_out:
-        target = question.rendu_dir / src.name
-        if src.name not in question.expected_files and not target.exists():
-            shutil.copy(src, target)
     # Python subjects start with the signature already written
     if question.starter and question.candidate.stat().st_size == 0:
         question.candidate.write_text(question.starter)

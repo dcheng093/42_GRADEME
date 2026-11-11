@@ -1,0 +1,71 @@
+{
+ "leaks": true,
+ "compare": [
+  "stdout"
+ ],
+ "builds": [
+  {
+   "name": "",
+   "main": null,
+   "cases": [
+    {
+     "argv": [
+      "a"
+     ]
+    },
+    {
+     "argv": [
+      "ab"
+     ]
+    },
+    {
+     "argv": [
+      "ba"
+     ]
+    },
+    {
+     "argv": [
+      "abc"
+     ],
+     "leaks": true
+    },
+    {
+     "argv": [
+      "cba"
+     ]
+    },
+    {
+     "argv": [
+      "bca"
+     ]
+    },
+    {
+     "argv": [
+      "abcd"
+     ]
+    },
+    {
+     "argv": [
+      "dbca"
+     ]
+    },
+    {
+     "argv": [
+      "xyz"
+     ]
+    },
+    {
+     "argv": [
+      "0123"
+     ]
+    },
+    {
+     "argv": [
+      "gfedcba"
+     ],
+     "leaks": true
+    }
+   ]
+  }
+ ]
+}

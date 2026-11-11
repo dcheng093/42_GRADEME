@@ -1,0 +1,80 @@
+{
+ "leaks": true,
+ "compare": [
+  "stdout_numbers"
+ ],
+ "timeout": 10,
+ "ldflags": [
+  "-lm"
+ ],
+ "builds": [
+  {
+   "name": "",
+   "main": null,
+   "cases": [
+    {
+     "argv": [],
+     "stdin": "0, 0\n1, 0\n2, 0\n0, 1\n1, 1\n2, 1\n1, 2\n2, 2\n",
+     "show": "./tsp < cities.txt   (the subject's 8 cities: 8.00)",
+     "leaks": true
+    },
+    {
+     "argv": [],
+     "stdin": "1, 1\n0, 1\n1, 0\n0, 0\n",
+     "show": "./tsp < cities.txt   (square.txt: 4.00)"
+    },
+    {
+     "argv": [],
+     "stdin": "3, 4\n",
+     "show": "./tsp < cities.txt   (one city)"
+    },
+    {
+     "argv": [],
+     "stdin": "0, 0\n3, 4\n",
+     "show": "./tsp < cities.txt   (two cities: there and back)"
+    },
+    {
+     "argv": [],
+     "stdin": "0, 0\n4, 0\n0, 3\n",
+     "show": "./tsp < cities.txt   (a triangle)",
+     "leaks": true
+    },
+    {
+     "argv": [],
+     "stdin": "0, 0\n0, 0\n1, 1\n",
+     "show": "./tsp < cities.txt   (two cities at the same place)"
+    },
+    {
+     "argv": [],
+     "stdin": "-1.5, 2.25\n3.75, -0.5\n0, 0\n2.5, 2.5\n-2, -2\n",
+     "show": "./tsp < cities.txt   (negative and decimal coordinates)"
+    },
+    {
+     "argv": [],
+     "stdin": "14.49, -23.75\n49.09, -7.73\n35.44, 38.95\n21.13, -39.64\n29.56, -13.92\n5.56, -45.61\n",
+     "show": "./tsp < cities.txt   (6 random cities)"
+    },
+    {
+     "argv": [],
+     "stdin": "-8.04, -45.62\n33.09, -30.69\n33.79, 35.32\n-18.36, -26.58\n-1.36, 1.68\n-4.38, 40.54\n3.6, 3.74\n48.38, -1.74\n13.34, -16.45\n",
+     "show": "./tsp < cities.txt   (9 random cities)"
+    },
+    {
+     "argv": [],
+     "stdin": "18.89, -14.36\n2, -8.49\n24.88, -12.67\n-43.98, -11.81\n-0.42, 1.9\n-44.69, -39.71\n17.48, -12.38\n-31.35, 30.39\n0.84, 24.46\n-37.13, -45.51\n",
+     "show": "./tsp < cities.txt   (10 random cities)"
+    },
+    {
+     "argv": [],
+     "stdin": "-45.82, -2.35\n-4.71, -48.79\n-38.22, 29.28\n27.04, -43.1\n-30.62, 12.3\n-25.58, -38.18\n-39.83, -21.45\n0.54, 41.23\n-2.63, -7.83\n-33.41, -16.84\n-32.32, 18.02\n",
+     "show": "./tsp < cities.txt   (11 random cities)"
+    },
+    {
+     "argv": [],
+     "stdin": "21.56, 14.1\n-8.57, 47.18\n-7.91, 2.93\n10.91, 5.08\n48.99, -20.95\n-8.28, -6.8\n9.39, 24.15\n-41.45, 7.52\n-15.68, -48.02\n20.98, 24.78\n5.4, 20.32\n",
+     "show": "./tsp < cities.txt   (11 random cities)"
+    }
+   ]
+  }
+ ]
+}

@@ -137,6 +137,18 @@ RANKS = {
         ),
     ),
     # ── old curriculum (before the Python ranks) ──
+    "old_rank03": Rank(
+        key="old_rank03",
+        title="Rank 03 · old",
+        language="c",
+        time_limit=3 * 60 * 60,
+        curriculum="old",
+        note="gnl, filter, scanf, then backtracking",
+        levels=(
+            Level("io", pool=("broken_gnl", "filter", "scanf")),
+            Level("backtracking", pool=("n_queens", "permutations", "powerset", "rip", "tsp")),
+        ),
+    ),
     "old_rank05": Rank(
         key="old_rank05",
         title="Rank 05 · old",

@@ -182,6 +182,10 @@ class Spec:
     def timeout(self):
         return self.data.get("timeout", CASE_TIMEOUT)
 
+    @property
+    def ldflags(self):
+        return list(self.data.get("ldflags", []))
+
 
 # ── compiling ───────────────────────────────────────────────────────────────
 _DIAG = re.compile(r"^(.+?):(\d+):(?:\d+:)? (?:fatal )?error: (.+)$")
@@ -230,7 +234,8 @@ class Builder:
         includes = {str(s.parent) for s in self.spec.ref_sources}
         cmd = [self.spec.compiler, "-w", *[f for f in self.spec.flags if f.startswith("-std")],
                *self._defines(defines), *[f"-I{i}" for i in sorted(includes)], f"-I{self.given_dir}",
-               "-o", str(binary), *map(str, self.spec.ref_sources), *self._given_sources(), *self._main(main)]
+               "-o", str(binary), *map(str, self.spec.ref_sources), *self._given_sources(), *self._main(main),
+               *self.spec.ldflags]
         proc = subprocess.run(cmd, cwd=self.tmp, capture_output=True, text=True, errors="replace")
         if proc.returncode:
             log = (proc.stdout + proc.stderr).splitlines()
@@ -252,12 +257,33 @@ class Builder:
         binary = self.tmp / (out or _binary_name(key))
         cmd = [self.spec.compiler, *self.spec.flags, "-g", "-fdiagnostics-color=never",
                *self._defines(defines), f"-I{self.user_dir}", f"-I{self.given_dir}", "-o", str(binary),
-               *[str(self.user_dir / s) for s in sources], *self._given_sources(), *self._main(main)]
+               *[str(self.user_dir / s) for s in sources], *self._given_sources(), *self._main(main),
+               *self.spec.ldflags]
         proc = subprocess.run(cmd, cwd=self.tmp, capture_output=True, text=True, errors="replace")
         if proc.returncode:
             raise Fail(self.compile_card(proc.stdout + proc.stderr, defines))
         self.cache[key] = binary
         return binary
+
+    def preload(self, source):
+        """Compile a test shim (e.g. a read() that returns short chunks) for LD_PRELOAD."""
+        key = ("preload", source)
+        if key in self.cache:
+            return self.cache[key]
+        lib = self.tmp / f"{_binary_name(key)}.so"
+        cc = shutil.which("gcc") or shutil.which("cc") or "cc"
+        proc = subprocess.run([cc, "-shared", "-fPIC", "-o", str(lib), str(self.spec.qdir / source), "-ldl"],
+                              capture_output=True, text=True, errors="replace")
+        if proc.returncode:
+            raise Fail(_card("a test helper doesn't compile (bug in this tool)",
+                             [("output", "\n".join((proc.stdout + proc.stderr).splitlines()[:8]))]), code=2)
+        self.cache[key] = lib
+        return lib
+
+    def env_for(self, build):
+        if not build.get("preload") or not sys.platform.startswith("linux"):
+            return None
+        return dict(os.environ, LD_PRELOAD=str(self.preload(build["preload"])))
 
     # ── messages ──
     def rel(self, path):
@@ -320,15 +346,20 @@ class Builder:
 
 # ── running ─────────────────────────────────────────────────────────────────
 def execute(binary, argv=(), stdin=b"", timeout=CASE_TIMEOUT, cwd=None, env=None, prefix=()):
-    """Run a binary. stdin may be bytes or str. Never raises on timeout."""
+    """Run a binary. stdin may be bytes or str. Never raises on timeout.
+
+    stdin comes from a file, like `./prog < file` in the subjects (seekable)."""
     if isinstance(stdin, str):
         stdin = stdin.encode()
-    try:
-        proc = subprocess.run([*prefix, str(binary), *argv], input=stdin, stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE, timeout=timeout, cwd=cwd, env=env,
-                              start_new_session=True)
-    except subprocess.TimeoutExpired as err:
-        return Run(err.stdout or b"", err.stderr or b"", None)
+    with tempfile.TemporaryFile() as feed:
+        feed.write(stdin or b"")
+        feed.seek(0)
+        try:
+            proc = subprocess.run([*prefix, str(binary), *argv], stdin=feed, stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE, timeout=timeout, cwd=cwd, env=env,
+                                  start_new_session=True)
+        except subprocess.TimeoutExpired as err:
+            return Run(err.stdout or b"", err.stderr or b"", None)
     return Run(proc.stdout, proc.stderr, proc.returncode)
 
 
@@ -393,7 +424,7 @@ def valgrind_available():
     return shutil.which("valgrind") is not None and sys.platform.startswith("linux")
 
 
-def valgrind(binary, argv=(), stdin=b"", timeout=CASE_TIMEOUT, cwd=None, user_files=(), fds=False):
+def valgrind(binary, argv=(), stdin=b"", timeout=CASE_TIMEOUT, cwd=None, user_files=(), fds=False, env=None):
     """Run under valgrind. Returns a list of (title, rows) problems."""
     with tempfile.TemporaryDirectory(prefix="examshell-vg-") as vg:
         xml, log = Path(vg) / "out.xml", Path(vg) / "out.log"
@@ -402,7 +433,7 @@ def valgrind(binary, argv=(), stdin=b"", timeout=CASE_TIMEOUT, cwd=None, user_fi
                   "--xml=yes", f"--xml-file={xml}", f"--log-file={log}"]
         if fds:
             prefix.append("--track-fds=yes")
-        run = execute(binary, argv, stdin, timeout * VALGRIND_SLOWDOWN, cwd, prefix=prefix)
+        run = execute(binary, argv, stdin, timeout * VALGRIND_SLOWDOWN, cwd, env, prefix=prefix)
         if run.timed_out:
             return [("timed out under valgrind", [("hint", "very slow, or an infinite loop")])]
         problems = _parse_valgrind_xml(xml, user_files)
@@ -550,6 +581,20 @@ def _sorted_lines(data):
     return b"".join(sorted(data.splitlines(keepends=True)))
 
 
+def _numbers_match(expected, got, tolerance=0.0101):
+    a, b = expected.split(), got.split()
+    if len(a) != len(b):
+        return False
+    for x, y in zip(a, b):
+        try:
+            if abs(float(x) - float(y)) > tolerance:
+                return False
+        except ValueError:
+            if x != y:
+                return False
+    return True
+
+
 def compare(ref, got, modes, timeout):
     """None if `got` matches `ref` under `modes`, else (title, rows)."""
     if got.timed_out:
@@ -565,6 +610,8 @@ def compare(ref, got, modes, timeout):
             return ("wrong output (line order doesn't matter here)",
                     output_rows(_sorted_lines(ref.stdout), _sorted_lines(got.stdout))
                     + [("note", "lines shown sorted")])
+        if mode == "stdout_numbers" and not _numbers_match(ref.stdout, got.stdout):
+            return ("wrong output (numbers may differ by 0.01)", output_rows(ref.stdout, got.stdout))
         if mode == "exit" and got.code != ref.code:
             return ("wrong exit status", [("expected", str(ref.code)), ("got", str(got.code)),
                                           *([("output", got.stdout.decode(errors='replace')[:200])]
@@ -674,11 +721,12 @@ def run_cases(spec, builder, tmp, out, ctx):
         cwd = _prepare_cwd(tmp, case, n)
         timeout = case.get("timeout", spec.timeout)
         argv, stdin = case.get("argv", []), case.get("stdin", "")
-        ref = execute(ref_bin, argv, stdin, timeout * 4, cwd)
+        env = builder.env_for(build)
+        ref = execute(ref_bin, argv, stdin, timeout * 4, cwd, env)
         if ref.timed_out:
             raise Fail(_card("the reference solution timed out (bug in this tool)",
                              [("run", command_line(spec.name, case))]), code=2)
-        got = execute(user_bin, argv, stdin, timeout, cwd)
+        got = execute(user_bin, argv, stdin, timeout, cwd, env)
         modes = case.get("compare", build.get("compare", spec.data.get("compare", ["stdout"])))
         problem = compare(ref, got, modes, timeout)
         if problem:
@@ -694,7 +742,7 @@ def run_cases(spec, builder, tmp, out, ctx):
         states.append("ok")
         wants = case.get("leaks", build.get("leaks", spec.data.get("leaks", False)))
         if wants:
-            leak_candidates.append((n, build, case, user_bin, cwd))
+            leak_candidates.append((n, build, case, user_bin, cwd, env))
 
     _clear_line(out)
     _leak_pass(spec, leak_candidates, ctx, out)
@@ -719,14 +767,14 @@ def _leak_pass(spec, candidates, ctx, out):
     fds = spec.data.get("fds", False)
 
     def one(item):
-        n, build, case, binary, cwd = item
+        n, build, case, binary, cwd, env = item
         return item, valgrind(binary, case.get("argv", []), case.get("stdin", ""),
-                              case.get("timeout", spec.timeout), cwd, ctx.user_files, fds)
+                              case.get("timeout", spec.timeout), cwd, ctx.user_files, fds, env)
 
     with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
         results = list(pool.map(one, chosen))
     _clear_line(out)
-    for (n, build, case, _, _), problems in results:
+    for (n, build, case, _, _, _), problems in results:
         if problems:
             title, rows = problems[0]
             run_rows = [("run", command_line(spec.name, case))]
