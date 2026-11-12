@@ -85,7 +85,12 @@ def run(ctx: Context, check: Checker) -> None:
         [("found", "\n".join(defines[:3]))],
     )
 
-    proc = subprocess.run([str(binary)], capture_output=True, timeout=5)
+    proc = subprocess.run(
+        [str(binary)],
+        capture_output=True,
+        timeout=5 + ctx.launch_grace(binary),
+    )
+    ctx.launched(binary)
     check(
         "./mini_serv  (no argument)  -> 'Wrong number of arguments' on stderr,"
         " exit 1",

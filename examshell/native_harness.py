@@ -71,6 +71,10 @@ Rows = list[tuple[str, object]]
 Problem = tuple[str, Rows]
 
 CASE_TIMEOUT = 3  # seconds per run
+# macOS scans every freshly built binary on its first launch (syspolicyd),
+# one at a time: ~0.5s each, much longer when many queue up in parallel.
+# That wait isn't the program's, so a binary's first run gets this on top.
+FIRST_RUN_GRACE = 30 if sys.platform == "darwin" else 0
 VALGRIND_SLOWDOWN = 15  # valgrind runs get this many times the timeout
 STRICT = ["-Wall", "-Wextra", "-Werror"]
 SHOW_LINES = 10  # of expected/got output
@@ -580,6 +584,7 @@ def execute(
     """
     if isinstance(stdin, str):
         stdin = stdin.encode()
+    timeout += _first_run_grace(binary)
     with tempfile.TemporaryFile() as feed:
         feed.write(stdin or b"")
         feed.seek(0)
@@ -596,7 +601,26 @@ def execute(
             )
         except subprocess.TimeoutExpired as err:
             return Run(err.stdout or b"", err.stderr or b"", None)
+        finally:
+            _SCANNED.add(str(binary))
     return Run(proc.stdout, proc.stderr, proc.returncode)
+
+
+# binaries that have finished a run: macOS has scanned them already
+_SCANNED: set[str] = set()
+
+
+def _first_run_grace(binary: str | Path) -> float:
+    """Extra seconds for a launch of `binary` before it was ever scanned (see
+    FIRST_RUN_GRACE).
+
+    Parallel cases can launch the same new binary at once, and all of them
+    wait for its scan, so every run until one has finished gets the grace;
+    later runs start instantly and keep the normal limit.
+    """
+    if not FIRST_RUN_GRACE or str(binary) in _SCANNED:
+        return 0
+    return FIRST_RUN_GRACE
 
 
 _BARE = re.compile(r"[\w@%+=:,./-]+")
@@ -1004,6 +1028,9 @@ class Context:
                                      -> Run(stdout, stderr, code)
     ctx.valgrind(binary, argv, stdin, fds=False)
                                      -> problems (empty = clean)
+    ctx.launch_grace(binary)         extra seconds to allow when starting
+                                     `binary` yourself (Popen); then call
+    ctx.launched(binary)             once it has visibly started
     ctx.fail(title, rows)            stop with a failure card
     ctx.tmp                          a scratch directory
     ctx.warn(text)                   a yellow note under the verdict
@@ -1059,6 +1086,15 @@ class Context:
         return valgrind(
             binary, argv, stdin, self.spec.timeout, cwd, self.user_files, fds
         )
+
+    def launch_grace(self, binary: str | Path) -> float:
+        """For testers that start a binary themselves: the extra seconds its
+        first launch may take on macOS (see FIRST_RUN_GRACE)."""
+        return _first_run_grace(binary)
+
+    def launched(self, binary: str | Path) -> None:
+        """`binary` has started once: later launches get no grace."""
+        _SCANNED.add(str(binary))
 
     def warn(self, text: str) -> None:
         if text not in self.warnings:

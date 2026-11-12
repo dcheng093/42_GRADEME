@@ -33,8 +33,10 @@ int main()
 	a2.clear();
 	t2.clear();
 	std::cout << "assigned back: " << a.has(-3) << t.has(-3) << a2.has(-3) << t2.has(-3) << std::endl;
-	a = a;
-	t = t;
+	searchable_array_bag &same_a = a;  // via references: clang warns on x = x
+	searchable_tree_bag &same_t = t;
+	a = same_a;
+	t = same_t;
 	std::cout << "self-assigned: ";
 	a.print();
 
