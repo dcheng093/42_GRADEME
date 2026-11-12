@@ -33,7 +33,8 @@ int main()
 	bigint chain;
 	(chain += 5) += 7;
 	std::cout << "(0 += 5) += 7 = " << chain << std::endl;
-	chain = chain;
+	bigint &same_chain = chain;  // via a reference: clang warns on x = x
+	chain = same_chain;
 	std::cout << "self-assigned = " << chain << std::endl;
 	bigint a(1), b(2), c(3);
 	a = b = c;

@@ -40,7 +40,8 @@ int main()
 	f = e;
 	f[0] = 0;
 	std::cout << "copy is separate: e = " << e << " f = " << f << std::endl;
-	f = f;
+	vect2 &same_f = f;  // via a reference: clang warns on x = x
+	f = same_f;
 	std::cout << "self-assigned: " << f << std::endl;
 	std::cout << "e == e: " << (e == e) << "  e != e: " << (e != e) << std::endl;
 	std::cout << "e == f: " << (e == f) << "  e != f: " << (e != f) << std::endl;

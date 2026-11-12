@@ -70,6 +70,8 @@ class Server:
         self, ctx: Context, binary: Path, port: int, path: Path
     ) -> None:
         self.ctx, self.port, self.path = ctx, port, path
+        self.binary = binary
+        self.grace = ctx.launch_grace(binary)
         self.proc = subprocess.Popen(
             [str(binary), str(port), str(path)],
             stdout=subprocess.PIPE,
@@ -79,7 +81,7 @@ class Server:
     def wait_ready(self) -> tuple[bool, bytes]:
         """(True once "ready\\n" came on stdout, what came)."""
         got = b""
-        end = time.monotonic() + 3
+        end = time.monotonic() + 3 + self.grace
         assert self.proc.stdout is not None  # stdout=PIPE
         fd = self.proc.stdout.fileno()
         while time.monotonic() < end and b"\n" not in got:
@@ -89,6 +91,8 @@ class Server:
                 if not chunk:
                     break
                 got += chunk
+        if got:
+            self.ctx.launched(self.binary)
         return got.split(b"\n")[0] == b"ready", got
 
     def stop(self) -> None:
