@@ -6,11 +6,14 @@ from pathlib import Path
 APP_NAME = "GRADEME"
 TAGLINE = "42 exam practice  ·  every rank  ·  C · C++ · Python"
 
-ROOT = Path(__file__).resolve().parent.parent
-SUBJECTS = ROOT / "subjects"
+# the top level only shows examshell/ and rendu/: subjects and scripts live in
+# the package, your history in the hidden .examshell/
+PACKAGE = Path(__file__).resolve().parent
+ROOT = PACKAGE.parent
+SUBJECTS = PACKAGE / "subjects"
 RENDU = ROOT / "rendu"
-TRACE = ROOT / "trace"
 STATE_DIR = ROOT / ".examshell"
+TRACE = STATE_DIR / "trace"
 
 # seconds before a Python test run is killed (infinite loops)
 TEST_TIMEOUT = 20
@@ -31,7 +34,8 @@ COOLDOWN_STEPS = (0, 30, 60, 120)
 class Level:
     theme: str
     pool: tuple[str, ...]
-    folder: str = ""  # sub-folder under subjects/<rank>/, if the rank uses one
+    # sub-folder under examshell/subjects/<rank>/, if the rank uses one
+    folder: str = ""
     # practice only: never drawn in a real exam (rare subjects)
     extras: tuple[str, ...] = ()
 
@@ -56,7 +60,8 @@ class Rank:
     # points per level (grade capped at 100); 0 = 100 split evenly over the
     # levels
     points: int = 0
-    # folders under subjects/ to find questions in (shared with other ranks)
+    # folders under examshell/subjects/ to find questions in (shared with
+    # other ranks)
     borrow: tuple[str, ...] = ()
     # exam levels as indexes into `levels` (a pool can come back); () = each
     # once
@@ -123,7 +128,7 @@ CURRICULA = (
 
 # ── Piscine: the weekly exams (pools as in wkratos/42-examshell) ──
 # questions are shared with rank02; the ones only the piscine has are in
-# subjects/piscine/
+# examshell/subjects/piscine/
 PISCINE_SOURCES = (
     "piscine",
     "rank02/level0",
@@ -361,8 +366,8 @@ RANKS: dict[str, Rank] = {
             ),
         ),
     ),
-    # Python ranks 03-06: pools from 42exam.net (scripts/data/), built by
-    # scripts/import_python.py
+    # Python ranks 03-06: pools from 42exam.net (examshell/scripts/data/),
+    # built by examshell/scripts/import_python.py
     "rank03": Rank(
         key="rank03",
         title="Rank 03",

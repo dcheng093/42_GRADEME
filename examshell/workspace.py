@@ -1,5 +1,5 @@
-"""The rendu/ folder you write your answers in, and trace/ where old ones
-go."""
+"""The rendu/ folder you write your answers in, and .examshell/trace/ where
+old ones go."""
 
 import re
 import shutil
@@ -105,8 +105,8 @@ def _has_work(path: Path) -> bool:
 
 
 def archive() -> Path | None:
-    """Move rendu/ to trace/<timestamp>/ if you wrote anything, else just
-    remove it.
+    """Move rendu/ to .examshell/trace/<timestamp>/ if you wrote anything,
+    else just remove it.
 
     Returns the trace folder, or None.
     """
@@ -117,16 +117,49 @@ def archive() -> Path | None:
         shutil.rmtree(config.RENDU, ignore_errors=True)
         return None
     target = config.TRACE / datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    config.TRACE.mkdir(exist_ok=True)
+    config.TRACE.mkdir(parents=True, exist_ok=True)
     shutil.move(str(config.RENDU), str(target))
     return target
 
 
 def clean_caches() -> None:
-    for folder in (config.RENDU, config.SUBJECTS, config.ROOT / "examshell"):
+    for folder in (config.RENDU, config.PACKAGE):
         if folder.is_dir():
             for cache in folder.rglob("__pycache__"):
                 shutil.rmtree(cache, ignore_errors=True)
+
+
+def _only_caches(folder: Path) -> bool:
+    """True if `folder` holds nothing but __pycache__ / .pyc leftovers."""
+    return all(
+        p.is_dir() or p.suffix == ".pyc" or "__pycache__" in p.parts
+        for p in folder.rglob("*")
+    )
+
+
+def migrate_layout() -> None:
+    """Tidy a checkout from before subjects/, scripts/ and trace/ left the
+    top level.
+
+    Old attempts move from trace/ to .examshell/trace/. `git pull` moves
+    subjects/ and scripts/ but leaves their ignored __pycache__ folders
+    behind: those husks are removed. A folder with any other file is kept.
+    """
+    old_trace = config.ROOT / "trace"
+    if old_trace.is_dir():
+        config.TRACE.mkdir(parents=True, exist_ok=True)
+        for attempt in sorted(old_trace.iterdir()):
+            target = config.TRACE / attempt.name
+            if not target.exists():
+                shutil.move(str(attempt), str(target))
+        try:
+            old_trace.rmdir()
+        except OSError:
+            pass  # a name clash stayed behind: never delete an attempt
+    for name in ("subjects", "scripts"):
+        husk = config.ROOT / name
+        if husk.is_dir() and _only_caches(husk):
+            shutil.rmtree(husk, ignore_errors=True)
 
 
 def open_folder(path: Path) -> bool:

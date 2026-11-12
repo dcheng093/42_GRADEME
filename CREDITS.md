@@ -6,8 +6,8 @@
   They are reproduced here for practice.
 - **Python ranks 03–06 and the rank02 list**: subject texts, translations,
   signatures, examples and level pools come from [42exam.net](https://42exam.net/),
-  a student-made site that isn't affiliated with 42. The snapshots are in `scripts/data/`.
-  `scripts/fetch_42exam.py` refreshes them.
+  a student-made site that isn't affiliated with 42. The snapshots are in
+  `examshell/scripts/data/`. `examshell/scripts/fetch_42exam.py` refreshes them.
 
 - **Piscine exams**: the level pools, the scoring (10 points a level, 6 for the
   final) and the subject texts of the piscine-only questions come from

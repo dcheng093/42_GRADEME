@@ -312,7 +312,7 @@ def help_screen() -> None:
                 ),
                 (
                     "when you leave a session, rendu/ is moved to"
-                    f" {ui.paint('trace/<date>/', ui.HILITE)}."
+                    f" {ui.paint('.examshell/trace/<date>/', ui.HILITE)}."
                 ),
             ],
             title="modes",
@@ -420,6 +420,7 @@ def main_menu(stats: Stats) -> None:
 
 
 def run_interactive() -> int:
+    workspace.migrate_layout()
     missing = missing_questions()
     if missing:
         print(ui.paint("config.py lists questions with no folder:", ui.ERR))

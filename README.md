@@ -196,7 +196,7 @@ It also lists your recent exam grades.
 
 ## Your code is never deleted
 
-When you leave a session, `rendu/` is moved to `trace/<date>/`, so you can always go back and look at old attempts. Untouched starters and handed-out files don't count.
+When you leave a session, `rendu/` is moved to `.examshell/trace/<date>/`, so you can always go back and look at old attempts. Untouched starters and handed-out files don't count.
 
 ## Make targets
 
@@ -209,7 +209,7 @@ When you leave a session, `rendu/` is moved to `trace/<date>/`, so you can alway
 | `make check-c`      | the same for the C cursus only                                      |
 | `make selftest`     | feed the graders 22 broken answers: every one must fail             |
 | `make lint`         | flake8 + mypy (the 42 flags) on every `.py` file                    |
-| `make clean`        | delete `rendu/`, `trace/` and caches                                |
+| `make clean`        | delete `rendu/`, `.examshell/trace/` and caches                     |
 
 You can also grade a whole folder of your own answers at once:
 
@@ -221,11 +221,11 @@ It finds `<question>/<file>` anywhere inside the folder. `--check` takes a rank 
 
 ## Adding or updating questions
 
-**Python ranks (03–06).** Subjects come from snapshots of 42exam.net in `scripts/data/`.
-1. `python3 scripts/fetch_42exam.py` refreshes the snapshots. It never runs the site's JavaScript.
-2. Write or fix `subjects/rankNN/<name>/solution.py` by hand.
-3. `python3 scripts/import_python.py [3 4 5 6]` writes `sub*.txt`, `tests.py` and `starter.py`. The import stops if your solution disagrees with a published example.
-4. Edge cases, random generators, ambiguous readings and speed checks live in `scripts/python_cases.py`.
+**Python ranks (03–06).** Subjects come from snapshots of 42exam.net in `examshell/scripts/data/`.
+1. `python3 examshell/scripts/fetch_42exam.py` refreshes the snapshots. It never runs the site's JavaScript.
+2. Write or fix `examshell/subjects/rankNN/<name>/solution.py` by hand.
+3. `python3 examshell/scripts/import_python.py [3 4 5 6]` writes `sub*.txt`, `tests.py` and `starter.py`. The import stops if your solution disagrees with a published example.
+4. Edge cases, random generators, ambiguous readings and speed checks live in `examshell/scripts/python_cases.py`.
 
 **C / C++ questions.** A question folder holds:
 - `sub.txt` (keep the `Expected files :` line; `*.c *.h` works)
@@ -263,14 +263,16 @@ examshell/            the app (stdlib only)
   runner.py           runs a harness with a timeout, reads its verdict
   questions.py        a question's files, subject, reference
   ui.py · stats.py · workspace.py
-subjects/
-  piscine/<q>/              the piscine-only questions (the rest are borrowed from rank02)
-  rank02/levelN/<q>/        sub.txt, <q>.c, main.c, cases.json
-  rank03..06/<q>/           sub*.txt, solution.py, tests.py, starter.py
-  old_rank03..06/<q>/       the C cursus: sub.txt, spec.json, ref/, mains/, given/, handout/, tester.py
-  rank03_legacy/<q>/        the Python beta pool
-scripts/
-  fetch_42exam.py · import_python.py · python_cases.py · selftest.py · data/
+  subjects/
+    piscine/<q>/            the piscine-only questions (the rest are borrowed from rank02)
+    rank02/levelN/<q>/      sub.txt, <q>.c, main.c, cases.json
+    rank03..06/<q>/         sub*.txt, solution.py, tests.py, starter.py
+    old_rank03..06/<q>/     the C cursus: sub.txt, spec.json, ref/, mains/, given/, handout/, tester.py
+    rank03_legacy/<q>/      the Python beta pool
+  scripts/
+    fetch_42exam.py · import_python.py · python_cases.py · selftest.py · data/
+rendu/                your answers, while a session is open
+.examshell/           your login, stats, old attempts (trace/) and the reference cache (gitignored)
 ```
 
 ## Requirements

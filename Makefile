@@ -20,20 +20,21 @@ check-c check-old:
 	@$(PYTHON) -m examshell --check c
 
 selftest:
-	@$(PYTHON) scripts/selftest.py
+	@$(PYTHON) examshell/scripts/selftest.py
 
-# every subject folder has its own solution.py / tests.py: checked one by one
+# every subject folder has its own solution.py / tests.py: checked one by one.
+# starter.py is skipped: it is only signatures with no bodies, so it can't parse.
 lint:
-	@flake8 $$(git ls-files '*.py')
-	@mypy $(MYPY_FLAGS) -p examshell
-	@for f in scripts/*.py; do mypy $(MYPY_FLAGS) $$f || exit 1; done
-	@for d in $$(git ls-files 'subjects/*.py' | xargs -n1 dirname | sort -u); do \
-		(cd $$d && MYPYPATH=$(CURDIR) mypy $(MYPY_FLAGS) *.py) || exit 1; \
+	@flake8 $$(git ls-files '*.py' ':!:*/starter.py')
+	@mypy $(MYPY_FLAGS) --exclude '^examshell/(subjects|scripts)/' -p examshell
+	@for f in examshell/scripts/*.py; do mypy $(MYPY_FLAGS) $$f || exit 1; done
+	@for d in $$(git ls-files 'examshell/subjects/*.py' | xargs -n1 dirname | sort -u); do \
+		(cd $$d && MYPYPATH=$(CURDIR) mypy $(MYPY_FLAGS) $$(ls *.py | grep -vx starter.py)) || exit 1; \
 	done
 	@echo "flake8 + mypy: clean"
 
 clean:
-	@rm -rf rendu trace .mypy_cache
+	@rm -rf rendu .examshell/trace .mypy_cache
 	@find . -name __pycache__ -prune -exec rm -rf {} +
 
 .PHONY: run check check-piscine check-python check-c check-current check-old selftest lint clean
