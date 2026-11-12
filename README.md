@@ -25,8 +25,8 @@ The shell has no dependencies: Python 3.10+, a terminal, and `gcc`/`c++` for the
 ## Quick start
 
 ```bash
-git clone https://github.com/dcheng093/42_examshell_python
-cd 42_examshell_python
+git clone https://github.com/dcheng093/42_GRADEME
+cd 42_GRADEME
 make
 ```
 
